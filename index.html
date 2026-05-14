@@ -1705,21 +1705,44 @@ function App() {
     return null;
   });
 
-  const shareWeek = () => {
+  const shareWeek = async () => {
     const planned = DAYS.filter(d=>plan[d]).map(d=>{
       const m = meals.find(x=>x.id===plan[d]);
-      return m ? {day:d, name:m.name, sub:m.subcategory, time:m.cookingTime||'', ingredients:m.ingredients} : null;
+      return m ? {day:d, name:m.name, time:m.cookingTime||'', ingredients:m.ingredients} : null;
     }).filter(Boolean);
     if (!planned.length) return;
-    const payload = {ts:Date.now(), days:planned};
-    const hash = '#weekly=' + btoa(JSON.stringify(payload));
-    const url = window.location.origin + window.location.pathname + hash;
+
+    // Build meal plan section
+    const lines = ['🍽 This week\'s meals', ''];
+    planned.forEach(p => {
+      lines.push(`${DAY_FULL[p.day]} — ${p.name}${p.time ? ' ('+p.time+')' : ''}`);
+    });
+    lines.push('');
+
+    // Build grouped shopping list
+    const grouped = {};
+    ING_CAT_ORDER.forEach(c => { grouped[c] = []; });
+    planned.forEach(p => p.ingredients.forEach(ing => grouped[categorizeIng(ing)].push(ing)));
+    // Deduplicate within each category
+    ING_CAT_ORDER.forEach(c => { grouped[c] = [...new Set(grouped[c])]; });
+
+    lines.push('🛒 Shopping list', '');
+    for (const cat of ING_CAT_ORDER) {
+      if (!grouped[cat].length) continue;
+      lines.push(cat.toUpperCase());
+      grouped[cat].forEach(ing => lines.push('• ' + ing));
+      lines.push('');
+    }
+
+    const txt = lines.join('\n');
     if (navigator.share) {
-      navigator.share({title:"Happy Meals — This Week's Plan", text:"Here's this week's dinner plan and grocery list:", url});
-    } else {
-      navigator.clipboard.writeText(url).then(()=>toast('✓ Link copied to clipboard!')).catch(()=>{
-        prompt("Copy this link and send to your wife:", url);
-      });
+      try { await navigator.share({title:"This week's meals", text:txt}); return; } catch(e) {}
+    }
+    try { await navigator.clipboard.writeText(txt); toast('✓ Copied! Paste into a message.'); }
+    catch {
+      const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';
+      document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+      toast('✓ Copied! Paste into a message.');
     }
   };
   const [detail, setDetail]   = useState(null);
