@@ -507,6 +507,8 @@ body {
 }
 .btn:active { transform: scale(.97); }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn svg { width: 14px; height: 14px; flex-shrink: 0; stroke-width: 2; }
+.btn.sm svg { width: 12px; height: 12px; }
 .btn.pr {
   background: var(--accent);
   color: var(--card);
@@ -990,6 +992,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 .sheet-back:active { opacity: .55; }
+.sheet-back svg { width: 14px; height: 14px; flex-shrink: 0; stroke-width: 2.4; }
 
 .sheet-hd {
   padding: 8px 18px 14px;
@@ -1034,6 +1037,7 @@ body {
   gap: 5px;
 }
 .sheet-meta strong { color: var(--fg); font-weight: 500; }
+.sheet-meta svg { width: 12px; height: 12px; flex-shrink: 0; }
 
 .sheet-body {
   flex: 1;
@@ -1288,6 +1292,7 @@ body {
   -webkit-tap-highlight-color: transparent;
   border-top: 1.5px solid var(--rule);
 }
+.pclr svg { width: 14px; height: 14px; flex-shrink: 0; }
 
 /* ───── Share view (page) ───────────────────────────── */
 .share-card {
