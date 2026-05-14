@@ -305,8 +305,43 @@ const CATS = {
 const SUB_COLORS = {
   Dutchoven:'#5A7028',Braise:'#C7611F',BBQ:'#B23E5A',Salad:'#1A5959',
   Pasta:'#7A3F5E','Stir-fry':'#D9A026','Meals on the run':'#B23E5A',
-  Home:'#1A5959',Sandwich:'#5A7028',Soup:'#D9A026',Other:'#C8C0AC'
+  Home:'#1A5959',Sandwich:'#5A7028',Soup:'#D9A026',Toddler:'#E07038',Other:'#8A7A6A'
 };
+
+const CUISINES = ['Italian','Mexican','French','Greek','Asian','Middle Eastern','Indian','Spanish','American','Irish','Other'];
+const MEAT_TYPES = ['Beef','Poultry','Lamb','Pork','Seafood','Vegetarian'];
+
+function guessCuisine(m) {
+  if (m.cuisine) return m.cuisine;
+  const n = (m.name+' '+(m.notes||'')).toLowerCase();
+  if (/italian|tuscan|osso buco|bolognese|carbonara|puttanesca|rag[uù]|risotto|polenta|bruschetta|saltimbocca|piccata|marsala|milanese/.test(n)) return 'Italian';
+  if (/mexican|barbacoa|enchilada|quesadilla|burrito|taco|chipotle|chili/.test(n)) return 'Mexican';
+  if (/french|bourguignon|daube|proven[cç]|coq au vin|cassoulet|ratatouille|nicoise|nic[oô]ise|beurre|daube/.test(n)) return 'French';
+  if (/greek|stifado|moussaka|tzatziki|souvlaki|spanakopita/.test(n)) return 'Greek';
+  if (/korean|galbi|kimchi|gochujang|bibimbap|doenjang/.test(n)) return 'Asian';
+  if (/thai|pad thai|massaman|larb|som tam|pad kra|satay/.test(n)) return 'Asian';
+  if (/chinese|kung pao|mapo|hong shao|red.brai|mongolian|black bean|hoisin|cantonese/.test(n)) return 'Asian';
+  if (/vietnamese|pho|banh|caramel.*beef|lemongrass|nuoc|bun bo/.test(n)) return 'Asian';
+  if (/japanese|teriyaki|ramen|miso|yakitori|tonkatsu|sukiyaki/.test(n)) return 'Asian';
+  if (/moroccan|tagine|chermoula|harissa/.test(n)) return 'Middle Eastern';
+  if (/persian|ghormeh|fesenjan|pomegranate.*lamb|fattoush|tabbouleh|kofta|shawarma/.test(n)) return 'Middle Eastern';
+  if (/indian|curry|rogan|vindaloo|tikka|masala|korma|dal|dahl|biryani|saag/.test(n)) return 'Indian';
+  if (/spanish|paella|patatas|gazpacho|chorizo.*pork|pork.*chorizo/.test(n)) return 'Spanish';
+  if (/irish|guinness/.test(n)) return 'Irish';
+  if (/american|bbq|pulled pork|cowboy/.test(n)) return 'American';
+  return 'Other';
+}
+
+function guessMeat(m) {
+  if (m.meatType) return m.meatType;
+  const n = (m.name+' '+(m.ingredients||[]).slice(0,5).join(' ')).toLowerCase();
+  if (/\bbeef\b|brisket|short rib|oxtail|boeuf|chuck|mince.*beef|beef.*mince|steak|ragu.*beef|veal/.test(n)) return 'Beef';
+  if (/\bchicken\b|\bpoultry\b|turkey|\bhen\b/.test(n)) return 'Poultry';
+  if (/\blamb\b|mutton/.test(n)) return 'Lamb';
+  if (/\bpork\b|pancetta|prosciutto|chorizo|bacon/.test(n)) return 'Pork';
+  if (/\bfish\b|salmon|tuna|prawn|shrimp|seafood|scallop|mussel|snapper|barramundi|cod/.test(n)) return 'Seafood';
+  return 'Vegetarian';
+}
 
 const CAT_COLORS = { Dinner:'#C7611F', Lunch:'#1A5959' };
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -1032,7 +1067,100 @@ const SAMPLES = [
   {id:'t30',name:'Soft Polenta with Hidden Veg Sauce',category:'Lunch',subcategory:'Toddler',cookingTime:'25 min',servings:'3',
    recipe:'Saute finely diced onion, zucchini and carrot in olive oil until completely soft. Add crushed tomatoes and simmer 10 min. Blend sauce smooth. Meanwhile bring milk and water to boil, whisk in polenta and stir constantly 5 min until thick and creamy. Stir in parmesan. Serve polenta in bowl with hidden veg sauce spooned over and extra parmesan.',
    ingredients:['1/2 cup instant polenta','1 cup full-fat milk','1 cup water','2 tbsp grated parmesan','Hidden veg sauce: 1/2 onion + 1 small zucchini + 1 small carrot + 400g can crushed tomatoes + 1 tsp olive oil'],
-   notes:'NOVA 1-3. The blended sauce hides several vegetables for reluctant eaters. Polenta is naturally gluten-free and its soft texture is ideal for toddlers. Make extra sauce and freeze.'}
+   notes:'NOVA 1-3. The blended sauce hides several vegetables for reluctant eaters. Polenta is naturally gluten-free and its soft texture is ideal for toddlers. Make extra sauce and freeze.'},
+
+  // ── NEW STIR-FRIES ───────────────────────────────────────────────
+  {id:'sf1',name:'Mongolian Beef Stir-fry',category:'Dinner',subcategory:'Stir-fry',cookingTime:'20 min',servings:'4',cuisine:'Asian',meatType:'Beef',
+   recipe:'Toss beef strips in cornflour and soy. Heat wok until smoking, cook beef in batches until caramelised, remove. In same wok fry garlic and ginger 30 sec. Add sauce (soy, brown sugar, hoisin, water), bring to boil until glossy. Return beef and toss to coat. Finish with spring onions. Serve over steamed rice.',
+   ingredients:['600 g beef sirloin, thinly sliced against the grain','2 tbsp cornflour','3 tbsp soy sauce','4 garlic cloves, minced','1 tbsp fresh ginger, grated','3 tbsp hoisin sauce','2 tbsp brown sugar','80 ml water','4 spring onions, sliced on diagonal','2 tbsp neutral oil','Rice to serve'],
+   notes:'Freeze the beef for 20 min before slicing — makes it much easier to get thin even strips.'},
+
+  {id:'sf2',name:'Kung Pao Chicken Stir-fry',category:'Dinner',subcategory:'Stir-fry',cookingTime:'20 min',servings:'4',cuisine:'Asian',meatType:'Poultry',
+   recipe:'Marinate chicken in soy, Shaoxing wine and cornflour 10 min. Mix sauce: soy, rice vinegar, sugar, cornflour, sesame oil. Stir-fry dried chillies and Sichuan pepper in oil 30 sec. Add chicken, stir-fry until cooked. Add capsicum and zucchini, toss 1 min. Pour in sauce, toss until thick and glossy. Stir through peanuts. Serve over rice.',
+   ingredients:['600 g chicken thigh, diced 2cm','2 tbsp soy sauce','1 tbsp Shaoxing rice wine','1 tbsp cornflour','6 dried red chillies','1 tsp Sichuan peppercorns (optional)','1 red capsicum, diced','1 zucchini, diced','80 g roasted peanuts','Sauce: 3 tbsp soy + 2 tbsp rice vinegar + 1 tbsp sugar + 1 tsp cornflour + 1 tsp sesame oil + 60ml water','2 tbsp neutral oil'],
+   notes:'Adjust dried chillies to taste — 3 for mild, 6 for medium, 10 for proper heat.'},
+
+  {id:'sf3',name:'Honey Garlic Prawn Stir-fry',category:'Dinner',subcategory:'Stir-fry',cookingTime:'15 min',servings:'4',cuisine:'Asian',meatType:'Seafood',
+   recipe:'Pat prawns dry. Mix sauce: honey, soy, garlic, a splash of lime juice. Heat wok smoking hot, add oil. Cook prawns 1 min per side until pink, remove. In same wok fry garlic 20 sec, add broccoli and capsicum, toss 2 min. Return prawns, pour over sauce, toss until everything is coated and sauce is thick. Finish with sesame seeds and spring onion.',
+   ingredients:['600 g raw prawns, peeled and deveined','2 heads broccoli, cut into small florets','1 red capsicum, sliced','4 garlic cloves, minced','3 tbsp honey','3 tbsp soy sauce','Juice of 1 lime','1 tsp sesame oil','1 tbsp cornflour mixed with 2 tbsp water','Sesame seeds and spring onion to serve','2 tbsp neutral oil'],
+   notes:'Do not overcrowd the wok with prawns or they will steam instead of sear. Cook in two batches if needed.'},
+
+  {id:'sf4',name:'Black Bean Beef & Capsicum Stir-fry',category:'Dinner',subcategory:'Stir-fry',cookingTime:'20 min',servings:'4',cuisine:'Asian',meatType:'Beef',
+   recipe:'Slice beef against grain into thin strips, toss with cornflour and soy. Fry in smoking hot wok in batches until browned, set aside. In same wok fry garlic, ginger and black bean paste 1 min. Add capsicums and onion, toss 2 min. Return beef, add oyster sauce and a splash of water, toss until glossy. Finish with sesame oil.',
+   ingredients:['600 g beef rump or sirloin, thinly sliced','3 mixed capsicums, sliced','1 brown onion, sliced into wedges','3 garlic cloves, minced','1 tbsp fresh ginger, grated','2 tbsp black bean paste','2 tbsp oyster sauce','1 tbsp soy sauce','1 tbsp cornflour','1 tsp sesame oil','2 tbsp neutral oil','Rice or noodles to serve'],
+   notes:'Black bean paste is sold in jars in the Asian foods aisle. Lee Kum Kee brand is reliable.'},
+
+  {id:'sf5',name:'Thai Basil Chicken (Pad Kra Pao)',category:'Dinner',subcategory:'Stir-fry',cookingTime:'15 min',servings:'4',cuisine:'Asian',meatType:'Poultry',
+   recipe:'Heat oil in wok over high heat. Fry garlic and fresh chillies until fragrant, 30 sec. Add chicken mince and break up, stir-fry 3 min until cooked and starting to caramelise. Add oyster sauce, fish sauce, soy and sugar, toss to combine. Remove from heat, fold through Thai basil until just wilted. Serve over steamed jasmine rice topped with a fried egg.',
+   ingredients:['600 g chicken mince','4 garlic cloves, roughly chopped','3 long red chillies, sliced (adjust to taste)','Large handful Thai basil leaves','2 tbsp oyster sauce','1 tbsp fish sauce','1 tsp soy sauce','1 tsp caster sugar','2 tbsp neutral oil','4 fried eggs to serve','Jasmine rice to serve'],
+   notes:'Thai basil is key — regular basil works in a pinch but has a different flavour. Look for it in Asian grocers.'},
+
+  {id:'sf6',name:'Lemongrass Pork Stir-fry',category:'Dinner',subcategory:'Stir-fry',cookingTime:'20 min',servings:'4',cuisine:'Asian',meatType:'Pork',
+   recipe:'Finely chop lemongrass, combine with garlic, fish sauce and sugar to make a paste. Toss pork with half the paste and cornflour. Stir-fry pork in batches in smoking hot wok until caramelised, remove. Fry remaining paste 30 sec, add snake beans or green beans and toss 2 min. Return pork. Season with extra fish sauce and lime. Scatter over fried shallots and fresh herbs.',
+   ingredients:['600 g pork mince or finely sliced pork neck','3 lemongrass stalks, white part only, finely chopped','3 garlic cloves, minced','2 tbsp fish sauce','1 tsp caster sugar','1 tbsp cornflour','200 g snake beans or green beans, cut into 4cm pieces','2 long red chillies, sliced','Juice of 1 lime','Fried shallots, fresh coriander and mint to serve','2 tbsp neutral oil'],
+   notes:'Pork neck gives more flavour and stays juicy. Ask the butcher to slice it thin if using that cut.'},
+
+  {id:'sf7',name:'Teriyaki Salmon Stir-fry',category:'Dinner',subcategory:'Stir-fry',cookingTime:'20 min',servings:'4',cuisine:'Asian',meatType:'Seafood',
+   recipe:'Mix teriyaki sauce: soy, mirin, sake, sugar. Sear salmon fillets skin-side up in hot oil 2 min per side until just cooked, remove. In same pan stir-fry bok choy, edamame and mushrooms 2 min. Add sauce, bubble 1 min. Return salmon, spoon sauce over. Serve over sushi rice with sesame seeds and pickled ginger.',
+   ingredients:['4 salmon fillets (approx 150g each)','2 heads bok choy, quartered','150 g shiitake or oyster mushrooms','100 g frozen edamame, defrosted','Teriyaki sauce: 60ml soy + 60ml mirin + 2 tbsp sake + 1 tbsp sugar','1 tbsp neutral oil','1 tsp sesame oil','Sesame seeds and pickled ginger to serve','Sushi rice to serve'],
+   notes:'Do not overcook the salmon — it should be just opaque in the centre. Carry-over heat will finish it.'},
+
+  {id:'sf8',name:'Ginger Sesame Tofu & Vegetable Stir-fry',category:'Dinner',subcategory:'Stir-fry',cookingTime:'20 min',servings:'4',cuisine:'Asian',meatType:'Vegetarian',
+   recipe:'Press tofu dry, cut into cubes, fry in oil until golden all over, remove. In same wok fry ginger and garlic 30 sec. Add broccoli, snap peas and carrot, toss on high heat 3 min. Return tofu. Mix sauce (soy, sesame oil, rice vinegar, honey, cornflour) and pour over, toss until coated and glossy. Finish with sesame seeds and spring onion.',
+   ingredients:['400 g firm tofu, pressed and cubed','2 heads broccoli, cut into florets','150 g sugar snap peas','2 carrots, julienned','3 garlic cloves, minced','1 tbsp fresh ginger, grated','Sauce: 3 tbsp soy + 1 tbsp sesame oil + 1 tbsp rice vinegar + 1 tbsp honey + 1 tsp cornflour + 60ml water','2 tbsp neutral oil','Sesame seeds and spring onion to serve','Steamed rice to serve'],
+   notes:'Extra-firm tofu works best. Pressing out the moisture is essential for a golden crust rather than a soggy one.'},
+
+  // ── NEW DINNER SALADS ────────────────────────────────────────────
+  {id:'sal1',name:'Warm Roasted Pumpkin & Feta Salad',category:'Dinner',subcategory:'Salad',cookingTime:'35 min',servings:'4',cuisine:'Other',meatType:'Vegetarian',
+   recipe:'Toss pumpkin in olive oil, cumin and smoked paprika. Roast at 200°C for 25 min until golden and caramelised. Toast pine nuts in dry pan. Arrange rocket and spinach on platter, top with warm pumpkin, crumbled feta, pine nuts, pomegranate seeds and fresh mint. Drizzle with honey and a squeeze of lemon.',
+   ingredients:['800 g butternut pumpkin, cut into 2cm cubes','150 g baby rocket and spinach','150 g Persian or Danish feta, crumbled','50 g pine nuts','Seeds of 1/2 pomegranate','Fresh mint leaves','1 tsp ground cumin','1 tsp smoked paprika','2 tbsp olive oil','1 tbsp honey','Juice of 1 lemon','Salt and pepper'],
+   notes:'Add a can of drained chickpeas tossed with the pumpkin to make it more substantial.'},
+
+  {id:'sal2',name:'Vietnamese Chicken & Herb Salad',category:'Dinner',subcategory:'Salad',cookingTime:'25 min',servings:'4',cuisine:'Asian',meatType:'Poultry',
+   recipe:'Poach chicken breasts in simmering water with ginger, garlic and fish sauce 12 min. Rest 5 min then shred. Mix dressing: fish sauce, lime juice, sugar, garlic, chilli. Toss shredded chicken with wombok, carrot, spring onion, fresh mint, coriander and Vietnamese mint. Dress generously. Top with crushed peanuts and fried shallots.',
+   ingredients:['4 chicken breasts','300 g wombok (Chinese cabbage), shredded','2 carrots, julienned','4 spring onions, sliced','Large handfuls fresh mint, coriander and Vietnamese mint','80 g roasted peanuts, roughly crushed','3 tbsp fried shallots','Dressing: 3 tbsp fish sauce + juice of 2 limes + 2 tbsp sugar + 1 garlic clove minced + 1 chilli minced'],
+   notes:'Can be made ahead — keep dressing separate and toss just before serving. The wombok wilts slightly which is fine.'},
+
+  {id:'sal3',name:'Smoked Salmon Nicoise',category:'Dinner',subcategory:'Salad',cookingTime:'20 min',servings:'4',cuisine:'French',meatType:'Seafood',
+   recipe:'Boil eggs 7 min for jammy yolk, cool and halve. Blanch green beans 2 min, refresh in cold water. Boil baby potatoes until tender. Make dressing: Dijon, red wine vinegar, capers, olive oil. Arrange lettuce, potatoes, beans, eggs and smoked salmon on a platter. Scatter over olives, capers and dressing. Finish with fresh dill.',
+   ingredients:['300 g smoked salmon','4 eggs','400 g baby potatoes, halved','200 g green beans, trimmed','2 heads butter lettuce','80 g kalamata olives','2 tbsp capers','Fresh dill','Dressing: 1 tbsp Dijon mustard + 2 tbsp red wine vinegar + 1 tbsp capers, chopped + 80ml olive oil + salt'],
+   notes:'Tinned tuna works just as well as the smoked salmon for a more economical version.'},
+
+  {id:'sal4',name:'Haloumi, Roasted Capsicum & Lentil Salad',category:'Dinner',subcategory:'Salad',cookingTime:'30 min',servings:'4',cuisine:'Middle Eastern',meatType:'Vegetarian',
+   recipe:'Char capsicums directly over flame or under grill until blackened. Rest in covered bowl 10 min, peel and slice. Drain and rinse lentils. Pan-fry haloumi slices in a dry pan until deep golden both sides. Make dressing: pomegranate molasses, olive oil, lemon, cumin. Arrange rocket, lentils, capsicum and haloumi. Drizzle with dressing, scatter over fresh parsley and pomegranate seeds.',
+   ingredients:['2 x 250 g blocks haloumi, sliced 1cm thick','2 x 400 g cans green or brown lentils, drained','3 large red capsicums','100 g baby rocket','Large handful flat-leaf parsley','Seeds of 1/2 pomegranate','Dressing: 2 tbsp pomegranate molasses + 3 tbsp olive oil + juice of 1 lemon + 1 tsp ground cumin + salt'],
+   notes:'Pomegranate molasses is in the Middle Eastern section of most supermarkets — it keeps forever and is worth having.'},
+
+  {id:'sal5',name:'Mexican Street Corn & Grilled Chicken Salad',category:'Dinner',subcategory:'Salad',cookingTime:'25 min',servings:'4',cuisine:'Mexican',meatType:'Poultry',
+   recipe:'Marinate chicken thighs in lime juice, cumin, smoked paprika and garlic 15 min. Grill 5 min each side until charred. Char corn cobs directly on grill until blackened in spots, slice kernels off. Mix dressing: mayo, lime juice, chilli, coriander. Toss corn, black beans, tomatoes, avocado and romaine with dressing. Top with sliced chicken, cotija or feta, and corn chips.',
+   ingredients:['4 chicken thighs, boneless skinless','3 corn cobs (or 2 x 400g cans corn, drained)','1 x 400 g can black beans, rinsed','2 avocados, sliced','250 g cherry tomatoes, halved','1 head romaine lettuce, chopped','100 g cotija or feta cheese, crumbled','Handful corn chips','Marinade: juice of 2 limes + 1 tsp cumin + 1 tsp smoked paprika + 2 garlic cloves minced','Dressing: 3 tbsp mayo + juice of 1 lime + 1/2 tsp chilli powder + 2 tbsp chopped coriander'],
+   notes:'Charring the corn is the key step — do not skip it. It takes the salad from good to great.'},
+
+  {id:'sal6',name:'Fattoush with Lamb Kofta',category:'Dinner',subcategory:'Salad',cookingTime:'30 min',servings:'4',cuisine:'Middle Eastern',meatType:'Lamb',
+   recipe:'Mix lamb mince with onion, garlic, cumin, coriander, cinnamon and parsley. Shape into oval koftas. Grill or pan-fry until browned and cooked through. Toast or fry torn pita until crisp. Make dressing: lemon juice, sumac, olive oil, pomegranate molasses. Toss tomatoes, cucumber, radish, purslane or rocket, mint and parsley. Add pita chips and dress generously. Top with kofta and extra sumac.',
+   ingredients:['500 g lamb mince','2 pita breads, torn into pieces','3 tomatoes, cut into wedges','2 Lebanese cucumbers, sliced','6 radishes, thinly sliced','Large handful flat-leaf parsley','Large handful fresh mint','Dressing: juice of 2 lemons + 1 tbsp sumac + 60ml olive oil + 1 tsp pomegranate molasses','Kofta spices: 1 tsp cumin + 1 tsp coriander + 1/2 tsp cinnamon + 1/2 onion grated + 2 garlic cloves minced','Olive oil for cooking'],
+   notes:'Add a dollop of labne or Greek yoghurt to serve for a creamy contrast to the tangy dressing.'},
+
+  // ── NEW LUNCH SALADS ─────────────────────────────────────────────
+  {id:'lsal1',name:'Mango, Prawn & Avocado Salad',category:'Lunch',subcategory:'Salad',cookingTime:'15 min',servings:'3',cuisine:'Other',meatType:'Seafood',
+   recipe:'Cook prawns in garlic butter 2 min per side until pink. Make dressing: lime juice, fish sauce, a pinch of sugar, fresh chilli. Halve and slice mango and avocado. Arrange watercress or mixed leaves on plates, top with mango, avocado, prawns and cucumber. Dress lightly. Scatter over fresh mint and lime zest.',
+   ingredients:['300 g cooked or raw prawns, peeled','2 ripe mangoes, sliced','2 avocados, sliced','1 Lebanese cucumber, thinly sliced','100 g watercress or mixed leaves','Fresh mint leaves','Dressing: juice of 2 limes + 1 tbsp fish sauce + 1 tsp sugar + 1 small chilli minced','1 tbsp butter + 1 garlic clove for cooking prawns'],
+   notes:'Use ripe mangoes — an underripe mango will make the salad taste flat. Frozen cooked prawns work fine, just defrost and pat dry.'},
+
+  {id:'lsal2',name:'Roasted Beetroot, Walnut & Goat Cheese Salad',category:'Lunch',subcategory:'Salad',cookingTime:'45 min',servings:'3',cuisine:'French',meatType:'Vegetarian',
+   recipe:'Wrap beetroots in foil, roast at 200°C for 40 min until tender. Cool, peel and quarter. Toast walnuts in dry pan. Make dressing: red wine vinegar, Dijon, honey, olive oil. Arrange rocket and radicchio, top with beetroot, crumbled goat cheese and walnuts. Dress and serve with crusty bread.',
+   ingredients:['4 medium beetroots','100 g soft goat cheese, crumbled','80 g walnuts','100 g baby rocket','1/2 head radicchio, torn','Fresh chives','Dressing: 2 tbsp red wine vinegar + 1 tsp Dijon mustard + 1 tsp honey + 60ml olive oil + salt'],
+   notes:'Vacuum-packed pre-cooked beetroot is a great shortcut for weekday lunches.'},
+
+  {id:'lsal3',name:'Quinoa Tabbouleh',category:'Lunch',subcategory:'Salad',cookingTime:'20 min',servings:'4',cuisine:'Middle Eastern',meatType:'Vegetarian',
+   recipe:'Cook quinoa per packet, spread on tray to cool. Very finely chop a large quantity of flat-leaf parsley and mint — these should be the dominant element, not a garnish. Mix through cooled quinoa along with diced tomato, cucumber and spring onion. Dress generously with olive oil and fresh lemon juice. Season well. Serve with pita and a dollop of hummus.',
+   ingredients:['1 cup quinoa, rinsed','Large bunch flat-leaf parsley, very finely chopped','Handful fresh mint, finely chopped','3 tomatoes, finely diced','1 Lebanese cucumber, finely diced','3 spring onions, finely sliced','Juice of 2 large lemons','60 ml olive oil','Salt and pepper','Pita bread and hummus to serve'],
+   notes:'The ratio should be mostly herb with quinoa as the base — not the other way around. Use a sharp knife and chop finely rather than pulsing in a processor.'},
+
+  {id:'lsal4',name:'Smashed Cucumber & Sesame Salad',category:'Lunch',subcategory:'Salad',cookingTime:'10 min',servings:'3',cuisine:'Asian',meatType:'Vegetarian',
+   recipe:'Place cucumbers on board and smash firmly with the flat of a knife or rolling pin until they crack and burst open. Tear roughly into pieces, salt and rest 10 min then squeeze out excess water. Make dressing: soy, rice vinegar, sesame oil, chilli crisp, garlic, a pinch of sugar. Toss cucumbers with dressing, top with sesame seeds, spring onion and fried shallots.',
+   ingredients:['4 Lebanese cucumbers','1 tsp salt','Dressing: 2 tbsp soy sauce + 2 tbsp rice vinegar + 1 tbsp sesame oil + 1 tbsp chilli crisp (e.g. Lao Gan Ma) + 1 garlic clove minced + 1 tsp sugar','2 tbsp sesame seeds, toasted','2 spring onions, finely sliced','2 tbsp fried shallots'],
+   notes:'Smashing rather than slicing creates rough edges that soak up the dressing much better. The salting step is important — do not skip it.'}
 ];
 
 function scaleIng(ing, base, cur) {
@@ -1138,10 +1266,14 @@ function Library({meals, favs, sel, onChk, onFav, onOpen, onAdd, onImport, onCle
   const [favOnly, setFavOnly] = useState(false);
   const [showImp, setShowImp] = useState(false);
   const [impTxt, setImpTxt] = useState('');
+  const [cuisine, setCuisine] = useState('');
+  const [meat, setMeat] = useState('');
 
   const filtered = meals.filter(m => {
     if (cat !== 'All' && m.category !== cat) return false;
     if (favOnly && !favs.has(m.id)) return false;
+    if (cuisine && guessCuisine(m) !== cuisine) return false;
+    if (meat && guessMeat(m) !== meat) return false;
     if (q) return m.name.toLowerCase().includes(q.toLowerCase());
     return true;
   });
@@ -1167,9 +1299,23 @@ function Library({meals, favs, sel, onChk, onFav, onOpen, onAdd, onImport, onCle
 
       <div className="chips">
         {['All','Dinner','Lunch'].map(f=>(
-          <button key={f} className={`chip${cat===f?' on':''}`} onClick={()=>setCat(f)}>{f}</button>
+          <button key={f} className={`chip${cat===f?' on':''}`} onClick={()=>{setCat(f);setCuisine('');setMeat('');}}>{f}</button>
         ))}
         <button className={`chip fav${favOnly?' on':''}`} onClick={()=>setFavOnly(v=>!v)}>★ Favourites</button>
+      </div>
+
+      <div className="chips" style={{borderTop:'1px solid var(--border2)',paddingTop:'8px'}}>
+        <span style={{fontFamily:'var(--mono)',fontSize:'9px',color:'var(--muted)',letterSpacing:'.08em',paddingRight:'4px',alignSelf:'center'}}>CUISINE</span>
+        {CUISINES.map(c=>(
+          <button key={c} className={`chip${cuisine===c?' on':''}`} style={{fontSize:'11px',padding:'4px 10px'}} onClick={()=>setCuisine(v=>v===c?'':c)}>{c}</button>
+        ))}
+      </div>
+
+      <div className="chips" style={{paddingBottom:'4px'}}>
+        <span style={{fontFamily:'var(--mono)',fontSize:'9px',color:'var(--muted)',letterSpacing:'.08em',paddingRight:'4px',alignSelf:'center'}}>MEAT</span>
+        {MEAT_TYPES.map(t=>(
+          <button key={t} className={`chip${meat===t?' on':''}`} style={{fontSize:'11px',padding:'4px 10px'}} onClick={()=>setMeat(v=>v===t?'':t)}>{t}</button>
+        ))}
       </div>
 
       <div className="actbar">
@@ -1310,7 +1456,7 @@ function Detail({meal, fav, sel, onClose, onFav, onSel, onEdit, onDel, onCopyIng
 
 /* ── Add / Edit form ── */
 function AddEdit({init, onSave, onCancel}) {
-  const blank = {name:'',category:'Dinner',subcategory:'Dutchoven',cookingTime:'',servings:'',recipe:'',ingredients:'',notes:''};
+  const blank = {name:'',category:'Dinner',subcategory:'Dutchoven',cookingTime:'',servings:'',recipe:'',ingredients:'',notes:'',cuisine:'',meatType:''};
   const [f, setF] = useState(()=>init ? {...init,ingredients:init.ingredients.join('\n')} : blank);
   const subs = CATS[f.category]||[];
   useEffect(()=>{
@@ -1324,7 +1470,8 @@ function AddEdit({init, onSave, onCancel}) {
     if (!ings.length){alert('Please add at least one ingredient.');return;}
     onSave({id:init?init.id:Date.now()+'-'+Math.random(),name:f.name.trim(),
       category:f.category,subcategory:f.subcategory,cookingTime:f.cookingTime.trim(),
-      servings:f.servings.trim(),recipe:f.recipe.trim(),ingredients:ings,notes:f.notes.trim()});
+      servings:f.servings.trim(),recipe:f.recipe.trim(),ingredients:ings,notes:f.notes.trim(),
+      cuisine:f.cuisine||'',meatType:f.meatType||''});
   };
   return (
     <div>
@@ -1355,6 +1502,16 @@ function AddEdit({init, onSave, onCancel}) {
           <textarea rows={6} value={f.ingredients} onChange={e=>set('ingredients',e.target.value)} placeholder={"2 tbsp olive oil\n1 kg beef chuck\n2 carrots, chopped"} /></div>
         <div className="fld"><label>Notes (optional)</label>
           <input type="text" value={f.notes} onChange={e=>set('notes',e.target.value)} placeholder="Tips, substitutions, serving ideas…" /></div>
+        <div className="frow">
+          <div className="fld"><label>Cuisine (optional)</label>
+            <select value={f.cuisine} onChange={e=>set('cuisine',e.target.value)}>
+              <option value="">Auto-detect</option>
+              {CUISINES.map(c=><option key={c}>{c}</option>)}</select></div>
+          <div className="fld"><label>Meat type (optional)</label>
+            <select value={f.meatType} onChange={e=>set('meatType',e.target.value)}>
+              <option value="">Auto-detect</option>
+              {MEAT_TYPES.map(t=><option key={t}>{t}</option>)}</select></div>
+        </div>
       </div>
       <div className="form-acts">
         <button className="btn pr" style={{flex:1}} onClick={save}>{init?'Save changes':'Save recipe'}</button>
