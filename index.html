@@ -1818,6 +1818,42 @@ body {
 
 /* ── Added by ── */
 .rcard-by { font-size: 10px; font-family: var(--mono); color: var(--fg-muted); opacity: .7; margin-top: 3px; }
+
+/* ── Category top-level header ── */
+.cat-hd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 12px 2px;
+  padding: 13px 14px;
+  background: var(--fg);
+  border-radius: 10px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: opacity .15s;
+}
+.cat-hd:active { opacity: .75; }
+.cat-hd-label {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bg);
+  flex: 1;
+  letter-spacing: .01em;
+}
+.cat-hd-ct {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(240,232,214,.55);
+}
+.cat-hd-chevron {
+  font-size: 10px;
+  color: rgba(240,232,214,.6);
+  transition: transform .22s;
+}
+.cat-hd-chevron.open { transform: rotate(0deg); }
+.cat-hd-chevron.closed { transform: rotate(-90deg); }
 </style>
 </head>
 <body>
@@ -2208,6 +2244,8 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
     return new Set(keys);
   });
   const toggleSection = key => setCollapsed(s => { const n = new Set(s); n.has(key) ? n.delete(key) : n.add(key); return n; });
+  const [collapsedCats, setCollapsedCats] = useState(() => new Set(Object.keys(CATS)));
+  const toggleCat = cat => setCollapsedCats(s => { const n = new Set(s); n.has(cat) ? n.delete(cat) : n.add(cat); return n; });
 
   const filtered = useMemo(() => meals.filter(m => {
     if (cat !== 'All' && m.category !== cat) return false;
@@ -2305,43 +2343,52 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
         </div>
       )}
 
-      {Object.entries(grouped).map(([category, subs]) => (
-        <React.Fragment key={category}>
-          {Object.entries(subs).map(([sub, list]) => {
-            const color = SUB_COLORS[sub] || 'var(--muted)';
-            const count = list.length;
-            const key = category + '|' + sub;
-            const isCollapsed = collapsed.has(key);
-            return (
-              <div key={key}>
-                <SectionHd
-                  color={color}
-                  label={`${category} · ${sub === 'Dutchoven' ? 'Dutch oven' : sub}`}
-                  count={`${count} ${count===1?'recipe':'recipes'}`}
-                  collapsed={isCollapsed}
-                  onClick={() => toggleSection(key)}
-                />
-                {!isCollapsed && (
-                  <div className="recipes">
-                    {list.map(m => (
-                      <RCard
-                        key={m.id}
-                        meal={m}
-                        idx={idx++}
-                        sel={sel.has(m.id)}
-                        fav={favs.has(m.id)}
-                        onChk={onChk}
-                        onFav={onFav}
-                        onOpen={onOpen}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </React.Fragment>
-      ))}
+      {Object.entries(grouped).map(([category, subs]) => {
+        const catCollapsed = collapsedCats.has(category);
+        const totalInCat = Object.values(subs).reduce((a, l) => a + l.length, 0);
+        return (
+          <React.Fragment key={category}>
+            <div className="cat-hd" onClick={() => toggleCat(category)}>
+              <span className="cat-hd-label">{category}</span>
+              <span className="cat-hd-ct">{totalInCat} {totalInCat===1?'recipe':'recipes'}</span>
+              <span className={`cat-hd-chevron ${catCollapsed ? 'closed' : 'open'}`}>▼</span>
+            </div>
+            {!catCollapsed && Object.entries(subs).map(([sub, list]) => {
+              const color = SUB_COLORS[sub] || 'var(--muted)';
+              const count = list.length;
+              const key = category + '|' + sub;
+              const isCollapsed = collapsed.has(key);
+              return (
+                <div key={key}>
+                  <SectionHd
+                    color={color}
+                    label={sub === 'Dutchoven' ? 'Dutch oven' : sub}
+                    count={`${count} ${count===1?'recipe':'recipes'}`}
+                    collapsed={isCollapsed}
+                    onClick={() => toggleSection(key)}
+                  />
+                  {!isCollapsed && (
+                    <div className="recipes">
+                      {list.map(m => (
+                        <RCard
+                          key={m.id}
+                          meal={m}
+                          idx={idx++}
+                          sel={sel.has(m.id)}
+                          fav={favs.has(m.id)}
+                          onChk={onChk}
+                          onFav={onFav}
+                          onOpen={onOpen}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </React.Fragment>
+        );
+      })}
 
       <div style={{padding:'24px 16px 8px',display:'flex',gap:8}}>
         <button className="btn fw" onClick={onShowImp}>
