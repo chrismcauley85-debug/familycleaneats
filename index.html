@@ -1835,7 +1835,16 @@ async function loadMeals() {
 
 async function upsertMeal(m) {
   const { error } = await sb.from('recipes').upsert(m, { onConflict: 'id' });
-  if (error) console.error('Supabase upsert error:', error);
+  if (error) {
+    // If added_by column does not exist yet, retry without it
+    if (error.message && error.message.includes('added_by')) {
+      const { added_by, ...rest } = m;
+      const { error: e2 } = await sb.from('recipes').upsert(rest, { onConflict: 'id' });
+      if (e2) console.error('Supabase upsert error:', e2);
+    } else {
+      console.error('Supabase upsert error:', error);
+    }
+  }
 }
 
 async function deleteMeal(id) {
