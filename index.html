@@ -3310,28 +3310,18 @@ function App() {
     return null;
   });
 
-  const sbSynced = React.useRef(false);
+  // Only recipes are shared via Supabase — everything else is per-device (localStorage)
   useEffect(()=>{
-    const defaultPlan = Object.fromEntries(DAYS.map(d=>[d,{lunch:null,dinner:null}]));
-    Promise.all([
-      loadMeals(),
-      loadSetting('plan', defaultPlan),
-      loadSetting('shopping_sel', []),
-      loadSetting('shopping_custom', []),
-    ]).then(([m, p, s, c]) => {
+    loadMeals().then(m => {
       setMeals(m);
-      setPlan(p);
-      setSel(new Set(s));
-      setCustomItems(c);
-      sbSynced.current = true;
       setLoading(false);
     });
   }, []);
   useEffect(()=>saveFavs(favs), [favs]);
   useEffect(()=>saveCkd(ckd), [ckd]);
-  useEffect(()=>{ if(sbSynced.current) saveSetting('plan', plan); }, [plan]);
-  useEffect(()=>{ if(sbSynced.current) saveSetting('shopping_sel', [...sel]); }, [sel]);
-  useEffect(()=>{ if(sbSynced.current) saveSetting('shopping_custom', customItems); }, [customItems]);
+  useEffect(()=>savePlan(plan), [plan]);
+  useEffect(()=>saveSel(sel), [sel]);
+  useEffect(()=>saveCustom(customItems), [customItems]);
 
   const togSel = id => setSel(s => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const togFav = id => setFavs(s => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
