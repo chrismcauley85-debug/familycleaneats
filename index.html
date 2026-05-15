@@ -1786,6 +1786,9 @@ body {
 }
 .url-preview-desc { font-size: 13px; color: var(--fg-muted); line-height: 1.5; }
 .url-sites { font-size: 12px; color: var(--fg-muted); line-height: 1.65; margin-bottom: 6px; }
+
+/* ── Added by ── */
+.rcard-by { font-size: 10px; font-family: var(--mono); color: var(--fg-muted); opacity: .7; margin-top: 3px; }
 </style>
 </head>
 <body>
@@ -2125,6 +2128,7 @@ function RCard({meal, idx, sel, fav, onChk, onFav, onOpen}) {
           {meal.cookingTime && <><span className="dot"/><span><strong>{meal.cookingTime}</strong></span></>}
           {meal.servings && <><span className="dot"/><span>serves <strong>{meal.servings}</strong></span></>}
         </div>
+        {meal.added_by && <div className="rcard-by">by {meal.added_by}</div>}
       </div>
       <div className="rcard-r" onClick={e=>e.stopPropagation()}>
         <button className={`star${fav?' on':''}`} onClick={()=>onFav(meal.id)} aria-label="Favourite">
@@ -2349,6 +2353,7 @@ function Detail({meal, fav, sel, onClose, onFav, onSel, onEdit, onDel, onCopyIng
             {meal.cookingTime && <span className="m"><ICON.Clock/><strong>{meal.cookingTime}</strong></span>}
             {meal.servings && <span className="m"><ICON.Users/>serves <strong>{srv}</strong></span>}
             <span className="m"><ICON.Plate/><strong>{meal.ingredients.length}</strong> ingredients</span>
+            {meal.added_by && <span className="m" style={{color:'var(--fg-muted)'}}>by <strong>{meal.added_by}</strong></span>}
           </div>
         </div>
 
@@ -2519,8 +2524,13 @@ function CookMode({meal, onClose}) {
 
 /* ── Add / Edit form ── */
 function AddEdit({init, onSave, onCancel}) {
-  const blank = {name:'',category:'Dinner',subcategory:'Dutchoven',cookingTime:'',servings:'',recipe:'',ingredients:'',notes:'',cuisine:'',meatType:''};
-  const [f, setF] = useState(()=>init ? {...init, ingredients: init.ingredients.join('\n')} : blank);
+  const WHO_KEY = 'fce-who';
+  const blank = {name:'',category:'Dinner',subcategory:'Dutchoven',cookingTime:'',servings:'',recipe:'',ingredients:'',notes:'',cuisine:'',meatType:'',added_by:''};
+  const [f, setF] = useState(() => {
+    const who = localStorage.getItem('fce-who') || '';
+    if (init) return {...init, ingredients: init.ingredients.join('\n'), added_by: init.added_by || who};
+    return {...blank, added_by: who};
+  });
   const subs = CATS[f.category] || [];
   useEffect(()=>{
     const s = CATS[f.category] || [];
@@ -2543,7 +2553,9 @@ function AddEdit({init, onSave, onCancel}) {
       notes: f.notes.trim(),
       cuisine: f.cuisine || '',
       meatType: f.meatType || '',
+      added_by: f.added_by ? f.added_by.trim() : '',
     });
+    if (f.added_by && f.added_by.trim()) { try { localStorage.setItem('fce-who', f.added_by.trim()); } catch(e) {} }
   };
 
   return (
@@ -2592,6 +2604,10 @@ function AddEdit({init, onSave, onCancel}) {
         <div className="fld">
           <label>Cook's note (optional)</label>
           <input type="text" value={f.notes} onChange={e=>set('notes', e.target.value)} placeholder="Tips, substitutions, serving ideas…"/>
+        </div>
+        <div className="fld">
+          <label>Added by</label>
+          <input type="text" value={f.added_by||''} onChange={e=>set('added_by', e.target.value)} placeholder="Your name" autoCapitalize="words"/>
         </div>
         <div className="frow">
           <div className="fld">
