@@ -3762,5 +3762,29 @@ function App() {
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
+
+<script>
+// ── Service Worker registration ───────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/familycleaneats/sw.js', { scope: '/familycleaneats/' })
+      .then(reg => {
+        console.log('[FCE] SW registered, scope:', reg.scope);
+        // When a new SW is waiting (i.e. you deployed an update), activate it
+        // as soon as all tabs are closed — no manual page refresh needed.
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'activated') {
+              console.log('[FCE] SW updated — new version active.');
+            }
+          });
+        });
+      })
+      .catch(err => console.warn('[FCE] SW registration failed:', err));
+  });
+}
+</script>
 </body>
 </html>
