@@ -1744,6 +1744,48 @@ body {
 .cook-nav-btn.finish { background: var(--mustard); color: #fff; flex: 1; }
 .cook-nav-btn svg { width: 20px; height: 20px; }
 .btn.cook-btn { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 600; }
+
+/* ── URL Import ── */
+.imp-tabs { display: flex; border-bottom: 1.5px solid var(--rule); margin-bottom: 16px; }
+.imp-tab {
+  flex: 1; border: none; background: none; cursor: pointer;
+  padding: 11px 8px; font-family: var(--sans); font-size: 13px;
+  font-weight: 500; color: var(--fg-muted);
+  border-bottom: 2.5px solid transparent; margin-bottom: -1.5px;
+  transition: color .15s;
+}
+.imp-tab.on { color: var(--primary); border-bottom-color: var(--primary); }
+.url-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.url-input {
+  flex: 1; padding: 11px 13px;
+  border: 1.5px solid var(--rule-strong); border-radius: var(--r);
+  font-family: var(--sans); font-size: 14px; color: var(--fg);
+  background: var(--bg); outline: none;
+}
+.url-input:focus { border-color: var(--primary); }
+.url-fetch-btn {
+  padding: 11px 16px; border: none; border-radius: var(--r);
+  background: var(--primary); color: #fff;
+  font-family: var(--sans); font-size: 14px; font-weight: 600;
+  cursor: pointer; flex-shrink: 0;
+}
+.url-fetch-btn:disabled { opacity: .5; pointer-events: none; }
+.url-status { font-size: 13px; color: var(--fg-muted); text-align: center; padding: 20px 0; }
+.url-status.err { color: var(--destructive); }
+.url-preview {
+  background: var(--card); border: 1.5px solid var(--rule);
+  border-top: 3px solid var(--primary); border-radius: var(--r);
+  padding: 14px 16px; margin-bottom: 4px;
+}
+.url-preview-name { font-family: var(--serif); font-size: 19px; color: var(--fg); margin-bottom: 8px; }
+.url-preview-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.url-preview-pill {
+  font-size: 11px; font-weight: 600;
+  background: var(--parchment); color: var(--fg-muted);
+  padding: 3px 9px; border-radius: 20px;
+}
+.url-preview-desc { font-size: 13px; color: var(--fg-muted); line-height: 1.5; }
+.url-sites { font-size: 12px; color: var(--fg-muted); line-height: 1.65; margin-bottom: 6px; }
 </style>
 </head>
 <body>
@@ -1918,6 +1960,70 @@ function saveDeleted(d){ try{localStorage.setItem(DELETED_KEY,JSON.stringify([..
 function saveSel(s)  { try{localStorage.setItem(SEL_KEY,JSON.stringify([...s]))}catch(e){} }
 function saveCkd(c)  { try{localStorage.setItem(CKD_KEY,JSON.stringify([...c]))}catch(e){} }
 function saveCustom(c){ try{localStorage.setItem(CUSTOM_KEY,JSON.stringify(c))}catch(e){} }
+function parseDuration(iso) {
+  if (!iso) return '';
+  var m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
+  if (!m) return '';
+  var h = parseInt(m[1]) || 0, mins = parseInt(m[2]) || 0;
+  if (h && mins) return h + ' hr ' + mins + ' min';
+  if (h) return h + ' hr';
+  if (mins) return mins + ' min';
+  return '';
+}
+function parseYield(y) {
+  if (!y) return '';
+  var s = Array.isArray(y) ? y[0] : y;
+  var m = String(s).match(/\d+/);
+  return m ? m[0] : '';
+}
+function parseInstructions(instr) {
+  if (!instr) return '';
+  if (typeof instr === 'string') return instr.replace(/<[^>]+>/g, '').trim();
+  if (Array.isArray(instr)) {
+    return instr.map(function(step) {
+      if (typeof step === 'string') return step.replace(/<[^>]+>/g, '').trim();
+      if (step['@type'] === 'HowToSection' && Array.isArray(step.itemListElement)) {
+        return step.itemListElement.map(function(s) { return (s.text || '').replace(/<[^>]+>/g, '').trim(); }).join('\n\n');
+      }
+      return (step.text || '').replace(/<[^>]+>/g, '').trim();
+    }).filter(Boolean).join('\n\n');
+  }
+  return '';
+}
+function findRecipeJsonLd(html) {
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(html, 'text/html');
+  var scripts = doc.querySelectorAll('script[type="application/ld+json"]');
+  for (var si = 0; si < scripts.length; si++) {
+    try {
+      var data = JSON.parse(scripts[si].textContent);
+      if (!data) continue;
+      if (data['@graph']) {
+        data = data['@graph'].find(function(x) {
+          var t = x['@type']; return t === 'Recipe' || (Array.isArray(t) && t.includes('Recipe'));
+        });
+      }
+      if (Array.isArray(data)) {
+        data = data.find(function(x) {
+          var t = x['@type']; return t === 'Recipe' || (Array.isArray(t) && t.includes('Recipe'));
+        });
+      }
+      if (!data) continue;
+      var t = data['@type'];
+      if (t !== 'Recipe' && !(Array.isArray(t) && t.includes('Recipe'))) continue;
+      return {
+        name: (data.name || '').replace(/\s+/g,' ').trim(),
+        ingredients: (data.recipeIngredient || []).map(function(s) { return s.replace(/<[^>]+>/g,'').trim(); }).filter(Boolean),
+        recipe: parseInstructions(data.recipeInstructions),
+        cookingTime: parseDuration(data.totalTime || data.cookTime),
+        servings: parseYield(data.recipeYield),
+        notes: (data.description || '').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim().slice(0, 300),
+      };
+    } catch(e) {}
+  }
+  return null;
+}
+
 </script>
 
 <script type="text/babel">
@@ -2862,39 +2968,111 @@ function HeaderMenu({onClose, onAdd, onImport, onExport, onSharePlan, hasPlan}) 
 
 /* ── Import sheet ── */
 function ImportSheet({onClose, onImport, toast}) {
+  const [tab, setTab] = useState('url');
   const [txt, setTxt] = useState('');
-  const submit = () => {
+  const [url, setUrl] = useState('');
+  const [status, setStatus] = useState('idle');
+  const [errMsg, setErrMsg] = useState('');
+  const [preview, setPreview] = useState(null);
+
+  const fetchUrl = async () => {
+    const u = url.trim();
+    if (!u) return;
+    setStatus('loading'); setPreview(null); setErrMsg('');
+    try {
+      const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(u));
+      if (!res.ok) throw new Error('Network error');
+      const json = await res.json();
+      const meal = findRecipeJsonLd(json.contents || '');
+      if (!meal || !meal.name || !meal.ingredients.length) {
+        setErrMsg("Couldn't find a recipe on that page. Try the Paste tab instead.");
+        setStatus('err'); return;
+      }
+      setPreview(meal); setStatus('ok');
+    } catch(e) {
+      setErrMsg(e.message === 'Failed to fetch' ? 'Could not reach that site. Try the Paste tab.' : (e.message || 'Something went wrong.'));
+      setStatus('err');
+    }
+  };
+
+  const savePreview = () => {
+    if (!preview) return;
+    const lines = ['Name: ' + preview.name, 'Category: Dinner', 'Time: ' + (preview.cookingTime||''), 'Servings: ' + (preview.servings||''), 'Notes: ' + (preview.notes||''), 'Ingredients:'].concat(preview.ingredients).concat(['Recipe:', preview.recipe||'']);
+    onImport(lines.join('\n'), () => { setUrl(''); setPreview(null); setStatus('idle'); onClose(); });
+  };
+
+  const submitPaste = () => {
     if (!txt.trim()) { alert('Please paste some recipe text.'); return; }
     onImport(txt, () => { setTxt(''); onClose(); });
   };
+
   return (
     <div className="overlay" onClick={onClose}>
       <div className="sheet" onClick={e=>e.stopPropagation()}>
         <div className="sheet-grab"/>
-        <button className="sheet-back" onClick={onClose}>
-          <ICON.Back/> Cancel
-        </button>
+        <button className="sheet-back" onClick={onClose}><ICON.Back/> Cancel</button>
         <div className="sheet-hd">
           <div className="sheet-eye"><span className="dot" style={{background:'var(--accent)'}}/> Import</div>
-          <div className="sheet-title">Paste recipes</div>
+          <div className="sheet-title">Add a recipe</div>
         </div>
         <div className="sheet-body">
-          <div style={{fontSize:13,color:'var(--fg-muted)',lineHeight:1.55,marginBottom:12}}>
-            Paste recipe text below. The smart parser handles structured (<strong style={{color:'var(--fg)'}}>Name:</strong>, <strong style={{color:'var(--fg)'}}>Ingredients:</strong>) and free-form OCR'd recipes. Separate multiple recipes with <code style={{fontFamily:'var(--mono)',fontSize:11,background:'var(--parchment)',padding:'1px 5px',borderRadius:3}}>===</code> or <code style={{fontFamily:'var(--mono)',fontSize:11,background:'var(--parchment)',padding:'1px 5px',borderRadius:3}}>---</code>.
+          <div className="imp-tabs">
+            <button className={`imp-tab${tab==='url'?' on':''}`} onClick={()=>setTab('url')}>From URL</button>
+            <button className={`imp-tab${tab==='paste'?' on':''}`} onClick={()=>setTab('paste')}>Paste text</button>
           </div>
-          <textarea
-            className="imp-textarea"
-            placeholder={"Name: Beef Stew\nCategory: Dinner\nIngredients:\n1 kg beef chuck\n2 carrots, chopped\nRecipe:\nBrown beef, add vegetables and stock, simmer 2 hrs."}
-            value={txt}
-            onChange={e=>setTxt(e.target.value)}
-          />
+          {tab === 'url' && (
+            <>
+              <div className="url-sites">Works with Taste.com.au, AllRecipes, BBC Good Food, RecipeTin Eats and most recipe sites.</div>
+              <div className="url-row">
+                <input className="url-input" type="url" placeholder="https://www.taste.com.au/recipes/..." value={url}
+                  onChange={e=>{ setUrl(e.target.value); setStatus('idle'); setPreview(null); }}
+                  onKeyDown={e=>{ if(e.key==='Enter') fetchUrl(); }}
+                  autoCapitalize="none" autoCorrect="off" spellCheck={false}
+                />
+                <button className="url-fetch-btn" onClick={fetchUrl} disabled={!url.trim() || status==='loading'}>
+                  {status==='loading' ? '...' : 'Fetch'}
+                </button>
+              </div>
+              {status === 'idle' && !preview && <div className="url-status">Paste a URL above and tap Fetch.</div>}
+              {status === 'loading' && <div className="url-status">Fetching recipe...</div>}
+              {status === 'err' && <div className="url-status err">{errMsg}</div>}
+              {status === 'ok' && preview && (
+                <div className="url-preview">
+                  <div className="url-preview-name">{preview.name}</div>
+                  <div className="url-preview-meta">
+                    {preview.cookingTime && <span className="url-preview-pill">{preview.cookingTime}</span>}
+                    {preview.servings && <span className="url-preview-pill">Serves {preview.servings}</span>}
+                    {preview.ingredients.length > 0 && <span className="url-preview-pill">{preview.ingredients.length} ingredients</span>}
+                  </div>
+                  {preview.notes && <div className="url-preview-desc">{preview.notes}</div>}
+                </div>
+              )}
+            </>
+          )}
+          {tab === 'paste' && (
+            <>
+              <div style={{fontSize:13,color:'var(--fg-muted)',lineHeight:1.55,marginBottom:12}}>
+                Paste recipe text below — structured or free-form. Separate multiple recipes with <code style={{fontFamily:'var(--mono)',fontSize:11,background:'var(--parchment)',padding:'1px 5px',borderRadius:3}}>===</code>.
+              </div>
+              <textarea className="imp-textarea"
+                placeholder={"Name: Beef Stew\nIngredients:\n1 kg beef\nRecipe:\nBrown beef, simmer 2 hrs."}
+                value={txt} onChange={e=>setTxt(e.target.value)}
+              />
+            </>
+          )}
         </div>
         <div className="sheet-foot">
           <div className="row">
             <button className="btn" onClick={onClose} style={{flex:1}}>Cancel</button>
-            <button className="btn pr" onClick={submit} style={{flex:2}}>
-              <ICON.Up/> Import recipes
-            </button>
+            {tab === 'url' ? (
+              <button className="btn pr" onClick={savePreview} style={{flex:2}} disabled={status !== 'ok' || !preview}>
+                <ICON.Up/> Save recipe
+              </button>
+            ) : (
+              <button className="btn pr" onClick={submitPaste} style={{flex:2}}>
+                <ICON.Up/> Import
+              </button>
+            )}
           </div>
         </div>
       </div>
