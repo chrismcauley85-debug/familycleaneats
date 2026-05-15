@@ -2348,7 +2348,7 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
         const totalInCat = Object.values(subs).reduce((a, l) => a + l.length, 0);
         return (
           <React.Fragment key={category}>
-            <div className="cat-hd" onClick={() => toggleCat(category)}>
+            <div className="cat-hd" onClick={() => toggleCat(category)} style={{background: {'Dinner':'#C4622D','Lunch':'#C2706A','Fermentation':'#D4882A','Pastes & Spices':'#A84B2F'}[category] || 'var(--fg)'}}>
               <span className="cat-hd-label">{category}</span>
               <span className="cat-hd-ct">{totalInCat} {totalInCat===1?'recipe':'recipes'}</span>
               <span className={`cat-hd-chevron ${catCollapsed ? 'closed' : 'open'}`}>▼</span>
