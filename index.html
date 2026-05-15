@@ -202,7 +202,19 @@ body {
   align-items: center;
   gap: 8px;
   padding: 22px 16px 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
+.sec-hd:active { opacity: .7; }
+.sec-chevron {
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.sec-chevron.open { transform: rotate(0deg); }
+.sec-chevron.closed { transform: rotate(-90deg); }
 .sec-dot {
   width: 9px; height: 9px;
   border-radius: 2px;
@@ -2089,13 +2101,14 @@ function PageHero({tone='orange', eye, title, desc}) {
 }
 
 /* ── SectionHd ── */
-function SectionHd({color, label, count}) {
+function SectionHd({color, label, count, collapsed, onClick}) {
   return (
-    <div className="sec-hd">
+    <div className="sec-hd" onClick={onClick}>
       <span className="sec-dot" style={{background: color}}/>
       <span className="sec-lbl">{label}</span>
       <span className="sec-rule"/>
       {count != null && <span className="sec-ct">{count}</span>}
+      <span className={`sec-chevron ${collapsed ? 'closed' : 'open'}`}>▼</span>
     </div>
   );
 }
@@ -2173,6 +2186,8 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
   const [favOnly, setFavOnly] = useState(false);
   const [cuisine, setCuisine] = useState('');
   const [meat, setMeat] = useState('');
+  const [collapsed, setCollapsed] = useState(new Set());
+  const toggleSection = key => setCollapsed(s => { const n = new Set(s); n.has(key) ? n.delete(key) : n.add(key); return n; });
 
   const filtered = useMemo(() => meals.filter(m => {
     if (cat !== 'All' && m.category !== cat) return false;
@@ -2275,27 +2290,33 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
           {Object.entries(subs).map(([sub, list]) => {
             const color = SUB_COLORS[sub] || 'var(--muted)';
             const count = list.length;
+            const key = category + '|' + sub;
+            const isCollapsed = collapsed.has(key);
             return (
-              <div key={category+sub}>
+              <div key={key}>
                 <SectionHd
                   color={color}
                   label={`${category} · ${sub === 'Dutchoven' ? 'Dutch oven' : sub}`}
                   count={`${count} ${count===1?'recipe':'recipes'}`}
+                  collapsed={isCollapsed}
+                  onClick={() => toggleSection(key)}
                 />
-                <div className="recipes">
-                  {list.map(m => (
-                    <RCard
-                      key={m.id}
-                      meal={m}
-                      idx={idx++}
-                      sel={sel.has(m.id)}
-                      fav={favs.has(m.id)}
-                      onChk={onChk}
-                      onFav={onFav}
-                      onOpen={onOpen}
-                    />
-                  ))}
-                </div>
+                {!isCollapsed && (
+                  <div className="recipes">
+                    {list.map(m => (
+                      <RCard
+                        key={m.id}
+                        meal={m}
+                        idx={idx++}
+                        sel={sel.has(m.id)}
+                        fav={favs.has(m.id)}
+                        onChk={onChk}
+                        onFav={onFav}
+                        onOpen={onOpen}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}
