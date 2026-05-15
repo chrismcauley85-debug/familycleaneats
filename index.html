@@ -17,6 +17,7 @@
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
 <script src="recipes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 /* Family Clean Eats — redesigned single-file
  * Built on KibbleGuide tokens (cream surfaces, format colors as keys)
@@ -1741,34 +1742,60 @@ function scaleIng(ing, base, cur) {
   });
 }
 
-function loadAll() {
-  let meals = null, favs = new Set(), plan = Object.fromEntries(DAYS.map(d=>[d,{lunch:null,dinner:null}])), deleted = new Set(), sel = new Set(), ckd = new Set(), customItems = [];
+// ── Supabase ─────────────────────────────────────────────────────────────────
+const SB_URL = 'https://zjhaaviycdlsqmqjlwwk.supabase.co';
+const SB_KEY = 'sb_publishable_3JOOfObM613gIF2mKhg45g_jKkeuemQ';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+const FAMILY_PASSWORD = 'cat123'; // change this to whatever you like
+
+async function loadMeals() {
   try {
-    const d = localStorage.getItem(STORAGE_KEY); if (d) meals = JSON.parse(d).map(m=>({notes:'',...m}));
+    const { data, error } = await sb.from('recipes').select('*');
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      // First run — seed sample recipes into Supabase
+      const seeds = SAMPLES.map(s => ({...s}));
+      await sb.from('recipes').insert(seeds);
+      return SAMPLES;
+    }
+    return data.map(m => ({notes:'', ...m}));
+  } catch(e) {
+    console.error('Supabase load error:', e);
+    const d = localStorage.getItem(STORAGE_KEY);
+    return d ? JSON.parse(d).map(m=>({notes:'',...m})) : SAMPLES;
+  }
+}
+
+async function upsertMeal(m) {
+  const { error } = await sb.from('recipes').upsert(m, { onConflict: 'id' });
+  if (error) console.error('Supabase upsert error:', error);
+}
+
+async function deleteMeal(id) {
+  const { error } = await sb.from('recipes').delete().eq('id', id);
+  if (error) console.error('Supabase delete error:', error);
+}
+
+function loadAll() {
+  let favs = new Set(), plan = Object.fromEntries(DAYS.map(d=>[d,{lunch:null,dinner:null}])), deleted = new Set(), sel = new Set(), ckd = new Set(), customItems = [];
+  try {
     const f = localStorage.getItem(FAVS_KEY); if (f) favs = new Set(JSON.parse(f));
     const p = localStorage.getItem(PLAN_KEY); if (p) {
       const raw = JSON.parse(p);
       for (const day of DAYS) {
         const v = raw[day];
         if (!v || typeof v === 'string') {
-          plan[day] = {lunch: null, dinner: v || null}; // migrate old format
+          plan[day] = {lunch: null, dinner: v || null};
         } else {
           plan[day] = {lunch: v.lunch||null, dinner: v.dinner||null};
         }
       }
     }
-    const dl = localStorage.getItem(DELETED_KEY); if (dl) deleted = new Set(JSON.parse(dl));
     const sl = localStorage.getItem(SEL_KEY); if (sl) sel = new Set(JSON.parse(sl));
     const ck = localStorage.getItem(CKD_KEY); if (ck) ckd = new Set(JSON.parse(ck));
     const ci = localStorage.getItem(CUSTOM_KEY); if (ci) customItems = JSON.parse(ci);
   } catch(e){}
-  if (meals) {
-    // Merge: add any SAMPLES recipes not already saved AND not explicitly deleted
-    const existingIds = new Set(meals.map(m => m.id));
-    const newSamples = SAMPLES.filter(s => !existingIds.has(s.id) && !deleted.has(s.id));
-    if (newSamples.length) meals = [...meals, ...newSamples];
-  }
-  return { meals: meals || SAMPLES, favs, plan, sel, ckd, customItems };
+  return { favs, plan, sel, ckd, customItems };
 }
 
 const ING_CAT_ORDER = ['Produce','Meat & Seafood','Dairy & Eggs','Bakery','Pantry','Other'];
@@ -1788,7 +1815,6 @@ function categorizeIng(ing) {
   return 'Other';
 }
 
-function saveMeals(m){ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(m))}catch(e){} }
 function saveFavs(f) { try{localStorage.setItem(FAVS_KEY,JSON.stringify([...f]))}catch(e){} }
 function savePlan(p) { try{localStorage.setItem(PLAN_KEY,JSON.stringify(p))}catch(e){} }
 function saveDeleted(d){ try{localStorage.setItem(DELETED_KEY,JSON.stringify([...d]))}catch(e){} }
@@ -2804,12 +2830,45 @@ function SharedView({data}) {
   );
 }
 
+/* ── Password Modal ── */
+function PasswordModal({onAuth, onCancel}) {
+  const [pw, setPw] = React.useState('');
+  const [err, setErr] = React.useState(false);
+  const check = () => {
+    if (pw === FAMILY_PASSWORD) { onAuth(); }
+    else { setErr(true); setPw(''); }
+  };
+  return (
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.45)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:9999}} onClick={onCancel}>
+      <div style={{background:'var(--card)',borderRadius:20,padding:28,width:300,boxShadow:'0 8px 32px rgba(0,0,0,0.18)'}} onClick={e=>e.stopPropagation()}>
+        <div style={{fontFamily:'var(--ff-serif)',fontSize:22,color:'var(--fg)',marginBottom:8}}>Family password</div>
+        <div style={{fontSize:14,color:'var(--fg-muted)',marginBottom:18}}>Enter the password to add or edit recipes.</div>
+        <input
+          type="password" value={pw} autoFocus
+          onChange={e=>{setPw(e.target.value);setErr(false);}}
+          onKeyDown={e=>e.key==='Enter'&&check()}
+          placeholder="Password"
+          style={{width:'100%',padding:'12px 14px',borderRadius:10,border:'1.5px solid var(--rule-strong)',background:'var(--bg)',fontSize:16,outline:'none',marginBottom:err?8:18}}
+        />
+        {err && <div style={{color:'var(--destructive)',fontSize:13,marginBottom:12}}>Wrong password — try again.</div>}
+        <div style={{display:'flex',gap:10}}>
+          <button className="btn" style={{flex:1}} onClick={onCancel}>Cancel</button>
+          <button className="btn pr" style={{flex:2}} onClick={check}>Unlock</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── App ── */
 function App() {
   const initRef = useRef();
   initRef.current ??= loadAll();
   const init = initRef.current;
-  const [meals, setMeals] = useState(init.meals);
+  const [meals, setMeals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem('fce-authed') === '1');
+  const [pwPrompt, setPwPrompt] = useState(null);
   const [favs, setFavs]   = useState(init.favs);
   const [sel, setSel]     = useState(init.sel);
   const [ckd, setCkd]     = useState(init.ckd);
@@ -2832,7 +2891,7 @@ function App() {
     return null;
   });
 
-  useEffect(()=>saveMeals(meals), [meals]);
+  useEffect(()=>{ loadMeals().then(m => { setMeals(m); setLoading(false); }); }, []);
   useEffect(()=>saveFavs(favs), [favs]);
   useEffect(()=>savePlan(plan), [plan]);
   useEffect(()=>saveSel(sel), [sel]);
@@ -2851,23 +2910,22 @@ function App() {
     if (meal) toast(already ? `✓ ${meal.name} planned for ${d}` : `✓ Added to ${d} & shopping`);
   };
 
-  const saveR = m => {
+  const authGuard = cb => { if (authed) { cb(); } else { setPwPrompt(() => cb); } };
+
+  const saveR = async m => {
+    await upsertMeal(m);
     setMeals(ms => { const i = ms.findIndex(x => x.id === m.id); return i >= 0 ? ms.map(x => x.id === m.id ? m : x) : [...ms, m]; });
     setEditM(null); setView('library');
     toast(editM ? '✓ Recipe updated' : '✓ Recipe saved!');
   };
 
-  const delR = id => {
+  const delR = async id => {
     if (!confirm('Delete this recipe?')) return;
+    await deleteMeal(id);
     setMeals(ms => ms.filter(m => m.id !== id));
     setSel(s => { const n = new Set(s); n.delete(id); return n; });
     setFavs(s => { const n = new Set(s); n.delete(id); return n; });
     setPlan(p => { const n = {...p}; for (const d of DAYS) { const s = n[d]||{}; n[d] = {lunch: s.lunch===id?null:s.lunch, dinner: s.dinner===id?null:s.dinner}; } return n; });
-    try {
-      const existing = new Set(JSON.parse(localStorage.getItem(DELETED_KEY)||'[]'));
-      existing.add(id);
-      saveDeleted(existing);
-    } catch(e){}
     setDetail(null); toast('Recipe deleted');
   };
 
@@ -3089,6 +3147,12 @@ function App() {
   const isForm = view === 'add' || view === 'edit';
 
   if (sharedData) return <SharedView data={sharedData}/>;
+  if (loading) return (
+    <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100dvh',gap:16,background:'var(--bg)'}}>
+      <div style={{fontSize:32}}>🍽️</div>
+      <div style={{fontFamily:'var(--ff-serif)',fontSize:20,color:'var(--primary)'}}>Loading recipes…</div>
+    </div>
+  );
 
   return (
     <>
@@ -3117,7 +3181,7 @@ function App() {
         <Library
           meals={meals} favs={favs} sel={sel} plan={plan}
           onChk={togSel} onFav={togFav} onOpen={m => setDetail(m)}
-          onAdd={()=>{setEditM(null); setView('add');}}
+          onAdd={()=>authGuard(()=>{setEditM(null); setView('add');})}
           onImport={importNotes}
           onClearSel={()=>setSel(new Set())}
           searchRef={searchRef}
@@ -3153,8 +3217,8 @@ function App() {
           onOpen={m=>setDetail(m)}
           onClose={()=>setDetail(null)}
           onFav={togFav} onSel={togSel}
-          onEdit={()=>{setEditM(detail); setDetail(null); setView('edit');}}
-          onDel={()=>delR(detail.id)}
+          onEdit={()=>authGuard(()=>{setEditM(detail); setDetail(null); setView('edit');})}
+          onDel={()=>authGuard(()=>delR(detail.id))}
           onCopyIngs={async()=>{
             const txt = detail.ingredients.join('\n');
             try { await navigator.clipboard.writeText(txt); } catch {
@@ -3169,7 +3233,7 @@ function App() {
       {menuOpen && (
         <HeaderMenu
           onClose={()=>setMenuOpen(false)}
-          onAdd={()=>{setEditM(null); setView('add');}}
+          onAdd={()=>authGuard(()=>{setEditM(null); setView('add');})}
           onImport={()=>setImportOpen(true)}
           onExport={exportLib}
           onSharePlan={shareWeek}
@@ -3179,6 +3243,12 @@ function App() {
 
       {importOpen && (
         <ImportSheet onClose={()=>setImportOpen(false)} onImport={importNotes} toast={toast}/>
+      )}
+      {pwPrompt && (
+        <PasswordModal
+          onAuth={()=>{ setAuthed(true); sessionStorage.setItem('fce-authed','1'); const cb=pwPrompt; setPwPrompt(null); cb(); }}
+          onCancel={()=>setPwPrompt(null)}
+        />
       )}
 
       {!isForm && (
@@ -3191,7 +3261,7 @@ function App() {
             <ICON.Cal/>
             <span>Plan</span>
           </button>
-          <button className="nfab" onClick={()=>{setDetail(null); setEditM(null); setView('add');}} aria-label="Add recipe">
+          <button className="nfab" onClick={()=>authGuard(()=>{setDetail(null); setEditM(null); setView('add');})} aria-label="Add recipe">
             <div className="nfab-inner"><ICON.Plus/></div>
           </button>
           <button className={`ntab${view==='shopping'?' on':''}`} onClick={()=>{setDetail(null); setView('shopping');}}>
