@@ -1874,6 +1874,8 @@ const CUSTOM_KEY   = 'hm-custom-v1';
 const CATS = {
   Dinner:['Dutchoven','Braise','BBQ','Salad','Pasta','Stir-fry','Other'],
   Lunch: ['Meals on the run','Home','Salad','Sandwich','Soup','Toddler','Other'],
+  Baking: ['Bread','Cakes & Cookies','Pastry','Muffins & Loaves','Savoury Bakes','Other'],
+  Snacks: ['Dips & Spreads','Bars & Balls','Crackers & Bites','Sweet','Savoury','Other'],
   Fermentation: ['Vegetables','Drinks','Dairy','Condiments','Bread','Other'],
   'Pastes & Spices': ['Spice Mixes','Pastes','Sauces & Butters','Other']
 };
@@ -1882,7 +1884,9 @@ const SUB_COLORS = {
   Dutchoven:'#5A7028',Braise:'#C7611F',BBQ:'#B23E5A',Salad:'#1A5959',
   Pasta:'#7A3F5E','Stir-fry':'#D9A026','Meals on the run':'#B23E5A',
   Home:'#1A5959',Sandwich:'#5A7028',Soup:'#D9A026',Toddler:'#E07038',
-  Vegetables:'#3D6B4F',Drinks:'#1A5959',Dairy:'#7A6A9A',Condiments:'#8B4513',Bread:'#C7611F',
+  Bread:'#C7611F','Cakes & Cookies':'#7A3F5E',Pastry:'#B23E5A','Muffins & Loaves':'#8B6914','Savoury Bakes':'#5A7028',
+  'Dips & Spreads':'#1A5959','Bars & Balls':'#D9A026','Crackers & Bites':'#C7611F',Sweet:'#7A3F5E',Savoury:'#5A7028',
+  Vegetables:'#3D6B4F',Drinks:'#1A5959',Dairy:'#7A6A9A',Condiments:'#8B4513',
   'Spice Mixes':'#C7611F','Pastes':'#B23E5A','Sauces & Butters':'#5A7028',
   Other:'#8A7A6A'
 };
@@ -1922,7 +1926,7 @@ function guessMeat(m) {
   return 'Vegetarian';
 }
 
-const CAT_COLORS = { Dinner:'#C7611F', Lunch:'#1A5959' };
+const CAT_COLORS = { Dinner:'#C7611F', Lunch:'#1A5959', Baking:'#8B6914', Snacks:'#4A7A5E' };
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DAY_FULL = {Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
 
