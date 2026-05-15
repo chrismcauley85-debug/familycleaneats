@@ -377,11 +377,6 @@ body {
   background: var(--rule-strong);
 }
 .rcard-meta strong { color: var(--fg); font-weight: 500; }
-.rcard-by {
-  font-size: 10px; font-family: var(--mono);
-  color: var(--fg-muted); opacity: .7;
-  margin-top: 3px;
-}
 
 .rcard-r {
   display: flex;
@@ -1661,68 +1656,6 @@ body {
   margin-bottom: 10px;
 }
 
-/* URL import */
-.imp-tabs {
-  display: flex; gap: 0;
-  border-bottom: 1.5px solid var(--rule);
-  margin: 0 0 16px;
-}
-.imp-tab {
-  flex: 1; border: none; background: none; cursor: pointer;
-  padding: 11px 8px; font-family: var(--sans); font-size: 13px;
-  font-weight: 500; color: var(--fg-muted);
-  border-bottom: 2.5px solid transparent; margin-bottom: -1.5px;
-  transition: color .15s;
-}
-.imp-tab.on { color: var(--primary); border-bottom-color: var(--primary); }
-.url-row {
-  display: flex; gap: 8px; margin-bottom: 14px;
-}
-.url-input {
-  flex: 1; padding: 11px 13px;
-  border: 1.5px solid var(--rule-strong); border-radius: var(--r);
-  font-family: var(--sans); font-size: 14px; color: var(--fg);
-  background: var(--bg); outline: none;
-}
-.url-input:focus { border-color: var(--primary); }
-.url-fetch-btn {
-  padding: 11px 16px; border: none; border-radius: var(--r);
-  background: var(--primary); color: #fff;
-  font-family: var(--sans); font-size: 14px; font-weight: 600;
-  cursor: pointer; white-space: nowrap; flex-shrink: 0;
-}
-.url-fetch-btn:disabled { opacity: .5; pointer-events: none; }
-.url-status {
-  font-size: 13px; color: var(--fg-muted); text-align: center;
-  padding: 20px 0; line-height: 1.5;
-}
-.url-status.err { color: var(--destructive); }
-.url-preview {
-  background: var(--card); border: 1.5px solid var(--rule);
-  border-top: 3px solid var(--primary); border-radius: var(--r);
-  padding: 14px 16px; margin-bottom: 4px;
-}
-.url-preview-name {
-  font-family: var(--serif); font-size: 19px; color: var(--fg);
-  margin-bottom: 8px; line-height: 1.3;
-}
-.url-preview-meta {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;
-}
-.url-preview-pill {
-  font-size: 11px; font-weight: 600; letter-spacing: .04em;
-  background: var(--parchment); color: var(--fg-muted);
-  padding: 3px 9px; border-radius: 20px;
-}
-.url-preview-desc {
-  font-size: 13px; color: var(--fg-muted); line-height: 1.5;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.url-sites {
-  font-size: 12px; color: var(--fg-muted); line-height: 1.65; margin-bottom: 6px;
-}
-
 @media (max-width: 380px) {
   .frow { grid-template-columns: 1fr; }
   .plan-stats { gap: 18px; }
@@ -1811,7 +1744,7 @@ function scaleIng(ing, base, cur) {
 
 // ── Supabase ─────────────────────────────────────────────────────────────────
 const SB_URL = 'https://zjhaaviycdlsqmqjlwwk.supabase.co';
-const SB_KEY = 'sb_publishable_3JOOfObM613gIF2mKhg45g_jKkeuemQ';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaGFhdml5Y2Rsc3FtcWpsd3drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3ODg5ODIsImV4cCI6MjA5NDM2NDk4Mn0.D6JeKpkRambnrvMkpHu-Q0eS993uJDS_80u6K9oYdLg';
 const sb = supabase.createClient(SB_URL, SB_KEY);
 const FAMILY_PASSWORD = 'cat123'; // change this to whatever you like
 
@@ -1835,18 +1768,7 @@ async function loadMeals() {
 
 async function upsertMeal(m) {
   const { error } = await sb.from('recipes').upsert(m, { onConflict: 'id' });
-  if (error) {
-    console.error('Supabase upsert error:', error);
-    if (error.message && error.message.includes('added_by')) {
-      const rest = Object.assign({}, m);
-      delete rest.added_by;
-      const r2 = await sb.from('recipes').upsert(rest, { onConflict: 'id' });
-      if (r2.error) { console.error('Retry error:', r2.error); return r2.error.message || 'Save error'; }
-      return null;
-    }
-    return error.message || 'Save error';
-  }
-  return null;
+  if (error) console.error('Supabase upsert error:', error);
 }
 
 async function deleteMeal(id) {
@@ -1951,106 +1873,6 @@ const ICON = {
   Trash: () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
 };
 
-/* ── Cook Mode ── */
-.cook-overlay {
-  position: fixed; inset: 0; z-index: 300;
-  background: #1A1410;
-  display: flex; flex-direction: column;
-  overflow: hidden;
-  -webkit-user-select: none; user-select: none;
-}
-.cook-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: calc(var(--safe-t) + 14px) 18px 14px;
-  gap: 12px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-}
-.cook-title {
-  font-family: var(--serif); font-style: italic;
-  font-size: 17px; color: rgba(255,255,255,.85);
-  flex: 1; min-width: 0;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.cook-close {
-  width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer;
-  background: rgba(255,255,255,.1); color: rgba(255,255,255,.7);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; line-height: 1; flex-shrink: 0;
-}
-.cook-progress {
-  display: flex; align-items: center; gap: 5px;
-  padding: 12px 20px 0;
-}
-.cook-dot {
-  height: 3px; border-radius: 2px;
-  background: rgba(255,255,255,.18);
-  flex: 1; transition: background .25s;
-}
-.cook-dot.done  { background: var(--primary-mid); }
-.cook-dot.active { background: #fff; }
-.cook-step-label {
-  text-align: center; padding: 10px 20px 0;
-  font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
-  color: rgba(255,255,255,.38);
-}
-.cook-body {
-  flex: 1; overflow-y: auto; padding: 24px 24px 0;
-  display: flex; flex-direction: column; gap: 0;
-  -webkit-overflow-scrolling: touch;
-}
-.cook-step-text {
-  font-family: var(--sans); font-size: 26px; line-height: 1.45;
-  color: #fff; font-weight: 400;
-}
-.cook-step-text.sm { font-size: 20px; }
-.cook-ing-title {
-  font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-  color: rgba(255,255,255,.4); margin-bottom: 18px;
-}
-.cook-ing-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
-.cook-ing-row {
-  display: flex; align-items: flex-start; gap: 12px;
-  font-size: 19px; color: rgba(255,255,255,.9); line-height: 1.35;
-}
-.cook-ing-dot {
-  width: 8px; height: 8px; border-radius: 50%; margin-top: 7px;
-  flex-shrink: 0; background: var(--primary-mid);
-}
-.cook-done-screen {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 16px;
-  padding: 40px 24px;
-}
-.cook-done-emoji { font-size: 64px; }
-.cook-done-title {
-  font-family: var(--serif); font-style: italic;
-  font-size: 32px; color: #fff; text-align: center;
-}
-.cook-done-sub { font-size: 16px; color: rgba(255,255,255,.5); text-align: center; }
-.cook-footer {
-  display: flex; align-items: stretch; gap: 0;
-  padding: 16px 20px calc(var(--safe-b) + 20px);
-  border-top: 1px solid rgba(255,255,255,.08);
-}
-.cook-nav-btn {
-  flex: 1; border: none; cursor: pointer; border-radius: var(--r-md);
-  font-family: var(--sans); font-weight: 600; font-size: 16px;
-  padding: 16px 12px; transition: background .15s, opacity .15s;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.cook-nav-btn.back { background: rgba(255,255,255,.1); color: rgba(255,255,255,.7); flex: 0 0 64px; margin-right: 10px; }
-.cook-nav-btn.next { background: var(--primary); color: #fff; flex: 1; }
-.cook-nav-btn.finish { background: var(--mustard); color: #fff; flex: 1; }
-.cook-nav-btn:disabled { opacity: .3; pointer-events: none; }
-.cook-nav-btn.back svg, .cook-nav-btn.next svg { width: 20px; height: 20px; }
-
-/* Let's cook button in Detail */
-.btn.cook-btn {
-  background: var(--primary); color: #fff;
-  border-color: var(--primary);
-  font-weight: 600;
-}
-
 /* ── Toast hook ── */
 function useToast() {
   const [msg, setMsg] = useState('');
@@ -2114,7 +1936,6 @@ function RCard({meal, idx, sel, fav, onChk, onFav, onOpen}) {
           {meal.cookingTime && <><span className="dot"/><span><strong>{meal.cookingTime}</strong></span></>}
           {meal.servings && <><span className="dot"/><span>serves <strong>{meal.servings}</strong></span></>}
         </div>
-        {meal.added_by && <div className="rcard-by">by {meal.added_by}</div>}
       </div>
       <div className="rcard-r" onClick={e=>e.stopPropagation()}>
         <button className={`star${fav?' on':''}`} onClick={()=>onFav(meal.id)} aria-label="Favourite">
@@ -2298,7 +2119,7 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
 }
 
 /* ── Detail sheet ── */
-function Detail({meal, fav, sel, onClose, onFav, onSel, onEdit, onDel, onCopyIngs, meals, onOpen, onCook}) {
+function Detail({meal, fav, sel, onClose, onFav, onSel, onEdit, onDel, onCopyIngs, meals, onOpen}) {
   const base = parseInt(meal.servings) || 4;
   const [srv, setSrv] = useState(base);
   const clr = SUB_COLORS[meal.subcategory] || 'var(--muted)';
@@ -2339,7 +2160,6 @@ function Detail({meal, fav, sel, onClose, onFav, onSel, onEdit, onDel, onCopyIng
             {meal.cookingTime && <span className="m"><ICON.Clock/><strong>{meal.cookingTime}</strong></span>}
             {meal.servings && <span className="m"><ICON.Users/>serves <strong>{srv}</strong></span>}
             <span className="m"><ICON.Plate/><strong>{meal.ingredients.length}</strong> ingredients</span>
-            {meal.added_by && <span className="m" style={{color:'var(--fg-muted)'}}>by <strong>{meal.added_by}</strong></span>}
           </div>
         </div>
 
@@ -2399,13 +2219,6 @@ function Detail({meal, fav, sel, onClose, onFav, onSel, onEdit, onDel, onCopyIng
         </div>
 
         <div className="sheet-foot">
-          {meal.recipe && meal.recipe.trim() && (
-            <div className="row">
-              <button className="btn cook-btn" style={{width:'100%'}} onClick={onCook}>
-                👨‍🍳 Let's cook
-              </button>
-            </div>
-          )}
           <div className="row">
             <button className={`btn${sel?' tl':' pr'}`} onClick={()=>onSel(meal.id)}>
               {sel ? <><ICON.Check/> In shop list</> : <><ICON.Cart/> Add to shop</>}
@@ -2429,113 +2242,10 @@ function Detail({meal, fav, sel, onClose, onFav, onSel, onEdit, onDel, onCopyIng
   );
 }
 
-/* ── Cook Mode ── */
-function CookMode({meal, onClose}) {
-  const base = parseInt(meal.servings) || 4;
-  const steps = (meal.recipe || '').split(/\n\n+/).map(s => s.trim()).filter(Boolean);
-  // step -1 = ingredients prep screen, 0..n-1 = recipe steps
-  const [idx, setIdx] = useState(-1);
-  const total = steps.length; // total method steps (not counting prep)
-  const isPrep = idx === -1;
-  const isDone = idx === total;
-
-  // Wake lock — keep screen on while cooking
-  const wakeLockRef = useRef(null);
-  useEffect(() => {
-    if (navigator.wakeLock) {
-      navigator.wakeLock.request('screen').then(lock => { wakeLockRef.current = lock; }).catch(() => {});
-    }
-    return () => { if (wakeLockRef.current) { wakeLockRef.current.release(); wakeLockRef.current = null; } };
-  }, []);
-
-  // Scroll body back to top on step change
-  const bodyRef = useRef(null);
-  useEffect(() => { if (bodyRef.current) bodyRef.current.scrollTop = 0; }, [idx]);
-
-  const clr = meal.subcategory ? (SUB_COLORS[meal.subcategory] || 'var(--primary-mid)') : 'var(--primary-mid)';
-
-  // progress dots: one for prep + one per step + done
-  const dotCount = 1 + total; // prep + each step (done state shares last dot)
-  const dotIdx = isPrep ? 0 : Math.min(idx + 1, dotCount - 1);
-
-  return (
-    <div className="cook-overlay">
-      <div className="cook-header">
-        <div className="cook-title">{meal.name}</div>
-        <button className="cook-close" onClick={onClose} aria-label="Exit cook mode">✕</button>
-      </div>
-
-      {dotCount > 1 && (
-        <div className="cook-progress">
-          {Array.from({length: dotCount}).map((_, i) => (
-            <div key={i} className={`cook-dot${i < dotIdx ? ' done' : i === dotIdx ? ' active' : ''}`}/>
-          ))}
-        </div>
-      )}
-
-      {!isDone && (
-        <div className="cook-step-label">
-          {isPrep ? 'Ingredients' : `Step ${idx + 1} of ${total}`}
-        </div>
-      )}
-
-      <div className="cook-body" ref={bodyRef}>
-        {isPrep && (
-          <>
-            <ul className="cook-ing-list">
-              {meal.ingredients.map((ing, i) => (
-                <li key={i} className="cook-ing-row">
-                  <span className="cook-ing-dot" style={{background: clr}}/>
-                  <span>{ing}</span>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-
-        {!isPrep && !isDone && (
-          <div className={`cook-step-text${steps[idx].length > 200 ? ' sm' : ''}`}>
-            {steps[idx]}
-          </div>
-        )}
-
-        {isDone && (
-          <div className="cook-done-screen">
-            <div className="cook-done-emoji">🎉</div>
-            <div className="cook-done-title">All done!</div>
-            <div className="cook-done-sub">Time to plate up and enjoy.</div>
-          </div>
-        )}
-      </div>
-
-      <div className="cook-footer">
-        {!isPrep && (
-          <button className="cook-nav-btn back" onClick={() => setIdx(i => i - 1)} aria-label="Previous step">
-            <ICON.Back/>
-          </button>
-        )}
-        {isDone ? (
-          <button className="cook-nav-btn finish" onClick={onClose}>Done</button>
-        ) : (
-          <button className="cook-nav-btn next" onClick={() => setIdx(i => i + 1)}>
-            {isPrep ? 'Start cooking' : idx === total - 1 ? 'Finish' : 'Next step'}
-            {!isPrep && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>}
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
-
 /* ── Add / Edit form ── */
 function AddEdit({init, onSave, onCancel}) {
-  const WHO_KEY = 'fce-who';
-  const blank = {name:'',category:'Dinner',subcategory:'Dutchoven',cookingTime:'',servings:'',recipe:'',ingredients:'',notes:'',cuisine:'',meatType:'',added_by:''};
-  const [f, setF] = useState(()=>{
-    const remembered = localStorage.getItem(WHO_KEY) || '';
-    if (init) return {...init, ingredients: init.ingredients.join('\n'), added_by: init.added_by || remembered};
-    return {...blank, added_by: remembered};
-  });
+  const blank = {name:'',category:'Dinner',subcategory:'Dutchoven',cookingTime:'',servings:'',recipe:'',ingredients:'',notes:'',cuisine:'',meatType:''};
+  const [f, setF] = useState(()=>init ? {...init, ingredients: init.ingredients.join('\n')} : blank);
   const subs = CATS[f.category] || [];
   useEffect(()=>{
     const s = CATS[f.category] || [];
@@ -2546,8 +2256,6 @@ function AddEdit({init, onSave, onCancel}) {
     if (!f.name.trim()) { alert('Please enter a recipe name.'); return; }
     const ings = f.ingredients.split('\n').map(s=>s.trim()).filter(Boolean);
     if (!ings.length) { alert('Please add at least one ingredient.'); return; }
-    const who = f.added_by.trim();
-    if (who) try { localStorage.setItem(WHO_KEY, who); } catch {}
     onSave({
       id: init ? init.id : Date.now()+'-'+Math.random(),
       name: f.name.trim(),
@@ -2560,7 +2268,6 @@ function AddEdit({init, onSave, onCancel}) {
       notes: f.notes.trim(),
       cuisine: f.cuisine || '',
       meatType: f.meatType || '',
-      added_by: who,
     });
   };
 
@@ -2610,10 +2317,6 @@ function AddEdit({init, onSave, onCancel}) {
         <div className="fld">
           <label>Cook's note (optional)</label>
           <input type="text" value={f.notes} onChange={e=>set('notes', e.target.value)} placeholder="Tips, substitutions, serving ideas…"/>
-        </div>
-        <div className="fld">
-          <label>Added by</label>
-          <input type="text" value={f.added_by} onChange={e=>set('added_by', e.target.value)} placeholder="Your name" autoCapitalize="words"/>
         </div>
         <div className="frow">
           <div className="fld">
@@ -2989,132 +2692,12 @@ function HeaderMenu({onClose, onAdd, onImport, onExport, onSharePlan, hasPlan}) 
 }
 
 /* ── Import sheet ── */
-/* ── URL recipe fetcher helpers ── */
-function parseDuration(iso) {
-  if (!iso) return '';
-  const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
-  if (!m) return '';
-  const h = parseInt(m[1]) || 0, mins = parseInt(m[2]) || 0;
-  if (h && mins) return `${h} hr ${mins} min`;
-  if (h) return `${h} hr`;
-  if (mins) return `${mins} min`;
-  return '';
-}
-function parseYield(y) {
-  if (!y) return '';
-  const s = Array.isArray(y) ? y[0] : y;
-  const m = String(s).match(/\d+/);
-  return m ? m[0] : '';
-}
-function parseInstructions(instr) {
-  if (!instr) return '';
-  if (typeof instr === 'string') return instr.replace(/<[^>]+>/g, '').trim();
-  if (Array.isArray(instr)) {
-    return instr.map(step => {
-      if (typeof step === 'string') return step.replace(/<[^>]+>/g, '').trim();
-      if (step['@type'] === 'HowToSection' && Array.isArray(step.itemListElement)) {
-        return step.itemListElement.map(s => (s.text || '').replace(/<[^>]+>/g, '').trim()).join('\n\n');
-      }
-      return (step.text || '').replace(/<[^>]+>/g, '').trim();
-    }).filter(Boolean).join('\n\n');
-  }
-  return '';
-}
-function findRecipeJsonLd(html) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
-  for (const s of scripts) {
-    try {
-      let data = JSON.parse(s.textContent);
-      if (!data) continue;
-      // unwrap @graph
-      if (data['@graph']) {
-        data = data['@graph'].find(x => {
-          const t = x['@type'];
-          return t === 'Recipe' || (Array.isArray(t) && t.includes('Recipe'));
-        });
-      }
-      // unwrap arrays
-      if (Array.isArray(data)) {
-        data = data.find(x => {
-          const t = x['@type'];
-          return t === 'Recipe' || (Array.isArray(t) && t.includes('Recipe'));
-        });
-      }
-      if (!data) continue;
-      const t = data['@type'];
-      if (t !== 'Recipe' && !(Array.isArray(t) && t.includes('Recipe'))) continue;
-      return {
-        name: (data.name || '').replace(/\s+/g,' ').trim(),
-        ingredients: (data.recipeIngredient || []).map(s => s.replace(/<[^>]+>/g,'').trim()).filter(Boolean),
-        recipe: parseInstructions(data.recipeInstructions),
-        cookingTime: parseDuration(data.totalTime || data.cookTime),
-        servings: parseYield(data.recipeYield),
-        notes: (data.description || '').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim().slice(0, 300),
-        cuisine: '',
-        meatType: '',
-      };
-    } catch {}
-  }
-  return null;
-}
-
 function ImportSheet({onClose, onImport, toast}) {
-  const [tab, setTab] = useState('url'); // 'url' | 'paste'
   const [txt, setTxt] = useState('');
-  // URL tab state
-  const [url, setUrl] = useState('');
-  const [status, setStatus] = useState('idle'); // idle | loading | ok | err
-  const [errMsg, setErrMsg] = useState('');
-  const [preview, setPreview] = useState(null); // parsed meal object
-
-  const fetchUrl = async () => {
-    const u = url.trim();
-    if (!u) return;
-    setStatus('loading'); setPreview(null); setErrMsg('');
-    try {
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`;
-      const res = await fetch(proxyUrl);
-      if (!res.ok) throw new Error('Network error');
-      const json = await res.json();
-      const html = json.contents;
-      if (!html) throw new Error('Empty response');
-      const meal = findRecipeJsonLd(html);
-      if (!meal || !meal.name || !meal.ingredients.length) {
-        setErrMsg("Couldn't find a recipe on that page. Try copying the recipe text and using the Paste tab instead.");
-        setStatus('err');
-        return;
-      }
-      setPreview(meal);
-      setStatus('ok');
-    } catch (e) {
-      setErrMsg(e.message === 'Failed to fetch'
-        ? 'Could not reach that site. Check the URL or try the Paste tab.'
-        : (e.message || 'Something went wrong. Try the Paste tab.'));
-      setStatus('err');
-    }
-  };
-
-  const savePreview = () => {
-    if (!preview) return;
-    const meal = {
-      ...preview,
-      id: Date.now() + '-' + Math.random(),
-      category: 'Dinner',
-      subcategory: 'Other',
-    };
-    onImport(
-      `Name: ${meal.name}\nCategory: Dinner\nSubcategory: Other\nTime: ${meal.cookingTime}\nServings: ${meal.servings}\nNotes: ${meal.notes}\nIngredients:\n${meal.ingredients.join('\n')}\nRecipe:\n${meal.recipe}`,
-      () => { setUrl(''); setPreview(null); setStatus('idle'); onClose(); }
-    );
-  };
-
-  const submitPaste = () => {
+  const submit = () => {
     if (!txt.trim()) { alert('Please paste some recipe text.'); return; }
     onImport(txt, () => { setTxt(''); onClose(); });
   };
-
   return (
     <div className="overlay" onClick={onClose}>
       <div className="sheet" onClick={e=>e.stopPropagation()}>
@@ -3124,90 +2707,27 @@ function ImportSheet({onClose, onImport, toast}) {
         </button>
         <div className="sheet-hd">
           <div className="sheet-eye"><span className="dot" style={{background:'var(--accent)'}}/> Import</div>
-          <div className="sheet-title">Add a recipe</div>
+          <div className="sheet-title">Paste recipes</div>
         </div>
         <div className="sheet-body">
-          <div className="imp-tabs">
-            <button className={`imp-tab${tab==='url'?' on':''}`} onClick={()=>setTab('url')}>From URL</button>
-            <button className={`imp-tab${tab==='paste'?' on':''}`} onClick={()=>setTab('paste')}>Paste text</button>
+          <div style={{fontSize:13,color:'var(--fg-muted)',lineHeight:1.55,marginBottom:12}}>
+            Paste recipe text below. The smart parser handles structured (<strong style={{color:'var(--fg)'}}>Name:</strong>, <strong style={{color:'var(--fg)'}}>Ingredients:</strong>) and free-form OCR'd recipes. Separate multiple recipes with <code style={{fontFamily:'var(--mono)',fontSize:11,background:'var(--parchment)',padding:'1px 5px',borderRadius:3}}>===</code> or <code style={{fontFamily:'var(--mono)',fontSize:11,background:'var(--parchment)',padding:'1px 5px',borderRadius:3}}>---</code>.
           </div>
-
-          {tab === 'url' && (
-            <>
-              <div className="url-sites">
-                Works with most recipe sites — Taste.com.au, AllRecipes, BBC Good Food, Delicious, RecipeTin Eats, and more.
-              </div>
-              <div className="url-row">
-                <input
-                  className="url-input"
-                  type="url"
-                  placeholder="https://www.taste.com.au/recipes/…"
-                  value={url}
-                  onChange={e=>{ setUrl(e.target.value); setStatus('idle'); setPreview(null); }}
-                  onKeyDown={e=>{ if(e.key==='Enter') fetchUrl(); }}
-                  autoCapitalize="none" autoCorrect="off" spellCheck={false}
-                />
-                <button className="url-fetch-btn" onClick={fetchUrl} disabled={!url.trim() || status==='loading'}>
-                  {status==='loading' ? '…' : 'Fetch'}
-                </button>
-              </div>
-
-              {status === 'idle' && !preview && (
-                <div className="url-status">Paste a recipe URL above and tap Fetch.</div>
-              )}
-              {status === 'loading' && (
-                <div className="url-status">Fetching recipe…</div>
-              )}
-              {status === 'err' && (
-                <div className="url-status err">{errMsg}</div>
-              )}
-              {status === 'ok' && preview && (
-                <div className="url-preview">
-                  <div className="url-preview-name">{preview.name}</div>
-                  <div className="url-preview-meta">
-                    {preview.cookingTime && <span className="url-preview-pill">⏱ {preview.cookingTime}</span>}
-                    {preview.servings && <span className="url-preview-pill">👥 Serves {preview.servings}</span>}
-                    {preview.ingredients.length > 0 && <span className="url-preview-pill">🥦 {preview.ingredients.length} ingredients</span>}
-                    {preview.recipe && <span className="url-preview-pill">📋 {preview.recipe.split(/\n\n+/).filter(Boolean).length} steps</span>}
-                  </div>
-                  {preview.notes && <div className="url-preview-desc">{preview.notes}</div>}
-                </div>
-              )}
-            </>
-          )}
-
-          {tab === 'paste' && (
-            <>
-              <div style={{fontSize:13,color:'var(--fg-muted)',lineHeight:1.55,marginBottom:12}}>
-                Paste recipe text below. The smart parser handles structured (<strong style={{color:'var(--fg)'}}>Name:</strong>, <strong style={{color:'var(--fg)'}}>Ingredients:</strong>) and free-form OCR'd recipes. Separate multiple recipes with <code style={{fontFamily:'var(--mono)',fontSize:11,background:'var(--parchment)',padding:'1px 5px',borderRadius:3}}>===</code> or <code style={{fontFamily:'var(--mono)',fontSize:11,background:'var(--parchment)',padding:'1px 5px',borderRadius:3}}>---</code>.
-              </div>
-              <textarea
-                className="imp-textarea"
-                placeholder={"Name: Beef Stew\nCategory: Dinner\nIngredients:\n1 kg beef chuck\n2 carrots, chopped\nRecipe:\nBrown beef, add vegetables and stock, simmer 2 hrs."}
-                value={txt}
-                onChange={e=>setTxt(e.target.value)}
-              />
-            </>
-          )}
+          <textarea
+            className="imp-textarea"
+            placeholder={"Name: Beef Stew\nCategory: Dinner\nIngredients:\n1 kg beef chuck\n2 carrots, chopped\nRecipe:\nBrown beef, add vegetables and stock, simmer 2 hrs."}
+            value={txt}
+            onChange={e=>setTxt(e.target.value)}
+          />
         </div>
         <div className="sheet-foot">
           <div className="row">
             <button className="btn" onClick={onClose} style={{flex:1}}>Cancel</button>
-            {tab === 'url' ? (
-              <button className="btn pr" onClick={savePreview} style={{flex:2}} disabled={status !== 'ok' || !preview}>
-                <ICON.Up/> Save recipe
-              </button>
-            ) : (
-              <button className="btn pr" onClick={submitPaste} style={{flex:2}}>
-                <ICON.Up/> Import recipes
-              </button>
-            )}
+            <button className="btn pr" onClick={submit} style={{flex:2}}>
+              <ICON.Up/> Import recipes
+            </button>
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
       </div>
     </div>
   );
@@ -3370,7 +2890,6 @@ function App() {
   const [customItems, setCustomItems] = useState(init.customItems);
   const [view, setView]   = useState('library');
   const [detail, setDetail] = useState(null);
-  const [cookMode, setCookMode] = useState(null);
   const [editM, setEditM]   = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
@@ -3424,11 +2943,7 @@ function App() {
   const authGuard = cb => { if (authed) { cb(); } else { setPwPrompt(() => cb); } };
 
   const saveR = async m => {
-    const saveErr = await upsertMeal(m);
-    if (saveErr) {
-      toast('Save failed: ' + String(saveErr).slice(0, 80));
-      return;
-    }
+    await upsertMeal(m);
     setMeals(ms => { const i = ms.findIndex(x => x.id === m.id); return i >= 0 ? ms.map(x => x.id === m.id ? m : x) : [...ms, m]; });
     setEditM(null); setView('library');
     toast(editM ? '✓ Recipe updated' : '✓ Recipe saved!');
@@ -3734,7 +3249,6 @@ function App() {
           onFav={togFav} onSel={togSel}
           onEdit={()=>authGuard(()=>{setEditM(detail); setDetail(null); setView('edit');})}
           onDel={()=>authGuard(()=>delR(detail.id))}
-          onCook={()=>{ setCookMode(detail); setDetail(null); }}
           onCopyIngs={async()=>{
             const txt = detail.ingredients.join('\n');
             try { await navigator.clipboard.writeText(txt); } catch {
@@ -3744,10 +3258,6 @@ function App() {
             toast('✓ Ingredients copied!');
           }}
         />
-      )}
-
-      {cookMode && (
-        <CookMode meal={cookMode} onClose={()=>setCookMode(null)} />
       )}
 
       {menuOpen && (
