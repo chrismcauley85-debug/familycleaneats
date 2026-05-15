@@ -1836,15 +1836,15 @@ async function loadMeals() {
 async function upsertMeal(m) {
   const { error } = await sb.from('recipes').upsert(m, { onConflict: 'id' });
   if (error) {
-    // If added_by column does not exist yet, retry without it
+    console.error('Supabase upsert error:', error);
     if (error.message && error.message.includes('added_by')) {
-      const { added_by, ...rest } = m;
-      const { error: e2 } = await sb.from('recipes').upsert(rest, { onConflict: 'id' });
-      if (e2) { console.error('Supabase upsert error:', e2); return e2; }
-    } else {
-      console.error('Supabase upsert error:', error);
-      return error;
+      const rest = Object.assign({}, m);
+      delete rest.added_by;
+      const r2 = await sb.from('recipes').upsert(rest, { onConflict: 'id' });
+      if (r2.error) { console.error('Retry error:', r2.error); return r2.error.message || 'Save error'; }
+      return null;
     }
+    return error.message || 'Save error';
   }
   return null;
 }
@@ -3424,11 +3424,9 @@ function App() {
   const authGuard = cb => { if (authed) { cb(); } else { setPwPrompt(() => cb); } };
 
   const saveR = async m => {
-    const err = await upsertMeal(m);
-    if (err) {
-      const msg = err.message || JSON.stringify(err);
-      toast('⚠️ Save failed: ' + (msg.includes('row-level') || msg.includes('policy') || msg.includes('permission') ? 'Supabase RLS is blocking writes — see console for details.' : msg.slice(0,80)));
-      console.error('Save failed:', err);
+    const saveErr = await upsertMeal(m);
+    if (saveErr) {
+      toast('Save failed: ' + String(saveErr).slice(0, 80));
       return;
     }
     setMeals(ms => { const i = ms.findIndex(x => x.id === m.id); return i >= 0 ? ms.map(x => x.id === m.id ? m : x) : [...ms, m]; });
