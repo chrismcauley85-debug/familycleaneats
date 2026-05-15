@@ -1840,11 +1840,13 @@ async function upsertMeal(m) {
     if (error.message && error.message.includes('added_by')) {
       const { added_by, ...rest } = m;
       const { error: e2 } = await sb.from('recipes').upsert(rest, { onConflict: 'id' });
-      if (e2) console.error('Supabase upsert error:', e2);
+      if (e2) { console.error('Supabase upsert error:', e2); return e2; }
     } else {
       console.error('Supabase upsert error:', error);
+      return error;
     }
   }
+  return null;
 }
 
 async function deleteMeal(id) {
@@ -3422,7 +3424,13 @@ function App() {
   const authGuard = cb => { if (authed) { cb(); } else { setPwPrompt(() => cb); } };
 
   const saveR = async m => {
-    await upsertMeal(m);
+    const err = await upsertMeal(m);
+    if (err) {
+      const msg = err.message || JSON.stringify(err);
+      toast('⚠️ Save failed: ' + (msg.includes('row-level') || msg.includes('policy') || msg.includes('permission') ? 'Supabase RLS is blocking writes — see console for details.' : msg.slice(0,80)));
+      console.error('Save failed:', err);
+      return;
+    }
     setMeals(ms => { const i = ms.findIndex(x => x.id === m.id); return i >= 0 ? ms.map(x => x.id === m.id ? m : x) : [...ms, m]; });
     setEditM(null); setView('library');
     toast(editM ? '✓ Recipe updated' : '✓ Recipe saved!');
