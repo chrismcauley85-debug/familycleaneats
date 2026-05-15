@@ -1776,6 +1776,20 @@ async function deleteMeal(id) {
   if (error) console.error('Supabase delete error:', error);
 }
 
+async function loadSetting(key, fallback) {
+  try {
+    const { data, error } = await sb.from('settings').select('value').eq('key', key).single();
+    if (error || !data) return fallback;
+    return data.value;
+  } catch(e) { return fallback; }
+}
+
+async function saveSetting(key, value) {
+  try {
+    await sb.from('settings').upsert({ key, value }, { onConflict: 'key' });
+  } catch(e) { console.error('Supabase settings error:', e); }
+}
+
 function loadAll() {
   let favs = new Set(), plan = Object.fromEntries(DAYS.map(d=>[d,{lunch:null,dinner:null}])), deleted = new Set(), sel = new Set(), ckd = new Set(), customItems = [];
   try {
@@ -2891,12 +2905,28 @@ function App() {
     return null;
   });
 
-  useEffect(()=>{ loadMeals().then(m => { setMeals(m); setLoading(false); }); }, []);
+  const sbSynced = React.useRef(false);
+  useEffect(()=>{
+    const defaultPlan = Object.fromEntries(DAYS.map(d=>[d,{lunch:null,dinner:null}]));
+    Promise.all([
+      loadMeals(),
+      loadSetting('plan', defaultPlan),
+      loadSetting('shopping_sel', []),
+      loadSetting('shopping_custom', []),
+    ]).then(([m, p, s, c]) => {
+      setMeals(m);
+      setPlan(p);
+      setSel(new Set(s));
+      setCustomItems(c);
+      sbSynced.current = true;
+      setLoading(false);
+    });
+  }, []);
   useEffect(()=>saveFavs(favs), [favs]);
-  useEffect(()=>savePlan(plan), [plan]);
-  useEffect(()=>saveSel(sel), [sel]);
   useEffect(()=>saveCkd(ckd), [ckd]);
-  useEffect(()=>saveCustom(customItems), [customItems]);
+  useEffect(()=>{ if(sbSynced.current) saveSetting('plan', plan); }, [plan]);
+  useEffect(()=>{ if(sbSynced.current) saveSetting('shopping_sel', [...sel]); }, [sel]);
+  useEffect(()=>{ if(sbSynced.current) saveSetting('shopping_custom', customItems); }, [customItems]);
 
   const togSel = id => setSel(s => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const togFav = id => setFavs(s => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
