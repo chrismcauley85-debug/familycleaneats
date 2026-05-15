@@ -2313,7 +2313,7 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
       </div>
 
       <div className="chip-row">
-        {['All','Dinner','Lunch','Fermentation','Pastes & Spices'].map(f=>(
+        {['All','Dinner','Lunch','Baking','Snacks','Fermentation','Pastes & Spices'].map(f=>(
           <button key={f} className={`chip${cat===f?' on':''}`} onClick={()=>{setCat(f);setCuisine('');setMeat('');}}>{f}</button>
         ))}
         <button className={`chip fav${favOnly?' on':''}`} onClick={()=>setFavOnly(v=>!v)}>★ Favourites</button>
@@ -2667,7 +2667,7 @@ function AddEdit({init, onSave, onCancel}) {
           <div className="fld">
             <label>Category</label>
             <select value={f.category} onChange={e=>set('category', e.target.value)}>
-              <option>Dinner</option><option>Lunch</option><option>Fermentation</option><option>Pastes &amp; Spices</option>
+              {Object.keys(CATS).map(c => <option key={c}>{c}</option>)}
             </select>
           </div>
           <div className="fld">
