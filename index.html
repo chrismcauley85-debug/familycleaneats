@@ -1957,7 +1957,10 @@ async function loadMeals() {
       await sb.from('recipes').insert(seeds);
       return SAMPLES;
     }
-    return data.map(m => ({notes:'', ...m}));
+    const meals = data.map(m => ({notes:'', ...m}));
+    // Cache to localStorage so the app has something to show if Supabase is unreachable
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(meals)); } catch(e) {}
+    return meals;
   } catch(e) {
     console.error('Supabase load error:', e);
     const d = localStorage.getItem(STORAGE_KEY);
