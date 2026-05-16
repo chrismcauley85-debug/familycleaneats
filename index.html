@@ -1969,8 +1969,14 @@ async function loadMeals() {
 }
 
 async function upsertMeal(m) {
-  const { error } = await sb.from('recipes').upsert(m, { onConflict: 'id' });
-  if (error) console.error('Supabase upsert error:', error);
+  try {
+    const { error } = await sb.from('recipes').upsert(m, { onConflict: 'id' });
+    if (error) { console.error('Supabase upsert error:', error.message, error.details, error.hint); return { ok: false, msg: error.message }; }
+    return { ok: true };
+  } catch(e) {
+    console.error('Supabase upsert exception:', e);
+    return { ok: false, msg: e.message };
+  }
 }
 
 async function deleteMeal(id) {
@@ -3394,7 +3400,11 @@ function App() {
   const authGuard = cb => { if (authed) { cb(); } else { setPwPrompt(() => cb); } };
 
   const saveR = async m => {
-    await upsertMeal(m);
+    const result = await upsertMeal(m);
+    if (!result.ok) {
+      toast('⚠️ Save failed: ' + (result.msg || 'check connection'));
+      return;
+    }
     setMeals(ms => { const i = ms.findIndex(x => x.id === m.id); return i >= 0 ? ms.map(x => x.id === m.id ? m : x) : [...ms, m]; });
     setEditM(null); setView('library');
     toast(editM ? '✓ Recipe updated' : '✓ Recipe saved!');
