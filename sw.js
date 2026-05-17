@@ -1,21 +1,17 @@
 // Family Clean Eats — Service Worker
-// Bump CACHE_VER whenever you deploy changes to index.html or recipes.js.
-// The browser fetches sw.js on every navigation and will install the new SW
-// automatically when it sees a different byte, then activate on next load.
+// Uses network-first for the app shell so updates are picked up automatically.
+// CDN assets remain cache-first (they're version-pinned so never change).
 
-const CACHE_VER  = 'v1';
-const SHELL_CACHE = `fce-shell-${CACHE_VER}`;
-const CDN_CACHE   = `fce-cdn-${CACHE_VER}`;
+const CACHE_VER   = 'v2';
+const SHELL_CACHE  = `fce-shell-${CACHE_VER}`;
+const CDN_CACHE    = `fce-cdn-${CACHE_VER}`;
 
-// ── App shell (same-origin, version-controlled) ──────────────────────────────
-// These are served cache-first. Bump CACHE_VER to force a refresh.
 const SHELL_URLS = [
   '/familycleaneats/',
   '/familycleaneats/index.html',
   '/familycleaneats/recipes.js',
 ];
 
-// ── CDN hosts (cache-first; URLs are version-pinned so content never changes) ─
 const CDN_HOSTS = new Set([
   'unpkg.com',
   'cdn.jsdelivr.net',
@@ -23,19 +19,18 @@ const CDN_HOSTS = new Set([
   'fonts.gstatic.com',
 ]);
 
-// ── Supabase host (network-only; app has its own localStorage fallback) ───────
 const SUPABASE_HOST = 'zjhaaviycdlsqmqjlwwk.supabase.co';
 
-// ── Install: pre-cache the app shell ─────────────────────────────────────────
+// ── Install: pre-cache shell ──────────────────────────────────────────────────
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(SHELL_CACHE)
       .then(cache => cache.addAll(SHELL_URLS))
-      .then(() => self.skipWaiting())   // activate immediately, don't wait for old tabs to close
+      .then(() => self.skipWaiting())
   );
 });
 
-// ── Activate: delete stale caches from previous versions ─────────────────────
+// ── Activate: clear old caches ────────────────────────────────────────────────
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
@@ -44,62 +39,50 @@ self.addEventListener('activate', event => {
           .filter(k => k !== SHELL_CACHE && k !== CDN_CACHE)
           .map(k => caches.delete(k))
       ))
-      .then(() => self.clients.claim())   // take control of all open tabs right away
+      .then(() => self.clients.claim())
   );
 });
 
-// ── Fetch: route by origin ────────────────────────────────────────────────────
+// ── Fetch ─────────────────────────────────────────────────────────────────────
 self.addEventListener('fetch', event => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
 
   const url = new URL(event.request.url);
 
-  // 1. Supabase REST API — always go to the network; the app handles failures
-  //    gracefully via its existing localStorage fallback in loadMeals().
+  // Supabase — always network
   if (url.hostname === SUPABASE_HOST) {
     event.respondWith(networkOnly(event.request));
     return;
   }
 
-  // 2. CDN assets (React, Babel, Supabase client, Google Fonts) —
-  //    cache-first: serve instantly from cache on repeat visits; add on first fetch.
-  //    These URLs are version-pinned (e.g. react@18.3.1) so the cached copy
-  //    is always correct and we never need to revalidate.
+  // CDN assets — cache-first (version-pinned, never change)
   if (CDN_HOSTS.has(url.hostname)) {
     event.respondWith(cacheFirst(event.request, CDN_CACHE));
     return;
   }
 
-  // 3. App shell (index.html, recipes.js, any other same-origin assets) —
-  //    cache-first. Content only changes when CACHE_VER is bumped and the
-  //    new SW pre-caches fresh copies during install.
+  // App shell — NETWORK-FIRST so updates are seen immediately.
+  // Falls back to cache when offline.
   if (url.pathname.startsWith('/familycleaneats/')) {
-    event.respondWith(cacheFirst(event.request, SHELL_CACHE));
+    event.respondWith(networkFirst(event.request, SHELL_CACHE));
     return;
   }
-  // Everything else: default browser behaviour
 });
 
-// ── Strategy helpers ──────────────────────────────────────────────────────────
+// ── Strategies ────────────────────────────────────────────────────────────────
 
-/**
- * Serve from cache if available; otherwise fetch, cache, and return.
- */
-async function cacheFirst(request, cacheName) {
-  const cache  = await caches.open(cacheName);
-  const cached = await cache.match(request);
-  if (cached) return cached;
-
+async function networkFirst(request, cacheName) {
+  const cache = await caches.open(cacheName);
   try {
     const response = await fetch(request);
-    // Only cache successful, non-opaque responses
     if (response.ok) {
       cache.put(request, response.clone());
     }
     return response;
   } catch {
-    // Offline and not in cache — return a minimal offline page for navigation
+    // Offline — serve from cache
+    const cached = await cache.match(request);
+    if (cached) return cached;
     if (request.mode === 'navigate') {
       const shell = await cache.match('/familycleaneats/index.html');
       if (shell) return shell;
@@ -108,10 +91,19 @@ async function cacheFirst(request, cacheName) {
   }
 }
 
-/**
- * Always fetch from network; return a 503 on failure so the app can
- * handle it (it already shows a toast and falls back to localStorage).
- */
+async function cacheFirst(request, cacheName) {
+  const cache  = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  if (cached) return cached;
+  try {
+    const response = await fetch(request);
+    if (response.ok) cache.put(request, response.clone());
+    return response;
+  } catch {
+    return new Response('Offline', { status: 503 });
+  }
+}
+
 async function networkOnly(request) {
   try {
     return await fetch(request);
