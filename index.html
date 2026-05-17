@@ -1970,8 +1970,9 @@ async function loadMeals() {
 
 async function upsertMeal(m) {
   try {
-    const { error } = await sb.from('recipes').upsert(m, { onConflict: 'id' });
+    const { data, error } = await sb.from('recipes').upsert(m, { onConflict: 'id' }).select();
     if (error) { console.error('Supabase upsert error:', error.message, error.details, error.hint); return { ok: false, msg: error.message }; }
+    if (!data || data.length === 0) { console.error('Supabase upsert: 0 rows written (RLS?)'); return { ok: false, msg: 'Permission denied — check Supabase RLS policies' }; }
     return { ok: true };
   } catch(e) {
     console.error('Supabase upsert exception:', e);
