@@ -444,11 +444,11 @@ body {
   letter-spacing: .04em;
   padding: 3px 8px;
   border-radius: 999px;
-  color: var(--card);
+  background: var(--rule);
+  color: var(--fg-muted);
   white-space: nowrap;
   display: inline-block;
 }
-.fc.light { color: var(--fg); }
 
 /* ───── Tonight card ────────────────────────────────── */
 .tonight {
@@ -1871,23 +1871,31 @@ const SEL_KEY      = 'hm-sel-v1';
 const CKD_KEY      = 'hm-ckd-v1';
 const CUSTOM_KEY   = 'hm-custom-v1';
 
+const COOKING_METHODS = ['Dutch oven','Braise','BBQ & Grill','Pasta','Stir-fry','Salad','Soup','Bake','Slow cooker','Pan-fry','Other'];
 const CATS = {
-  Dinner:['Dutchoven','Braise','BBQ','Salad','Pasta','Stir-fry','Other'],
-  Lunch: ['Meals on the run','Home','Salad','Sandwich','Soup','Toddler','Other'],
+  Italian: COOKING_METHODS,
+  Mexican: COOKING_METHODS,
+  French: COOKING_METHODS,
+  Greek: COOKING_METHODS,
+  Asian: COOKING_METHODS,
+  'Middle Eastern': COOKING_METHODS,
+  Indian: COOKING_METHODS,
+  Spanish: COOKING_METHODS,
+  American: COOKING_METHODS,
+  Irish: COOKING_METHODS,
+  Other: COOKING_METHODS,
   Baking: ['Bread','Cakes & Cookies','Pastry','Muffins & Loaves','Savoury Bakes','Other'],
-  Snacks: ['Dips & Spreads','Bars & Balls','Crackers & Bites','Sweet','Savoury','Other'],
   Fermentation: ['Vegetables','Drinks','Dairy','Condiments','Bread','Other'],
-  'Pastes & Spices': ['Spice Mixes','Pastes','Sauces & Butters','Other']
+  'Pastes & Spices': ['Spice Mixes','Pastes','Sauces & Butters','Other'],
 };
 
 const SUB_COLORS = {
-  Dutchoven:'#5A7028',Braise:'#C7611F',BBQ:'#B23E5A',Salad:'#1A5959',
-  Pasta:'#7A3F5E','Stir-fry':'#D9A026','Meals on the run':'#B23E5A',
-  Home:'#1A5959',Sandwich:'#5A7028',Soup:'#D9A026',Toddler:'#E07038',
+  'Dutch oven':'#5A7028','Braise':'#C7611F','BBQ & Grill':'#B23E5A','Pasta':'#7A3F5E',
+  'Stir-fry':'#D9A026','Salad':'#1A5959','Soup':'#4A7A8E','Bake':'#8B6914',
+  'Slow cooker':'#6B7A2A','Pan-fry':'#E07038',
   Bread:'#C7611F','Cakes & Cookies':'#7A3F5E',Pastry:'#B23E5A','Muffins & Loaves':'#8B6914','Savoury Bakes':'#5A7028',
-  'Dips & Spreads':'#1A5959','Bars & Balls':'#D9A026','Crackers & Bites':'#C7611F',Sweet:'#7A3F5E',Savoury:'#5A7028',
   Vegetables:'#3D6B4F',Drinks:'#1A5959',Dairy:'#7A6A9A',Condiments:'#8B4513',
-  'Spice Mixes':'#C7611F','Pastes':'#B23E5A','Sauces & Butters':'#5A7028',
+  'Spice Mixes':'#C7611F',Pastes:'#B23E5A','Sauces & Butters':'#5A7028',
   Other:'#8A7A6A'
 };
 
@@ -1926,7 +1934,19 @@ function guessMeat(m) {
   return 'Vegetarian';
 }
 
-const CAT_COLORS = { Dinner:'#C7611F', Lunch:'#1A5959', Baking:'#8B6914', Snacks:'#4A7A5E' };
+const CAT_COLORS = {
+  Italian:'#C7611F', Mexican:'#B23E5A', French:'#7A3F5E', Greek:'#1A7A6E',
+  Asian:'#C8960A', 'Middle Eastern':'#8B4513', Indian:'#C45000',
+  Spanish:'#A03020', American:'#2B5F8A', Irish:'#3D6B4F',
+  Baking:'#8B6914', Fermentation:'#4A7A5E', 'Pastes & Spices':'#6B4F7A', Other:'#8A7A6A',
+};
+const CUISINE_KEYS = new Set(['Italian','Mexican','French','Greek','Asian','Middle Eastern','Indian','Spanish','American','Irish','Other']);
+function getDisplayCat(m) {
+  if (CUISINE_KEYS.has(m.category)) return m.category;
+  // old-style data: use cuisine field or guess from name
+  return guessCuisine(m) || 'Other';
+}
+function getCuisineColor(m) { return CAT_COLORS[getDisplayCat(m)] || 'var(--muted)'; }
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DAY_FULL = {Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
 
@@ -2183,10 +2203,8 @@ function SectionHd({color, label, count, collapsed, onClick}) {
 
 /* ── Format chip ── */
 function FC({sub}) {
-  const bg = SUB_COLORS[sub] || 'var(--muted)';
-  const light = ['Stir-fry','Soup','Other'].includes(sub);
   return (
-    <span className={`fc${light ? ' light' : ''}`} style={{background: bg}}>
+    <span className="fc">
       {sub === 'Dutchoven' ? 'Dutch oven' : sub}
     </span>
   );
@@ -2194,7 +2212,7 @@ function FC({sub}) {
 
 /* ── Recipe card ── */
 function RCard({meal, idx, sel, fav, onChk, onFav, onOpen}) {
-  const clr = SUB_COLORS[meal.subcategory] || 'var(--muted)';
+  const clr = getCuisineColor(meal);
   return (
     <div className={`rcard${sel?' sel':''}`}>
       <div className="rcard-stripe" style={{background: clr}}/>
@@ -2224,7 +2242,7 @@ function RCard({meal, idx, sel, fav, onChk, onFav, onOpen}) {
 /* ── Tonight card ── */
 function TonightCard({meal, dayName, onOpen}) {
   if (!meal) return null;
-  const clr = SUB_COLORS[meal.subcategory] || 'var(--accent)';
+  const clr = getCuisineColor(meal);
   return (
     <div className="tonight" onClick={()=>onOpen(meal)} style={{borderColor: clr}}>
       <div className="tonight-eye" style={{color: clr}}>
@@ -2250,39 +2268,35 @@ function TonightCard({meal, dayName, onOpen}) {
 /* ── Library ── */
 function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport, onClearSel, searchRef, onShowImp}) {
   const [q, setQ] = useState('');
-  const [cat, setCat] = useState('All');
   const [favOnly, setFavOnly] = useState(false);
-  const [cuisine, setCuisine] = useState('');
   const [meat, setMeat] = useState('');
-  const [collapsed, setCollapsed] = useState(() => {
-    const keys = [];
-    Object.entries(CATS).forEach(([cat, subs]) => subs.forEach(sub => keys.push(cat + '|' + sub)));
-    return new Set(keys);
-  });
+  const [collapsed, setCollapsed] = useState(new Set());
   const toggleSection = key => setCollapsed(s => { const n = new Set(s); n.has(key) ? n.delete(key) : n.add(key); return n; });
   const [collapsedCats, setCollapsedCats] = useState(() => new Set(Object.keys(CATS)));
   const toggleCat = cat => setCollapsedCats(s => { const n = new Set(s); n.has(cat) ? n.delete(cat) : n.add(cat); return n; });
 
   const filtered = useMemo(() => meals.filter(m => {
-    if (cat !== 'All' && m.category !== cat) return false;
     if (favOnly && !favs.has(m.id)) return false;
-    if (cuisine && guessCuisine(m) !== cuisine) return false;
     if (meat && guessMeat(m) !== meat) return false;
     if (q) return m.name.toLowerCase().includes(q.toLowerCase());
     return true;
-  }), [meals, cat, favOnly, cuisine, meat, q, favs]);
+  }), [meals, favOnly, meat, q, favs]);
 
-  // Group by category > subcategory in order of CATS
+  // Group by cuisine (getDisplayCat) > cooking method (subcategory) in CATS order
   const grouped = useMemo(() => {
     const out = {};
-    for (const [c, subs] of Object.entries(CATS)) {
-      const cm = filtered.filter(m=>m.category===c);
+    for (const [cuisine, subs] of Object.entries(CATS)) {
+      const cm = filtered.filter(m => getDisplayCat(m) === cuisine);
       if (!cm.length) continue;
-      out[c] = {};
+      out[cuisine] = {};
       for (const s of subs) {
-        const sm = cm.filter(m=>m.subcategory===s);
-        if (sm.length) out[c][s] = sm;
+        const sm = cm.filter(m => m.subcategory === s || (s === 'Dutch oven' && m.subcategory === 'Dutchoven'));
+        if (sm.length) out[cuisine][s] = sm;
       }
+      // catch any subcategory not in list
+      const knownSubs = new Set(subs);
+      const uncategorised = cm.filter(m => !knownSubs.has(m.subcategory) && m.subcategory !== 'Dutchoven');
+      if (uncategorised.length) out[cuisine]['Other'] = [...(out[cuisine]['Other']||[]), ...uncategorised];
     }
     return out;
   }, [filtered]);
@@ -2294,7 +2308,7 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
   const tonight = tonightId ? meals.find(m => m.id === tonightId) : null;
 
   let idx = 1;
-  const showTonight = tonight && !q && cat==='All' && !favOnly && !cuisine && !meat;
+  const showTonight = tonight && !q && !favOnly && !meat;
 
   return (
     <div className="wrap">
@@ -2323,21 +2337,11 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
       </div>
 
       <div className="chip-row">
-        {['All','Dinner','Lunch','Baking','Snacks','Fermentation','Pastes & Spices'].map(f=>(
-          <button key={f} className={`chip${cat===f?' on':''}`} onClick={()=>{setCat(f);setCuisine('');setMeat('');}}>{f}</button>
-        ))}
         <button className={`chip fav${favOnly?' on':''}`} onClick={()=>setFavOnly(v=>!v)}>★ Favourites</button>
       </div>
 
-      <div className="chip-row">
-        <span className="chip-lbl">Cuisine</span>
-        {CUISINES.map(c=>(
-          <button key={c} className={`chip small${cuisine===c?' on':''}`} onClick={()=>setCuisine(v=>v===c?'':c)}>{c}</button>
-        ))}
-      </div>
-
       <div className="chip-row" style={{paddingBottom: 4}}>
-        <span className="chip-lbl">Meat</span>
+        <span className="chip-lbl">Protein</span>
         {MEAT_TYPES.map(t=>(
           <button key={t} className={`chip small${meat===t?' on':''}`} onClick={()=>setMeat(v=>v===t?'':t)}>{t}</button>
         ))}
@@ -2364,8 +2368,8 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
         const totalInCat = Object.values(subs).reduce((a, l) => a + l.length, 0);
         return (
           <React.Fragment key={category}>
-            <div className="cat-hd" onClick={() => toggleCat(category)}>
-              <span className="cat-hd-label">{category}</span>
+            <div className="cat-hd" onClick={() => toggleCat(category)} style={{borderLeftColor: CAT_COLORS[category] || 'var(--muted)'}}>
+              <span className="cat-hd-label" style={{color: CAT_COLORS[category] || 'var(--fg)'}}>{category}</span>
               <span className="cat-hd-ct">{totalInCat} {totalInCat===1?'recipe':'recipes'}</span>
               <span className={`cat-hd-chevron ${catCollapsed ? 'closed' : 'open'}`}>▼</span>
             </div>
@@ -2419,7 +2423,7 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
 function Detail({meal, fav, sel, onClose, onFav, onSel, onEdit, onDel, onCopyIngs, meals, onOpen, onCook}) {
   const base = parseInt(meal.servings) || 4;
   const [srv, setSrv] = useState(base);
-  const clr = SUB_COLORS[meal.subcategory] || 'var(--muted)';
+  const clr = getCuisineColor(meal);
   const methodParas = (meal.recipe || '').split(/\n\n+/).filter(Boolean);
 
   // Find any Pastes & Spices or Fermentation recipes referenced in this recipe's ingredients/method
@@ -2450,7 +2454,7 @@ function Detail({meal, fav, sel, onClose, onFav, onSel, onEdit, onDel, onCopyIng
         <div className="sheet-hd">
           <div className="sheet-eye" style={{color: clr}}>
             <span className="dot" style={{background: clr}}/>
-            {meal.category} · {meal.subcategory === 'Dutchoven' ? 'Dutch oven' : meal.subcategory}
+            {getDisplayCat(meal)} · {meal.subcategory === 'Dutchoven' ? 'Dutch oven' : meal.subcategory}
           </div>
           <div className="sheet-title">{meal.name}</div>
           <div className="sheet-meta">
@@ -2505,7 +2509,7 @@ function Detail({meal, fav, sel, onClose, onFav, onSel, onEdit, onDel, onCopyIng
               <div className="myo-list">
                 {makeYourOwn.map(m => (
                   <button key={m.id} className="myo-item" onClick={()=>onOpen(m)}>
-                    <span className="myo-dot" style={{background: SUB_COLORS[m.subcategory]||'var(--muted)'}}/>
+                    <span className="myo-dot" style={{background: getCuisineColor(m)}}/>
                     <span className="myo-name">{m.name}</span>
                     <span className="myo-cat">{m.subcategory}</span>
                     <ICON.Back style={{transform:'rotate(180deg)', opacity:.4}}/>
@@ -2553,7 +2557,7 @@ function CookMode({meal, onClose}) {
   const isDone = idx === total;
   const wakeLockRef = useRef(null);
   const bodyRef = useRef(null);
-  const clr = SUB_COLORS[meal.subcategory] || 'var(--primary-mid)';
+  const clr = getCuisineColor(meal);
   const dotCount = 1 + total;
   const dotIdx = isPrep ? 0 : Math.min(idx + 1, dotCount - 1);
 
@@ -2629,7 +2633,7 @@ function CookMode({meal, onClose}) {
 /* ── Add / Edit form ── */
 function AddEdit({init, onSave, onCancel}) {
   const WHO_KEY = 'fce-who';
-  const blank = {name:'',category:'Dinner',subcategory:'Dutchoven',cookingTime:'',servings:'',recipe:'',ingredients:'',notes:'',cuisine:'',meatType:'',added_by:''};
+  const blank = {name:'',category:'Italian',subcategory:'Other',cookingTime:'',servings:'',recipe:'',ingredients:'',notes:'',cuisine:'',meatType:'',added_by:''};
   const [f, setF] = useState(() => {
     const who = localStorage.getItem('fce-who') || '';
     if (init) return {...init, ingredients: init.ingredients.join('\n'), added_by: init.added_by || who};
@@ -2675,13 +2679,13 @@ function AddEdit({init, onSave, onCancel}) {
         </div>
         <div className="frow">
           <div className="fld">
-            <label>Category</label>
+            <label>Cuisine</label>
             <select value={f.category} onChange={e=>set('category', e.target.value)}>
               {Object.keys(CATS).map(c => <option key={c}>{c}</option>)}
             </select>
           </div>
           <div className="fld">
-            <label>Method</label>
+            <label>Cooking method</label>
             <select value={f.subcategory} onChange={e=>set('subcategory', e.target.value)}>
               {subs.map(s => <option key={s} value={s}>{s === 'Dutchoven' ? 'Dutch oven' : s}</option>)}
             </select>
@@ -2714,13 +2718,6 @@ function AddEdit({init, onSave, onCancel}) {
           <input type="text" value={f.added_by||''} onChange={e=>set('added_by', e.target.value)} placeholder="Your name" autoCapitalize="words"/>
         </div>
         <div className="frow">
-          <div className="fld">
-            <label>Cuisine (optional)</label>
-            <select value={f.cuisine} onChange={e=>set('cuisine', e.target.value)}>
-              <option value="">Auto-detect</option>
-              {CUISINES.map(c => <option key={c}>{c}</option>)}
-            </select>
-          </div>
           <div className="fld">
             <label>Protein (optional)</label>
             <select value={f.meatType} onChange={e=>set('meatType', e.target.value)}>
@@ -2797,7 +2794,7 @@ function Plan({meals, plan, onSet, onClear, onShare}) {
                 {['lunch','dinner'].map(slot => {
                   const id = plan[d]?.[slot];
                   const m = id ? meals.find(x => x.id === id) : null;
-                  const clr = m ? (SUB_COLORS[m.subcategory] || 'var(--muted)') : null;
+                  const clr = m ? getCuisineColor(m) : null;
                   return (
                     <div key={slot} className={`plan-slot${m?' has-meal':''}`} onClick={()=>setPicker({day:d,slot})}>
                       <span className="plan-slot-lbl">{slot === 'lunch' ? 'L' : 'D'}</span>
@@ -2805,7 +2802,7 @@ function Plan({meals, plan, onSet, onClear, onShare}) {
                         <>
                           <div className="plan-day-meal">
                             <div className="plan-day-name">{m.name}</div>
-                            <div className="plan-day-sub">{m.subcategory === 'Dutchoven' ? 'Dutch oven' : m.subcategory}{m.cookingTime ? ' · ' + m.cookingTime : ''}</div>
+                            <div className="plan-day-sub">{m.subcategory === 'Dutchoven' ? 'Dutch oven' : m.subcategory === 'Dutch oven' ? 'Dutch oven' : m.subcategory}{m.cookingTime ? ' · ' + m.cookingTime : ''}</div>
                           </div>
                           <div className="plan-day-stripe" style={{background: clr}}/>
                         </>
@@ -2852,7 +2849,7 @@ function Plan({meals, plan, onSet, onClear, onShare}) {
             <div style={{flex:1, overflowY:'auto'}}>
               <div className="picker-list">
                 {pm.map(m => {
-                  const clr = SUB_COLORS[m.subcategory] || 'var(--muted)';
+                  const clr = getCuisineColor(m);
                   return (
                     <div key={m.id} className="pitem" onClick={()=>{onSet(picker.day, m.id, picker.slot); setPicker(null);}}>
                       <div className="pstripe" style={{background: clr}}/>
@@ -3088,38 +3085,7 @@ function HeaderMenu({onClose, onAdd, onImport, onExport, onSharePlan, hasPlan}) 
 
 /* ── Import sheet ── */
 function ImportSheet({onClose, onImport, toast}) {
-  const [tab, setTab] = useState('url');
   const [txt, setTxt] = useState('');
-  const [url, setUrl] = useState('');
-  const [status, setStatus] = useState('idle');
-  const [errMsg, setErrMsg] = useState('');
-  const [preview, setPreview] = useState(null);
-
-  const fetchUrl = async () => {
-    const u = url.trim();
-    if (!u) return;
-    setStatus('loading'); setPreview(null); setErrMsg('');
-    try {
-      const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(u));
-      if (!res.ok) throw new Error('Network error');
-      const json = await res.json();
-      const meal = findRecipeJsonLd(json.contents || '');
-      if (!meal || !meal.name || !meal.ingredients.length) {
-        setErrMsg("Couldn't find a recipe on that page. Try the Paste tab instead.");
-        setStatus('err'); return;
-      }
-      setPreview(meal); setStatus('ok');
-    } catch(e) {
-      setErrMsg(e.message === 'Failed to fetch' ? 'Could not reach that site. Try the Paste tab.' : (e.message || 'Something went wrong.'));
-      setStatus('err');
-    }
-  };
-
-  const savePreview = () => {
-    if (!preview) return;
-    const lines = ['Name: ' + preview.name, 'Category: Dinner', 'Time: ' + (preview.cookingTime||''), 'Servings: ' + (preview.servings||''), 'Notes: ' + (preview.notes||''), 'Ingredients:'].concat(preview.ingredients).concat(['Recipe:', preview.recipe||'']);
-    onImport(lines.join('\n'), () => { setUrl(''); setPreview(null); setStatus('idle'); onClose(); });
-  };
 
   const submitPaste = () => {
     if (!txt.trim()) { alert('Please paste some recipe text.'); return; }
@@ -3136,63 +3102,20 @@ function ImportSheet({onClose, onImport, toast}) {
           <div className="sheet-title">Add a recipe</div>
         </div>
         <div className="sheet-body">
-          <div className="imp-tabs">
-            <button className={`imp-tab${tab==='url'?' on':''}`} onClick={()=>setTab('url')}>From URL</button>
-            <button className={`imp-tab${tab==='paste'?' on':''}`} onClick={()=>setTab('paste')}>Paste text</button>
+          <div style={{fontSize:13,color:'var(--fg-muted)',lineHeight:1.55,marginBottom:12}}>
+            Paste recipe text below — structured or free-form. Separate multiple recipes with <code style={{fontFamily:'var(--mono)',fontSize:11,background:'var(--parchment)',padding:'1px 5px',borderRadius:3}}>===</code>.
           </div>
-          {tab === 'url' && (
-            <>
-              <div className="url-sites">Works with Taste.com.au, AllRecipes, BBC Good Food, RecipeTin Eats and most recipe sites.</div>
-              <div className="url-row">
-                <input className="url-input" type="url" placeholder="https://www.taste.com.au/recipes/..." value={url}
-                  onChange={e=>{ setUrl(e.target.value); setStatus('idle'); setPreview(null); }}
-                  onKeyDown={e=>{ if(e.key==='Enter') fetchUrl(); }}
-                  autoCapitalize="none" autoCorrect="off" spellCheck={false}
-                />
-                <button className="url-fetch-btn" onClick={fetchUrl} disabled={!url.trim() || status==='loading'}>
-                  {status==='loading' ? '...' : 'Fetch'}
-                </button>
-              </div>
-              {status === 'idle' && !preview && <div className="url-status">Paste a URL above and tap Fetch.</div>}
-              {status === 'loading' && <div className="url-status">Fetching recipe...</div>}
-              {status === 'err' && <div className="url-status err">{errMsg}</div>}
-              {status === 'ok' && preview && (
-                <div className="url-preview">
-                  <div className="url-preview-name">{preview.name}</div>
-                  <div className="url-preview-meta">
-                    {preview.cookingTime && <span className="url-preview-pill">{preview.cookingTime}</span>}
-                    {preview.servings && <span className="url-preview-pill">Serves {preview.servings}</span>}
-                    {preview.ingredients.length > 0 && <span className="url-preview-pill">{preview.ingredients.length} ingredients</span>}
-                  </div>
-                  {preview.notes && <div className="url-preview-desc">{preview.notes}</div>}
-                </div>
-              )}
-            </>
-          )}
-          {tab === 'paste' && (
-            <>
-              <div style={{fontSize:13,color:'var(--fg-muted)',lineHeight:1.55,marginBottom:12}}>
-                Paste recipe text below — structured or free-form. Separate multiple recipes with <code style={{fontFamily:'var(--mono)',fontSize:11,background:'var(--parchment)',padding:'1px 5px',borderRadius:3}}>===</code>.
-              </div>
-              <textarea className="imp-textarea"
-                placeholder={"Name: Beef Stew\nIngredients:\n1 kg beef\nRecipe:\nBrown beef, simmer 2 hrs."}
-                value={txt} onChange={e=>setTxt(e.target.value)}
-              />
-            </>
-          )}
+          <textarea className="imp-textarea"
+            placeholder={"Name: Beef Stew\nIngredients:\n1 kg beef\nRecipe:\nBrown beef, simmer 2 hrs."}
+            value={txt} onChange={e=>setTxt(e.target.value)}
+          />
         </div>
         <div className="sheet-foot">
           <div className="row">
             <button className="btn" onClick={onClose} style={{flex:1}}>Cancel</button>
-            {tab === 'url' ? (
-              <button className="btn pr" onClick={savePreview} style={{flex:2}} disabled={status !== 'ok' || !preview}>
-                <ICON.Up/> Save recipe
-              </button>
-            ) : (
-              <button className="btn pr" onClick={submitPaste} style={{flex:2}}>
-                <ICON.Up/> Import
-              </button>
-            )}
+            <button className="btn pr" onClick={submitPaste} style={{flex:2}}>
+              <ICON.Up/> Import
+            </button>
           </div>
         </div>
       </div>
@@ -3261,7 +3184,7 @@ function SharedView({data}) {
               <div className="shared-day-name">{d.name}</div>
               <div className="shared-day-sub">{d.sub || ''}{d.time ? ' · ' + d.time : ''}</div>
             </div>
-            <div className="shared-day-stripe" style={{background: SUB_COLORS[d.sub] || 'var(--muted)'}}/>
+            <div className="shared-day-stripe" style={{background: CAT_COLORS[d.cat] || SUB_COLORS[d.sub] || 'var(--muted)'}}/>
           </div>
         ))}
       </div>
@@ -3428,7 +3351,7 @@ function App() {
         const id = plan[d]?.[slot];
         if (id) {
           const m = meals.find(x => x.id === id);
-          if (m) planned.push({day: d, slot, name: m.name, sub: m.subcategory, time: m.cookingTime || '', ingredients: m.ingredients});
+          if (m) planned.push({day: d, slot, name: m.name, sub: m.subcategory, cat: getDisplayCat(m), time: m.cookingTime || '', ingredients: m.ingredients});
         }
       });
     });
@@ -3516,11 +3439,11 @@ function App() {
     toast('✓ Copied! Paste into Apple Notes.');
   };
 
-  const importNotes = (txt, done) => {
+  const importNotes = async (txt, done) => {
     if (!txt.trim()) { alert('Please paste your recipes first.'); return; }
     const CAT_KEYS = Object.keys(CATS);
     const matchCat = v => {
-      const t = (v||'').trim(); if (!t) return ['Dinner', false];
+      const t = (v||'').trim(); if (!t) return ['Other', false];
       const h = CAT_KEYS.find(k => k.toLowerCase() === t.toLowerCase());
       return [h || 'Dinner', !h];
     };
@@ -3531,7 +3454,7 @@ function App() {
     };
     const parseStructured = blk => {
       const ls = blk.trim().split('\n');
-      const m = {id: Date.now()+'-'+Math.random(), name:'', category:'Dinner', subcategory:'Other', cookingTime:'', servings:'', recipe:'', ingredients:[], notes:''};
+      const m = {id: Date.now()+'-'+Math.random(), name:'', category:'Other', subcategory:'Other', cookingTime:'', servings:'', recipe:'', ingredients:[], notes:''};
       let rawCat = '', rawSub = '', sec = '', rec = [], ings = [];
       for (let raw of ls) {
         const l = raw.trim(); if (!l) continue;
@@ -3604,7 +3527,7 @@ function App() {
       if (!name) name = 'Untitled recipe';
       return {
         id: Date.now() + '-' + Math.random(),
-        name, category: 'Dinner', subcategory: 'Other',
+        name, category: 'Other', subcategory: 'Other',
         cookingTime: cookTime, servings,
         recipe: methodParts.join(' '),
         ingredients: ings,
@@ -3627,13 +3550,24 @@ function App() {
       return m;
     }).filter(m => m && m.name && m.ingredients.length);
     if (!parsed.length) { alert("Couldn't find a recipe in that text. Try a clearer photo or paste with more detail."); return; }
-    setMeals(ms => [...ms, ...parsed]);
-    done && done();
-    const bits = [];
-    if (adjusted) bits.push(`${adjusted} adjusted`);
-    if (smartCount) bits.push(`${smartCount} auto-parsed — review category`);
-    const note = bits.length ? ` (${bits.join(', ')})` : '';
-    toast(`✓ Imported ${parsed.length} recipe${parsed.length!==1?'s':''}${note}!`);
+    // Stamp added_by from localStorage (same as manual add form)
+    const who = localStorage.getItem('fce-who') || '';
+    parsed.forEach(m => { if (!m.added_by) m.added_by = who; });
+    // Save each recipe to Supabase then update state
+    toast('Saving…');
+    const results = await Promise.all(parsed.map(m => upsertMeal(m)));
+    const failed = results.filter(r => !r.ok).length;
+    if (failed) toast(`⚠️ ${failed} recipe${failed!==1?'s':''} failed to save — check connection`);
+    const saved = parsed.filter((_, i) => results[i].ok);
+    if (saved.length) {
+      setMeals(ms => [...ms, ...saved]);
+      done && done();
+      const bits = [];
+      if (adjusted) bits.push(`${adjusted} adjusted`);
+      if (smartCount) bits.push(`${smartCount} auto-parsed — review category`);
+      const note = bits.length ? ` (${bits.join(', ')})` : '';
+      toast(`✓ Imported ${saved.length} recipe${saved.length!==1?'s':''}${note}!`);
+    }
   };
 
   const isForm = view === 'add' || view === 'edit';
@@ -3677,7 +3611,7 @@ function App() {
           onImport={importNotes}
           onClearSel={()=>setSel(new Set())}
           searchRef={searchRef}
-          onShowImp={()=>setImportOpen(true)}
+          onShowImp={()=>authGuard(()=>setImportOpen(true))}
         />
       )}
       {view === 'plan' && (
@@ -3731,7 +3665,7 @@ function App() {
         <HeaderMenu
           onClose={()=>setMenuOpen(false)}
           onAdd={()=>authGuard(()=>{setEditM(null); setView('add');})}
-          onImport={()=>setImportOpen(true)}
+          onImport={()=>authGuard(()=>setImportOpen(true))}
           onExport={exportLib}
           onSharePlan={shareWeek}
           hasPlan={DAYS.some(d => plan[d])}
