@@ -1828,7 +1828,6 @@ body {
   padding: 13px 14px;
   background: var(--card);
   border: 1.5px solid var(--rule);
-  border-top: 3px solid var(--primary);
   border-radius: 10px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -1943,7 +1942,7 @@ function guessMeat(m) {
   return 'Vegetarian';
 }
 
-const CAT_COLORS = { Dinner:'#C7611F', Lunch:'#1A5959', Baking:'#8B6914', Snacks:'#4A7A5E' };
+const CAT_COLORS = { Dinner:'#C7611F', Lunch:'#1A5959', Baking:'#8B6914', Snacks:'#4A7A5E', Fermentation:'#3D6B4F', 'Pastes & Spices':'#7A3F5E' };
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DAY_FULL = {Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
 
@@ -2395,8 +2394,8 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
         const totalInCat = Object.values(subs).reduce((a, l) => a + l.length, 0);
         return (
           <React.Fragment key={category}>
-            <div className="cat-hd" onClick={() => toggleCat(category)}>
-              <span className="cat-hd-label">{category}</span>
+            <div className="cat-hd" style={{borderTop:`3px solid ${CAT_COLORS[category]||'var(--primary)'}`}} onClick={() => toggleCat(category)}>
+              <span className="cat-hd-label" style={{color: CAT_COLORS[category]||'var(--fg)'}}>{category}</span>
               <span className="cat-hd-ct">{totalInCat} {totalInCat===1?'recipe':'recipes'}</span>
               <span className={`cat-hd-chevron ${catCollapsed ? 'closed' : 'open'}`}>▼</span>
             </div>
@@ -3814,32 +3813,36 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 
 <script>
 // ── Service Worker registration ───────────────────────────────────────────────
-// DEPLOY INSTRUCTIONS: bump SW_VER (e.g. today's date) on every deploy.
-// This changes the registration URL so the browser installs a fresh SW,
-// bypassing GitHub Pages' caching of sw.js entirely.
-const SW_VER = '20250517';
+// Automatically detects the deployed version by reading the Last-Modified
+// header of index.html — no manual version bumping ever needed.
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
-    // Unregister any stale SW registrations (old versions)
+    // Get the Last-Modified date of this file as the version string
+    let swVer = 'v1';
+    try {
+      const res = await fetch(location.href, { method: 'HEAD', cache: 'no-cache' });
+      const lm = res.headers.get('Last-Modified');
+      if (lm) swVer = new Date(lm).getTime().toString();
+    } catch(e) {}
+
+    // Unregister any SW not matching the current version
     const regs = await navigator.serviceWorker.getRegistrations();
     for (const reg of regs) {
-      const isCurrentVersion = reg.active?.scriptURL?.includes(`sw.js?v=${SW_VER}`)
-                            || reg.installing?.scriptURL?.includes(`sw.js?v=${SW_VER}`)
-                            || reg.waiting?.scriptURL?.includes(`sw.js?v=${SW_VER}`);
-      if (!isCurrentVersion) {
-        console.log('[FCE] Unregistering stale SW:', reg.active?.scriptURL);
+      const url = reg.active?.scriptURL || reg.installing?.scriptURL || reg.waiting?.scriptURL || '';
+      if (!url.includes(`sw.js?v=${swVer}`)) {
+        console.log('[FCE] Unregistering stale SW:', url);
         await reg.unregister();
       }
     }
 
-    // Register the versioned SW URL — browser always treats a new URL as a new SW
+    // Register with versioned URL — new version = new SW, no caching issues
     const reg = await navigator.serviceWorker
-      .register(`/familycleaneats/sw.js?v=${SW_VER}`, { scope: '/familycleaneats/' })
+      .register(`/familycleaneats/sw.js?v=${swVer}`, { scope: '/familycleaneats/' })
       .catch(err => { console.warn('[FCE] SW registration failed:', err); return null; });
 
     if (!reg) return;
-    console.log('[FCE] SW registered, scope:', reg.scope);
+    console.log('[FCE] SW registered v:', swVer);
 
     reg.addEventListener('updatefound', () => {
       const newWorker = reg.installing;
@@ -3851,9 +3854,18 @@ if ('serviceWorker' in navigator) {
       });
     });
 
-    // Check for updates whenever the app is foregrounded
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') reg.update();
+    // Re-check version whenever app is foregrounded
+    document.addEventListener('visibilitychange', async () => {
+      if (document.visibilityState !== 'visible') return;
+      try {
+        const res = await fetch(location.href, { method: 'HEAD', cache: 'no-cache' });
+        const lm = res.headers.get('Last-Modified');
+        const latestVer = lm ? new Date(lm).getTime().toString() : swVer;
+        if (latestVer !== swVer) {
+          console.log('[FCE] New version detected — reloading.');
+          window.location.reload();
+        }
+      } catch(e) {}
     });
   });
 }
