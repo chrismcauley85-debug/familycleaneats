@@ -2289,6 +2289,8 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
   }), [meals, cat, favOnly, cuisine, meat, q, favs]);
 
   // Group by category > subcategory in order of CATS
+  // For Dinner/Lunch: group by cuisine (subcategory if it's a cuisine, otherwise auto-detect)
+  // For other categories: group by subcategory as before
   const grouped = useMemo(() => {
     const out = {};
     for (const [c, subs] of Object.entries(CATS)) {
@@ -2296,13 +2298,22 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
       if (!cm.length) continue;
       out[c] = {};
       const subSet = new Set(subs);
-      for (const s of subs) {
-        const sm = cm.filter(m=>m.subcategory===s);
-        if (sm.length) out[c][s] = sm;
+      if (CUISINE_CATS.has(c)) {
+        // Use subcategory if it's already a cuisine, otherwise fall back to guessCuisine
+        for (const m of cm) {
+          const key = subSet.has(m.subcategory) ? m.subcategory : (guessCuisine(m) || 'Other');
+          const bucket = subSet.has(key) ? key : 'Other';
+          if (!out[c][bucket]) out[c][bucket] = [];
+          out[c][bucket].push(m);
+        }
+      } else {
+        for (const s of subs) {
+          const sm = cm.filter(m=>m.subcategory===s);
+          if (sm.length) out[c][s] = sm;
+        }
+        const unmatched = cm.filter(m => !subSet.has(m.subcategory));
+        if (unmatched.length) out[c]['Other'] = [...(out[c]['Other']||[]), ...unmatched];
       }
-      // Catch old-style recipes whose subcategory doesn't match current list
-      const unmatched = cm.filter(m => !subSet.has(m.subcategory));
-      if (unmatched.length) out[c]['Other'] = [...(out[c]['Other']||[]), ...unmatched];
     }
     return out;
   }, [filtered]);
@@ -3803,26 +3814,47 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 
 <script>
 // ── Service Worker registration ───────────────────────────────────────────────
+// DEPLOY INSTRUCTIONS: bump SW_VER (e.g. today's date) on every deploy.
+// This changes the registration URL so the browser installs a fresh SW,
+// bypassing GitHub Pages' caching of sw.js entirely.
+const SW_VER = '20250517';
+
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/familycleaneats/sw.js', { scope: '/familycleaneats/' })
-      .then(reg => {
-        console.log('[FCE] SW registered, scope:', reg.scope);
-        // Poll for updates every time the app is opened
-        reg.update();
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          newWorker.addEventListener('statechange', () => {
-            // New SW activated — reload so user always gets latest version
-            if (newWorker.state === 'activated' && navigator.serviceWorker.controller) {
-              console.log('[FCE] SW updated — reloading for latest version.');
-              window.location.reload();
-            }
-          });
-        });
-      })
-      .catch(err => console.warn('[FCE] SW registration failed:', err));
+  window.addEventListener('load', async () => {
+    // Unregister any stale SW registrations (old versions)
+    const regs = await navigator.serviceWorker.getRegistrations();
+    for (const reg of regs) {
+      const isCurrentVersion = reg.active?.scriptURL?.includes(`sw.js?v=${SW_VER}`)
+                            || reg.installing?.scriptURL?.includes(`sw.js?v=${SW_VER}`)
+                            || reg.waiting?.scriptURL?.includes(`sw.js?v=${SW_VER}`);
+      if (!isCurrentVersion) {
+        console.log('[FCE] Unregistering stale SW:', reg.active?.scriptURL);
+        await reg.unregister();
+      }
+    }
+
+    // Register the versioned SW URL — browser always treats a new URL as a new SW
+    const reg = await navigator.serviceWorker
+      .register(`/familycleaneats/sw.js?v=${SW_VER}`, { scope: '/familycleaneats/' })
+      .catch(err => { console.warn('[FCE] SW registration failed:', err); return null; });
+
+    if (!reg) return;
+    console.log('[FCE] SW registered, scope:', reg.scope);
+
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'activated' && navigator.serviceWorker.controller) {
+          console.log('[FCE] SW updated — reloading.');
+          window.location.reload();
+        }
+      });
+    });
+
+    // Check for updates whenever the app is foregrounded
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') reg.update();
+    });
   });
 }
 </script>
