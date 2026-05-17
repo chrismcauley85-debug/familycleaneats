@@ -2295,10 +2295,14 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
       const cm = filtered.filter(m=>m.category===c);
       if (!cm.length) continue;
       out[c] = {};
+      const subSet = new Set(subs);
       for (const s of subs) {
         const sm = cm.filter(m=>m.subcategory===s);
         if (sm.length) out[c][s] = sm;
       }
+      // Catch old-style recipes whose subcategory doesn't match current list
+      const unmatched = cm.filter(m => !subSet.has(m.subcategory));
+      if (unmatched.length) out[c]['Other'] = [...(out[c]['Other']||[]), ...unmatched];
     }
     return out;
   }, [filtered]);
@@ -3805,13 +3809,15 @@ if ('serviceWorker' in navigator) {
       .register('/familycleaneats/sw.js', { scope: '/familycleaneats/' })
       .then(reg => {
         console.log('[FCE] SW registered, scope:', reg.scope);
-        // When a new SW is waiting (i.e. you deployed an update), activate it
-        // as soon as all tabs are closed — no manual page refresh needed.
+        // Poll for updates every time the app is opened
+        reg.update();
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
           newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'activated') {
-              console.log('[FCE] SW updated — new version active.');
+            // New SW activated — reload so user always gets latest version
+            if (newWorker.state === 'activated' && navigator.serviceWorker.controller) {
+              console.log('[FCE] SW updated — reloading for latest version.');
+              window.location.reload();
             }
           });
         });
