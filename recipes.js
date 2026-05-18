@@ -8,160 +8,20 @@ const SAMPLES = [
   // ════════════════════════════════════════════
 
   // ── DUTCH OVEN (5) ───────────────────────────────────────────────
-  {id:'s1',name:'Dutch Oven Pot Roast',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2.5 hrs',servings:'5',
-   recipe:'Pat beef dry, season well. Brown all over in hot oil. Remove, sauté onion and garlic until soft. Add tomato paste and wine, scraping the pan. Return beef, add stock halfway up. Cover and braise at 160°C for 2.5 hrs until very tender.',
-   ingredients:['1.5 kg beef chuck','2 tbsp olive oil','1 large onion, diced','4 garlic cloves, minced','2 tbsp tomato paste','250 ml red wine','500 ml beef stock','3 carrots, chunked','3 potatoes, chunked','2 sprigs rosemary','Salt and pepper'],
-   notes:'Better the next day. Freeze in portions. Crusty bread essential.'},
-
-  {id:'s11',name:'Chicken Cacciatore',category:'Dinner',subcategory:'Dutchoven',cookingTime:'1.5 hrs',servings:'5',
-   recipe:'Joint whole chicken into 8 pieces or use bone-in breasts. Season and brown in oil until golden. Remove. Sauté onion and garlic. Add capsicum, crushed tomatoes, olives, capers, bay leaves and wine. Nestle chicken back in skin-side up. Braise uncovered at 180°C for 45 min until sauce thickens and chicken is cooked through.',
-   ingredients:['1 whole chicken jointed or 4 bone-in chicken breasts','2 tbsp olive oil','1 large onion, sliced','4 garlic cloves, sliced','1 red capsicum, sliced','2 × 400 g cans crushed tomatoes','150 ml white wine','80 g kalamata olives','2 tbsp capers','2 bay leaves','1 tsp dried oregano','Salt and pepper'],
-   notes:'Classic Italian hunter-style chicken. Leftovers are even better. Serve over soft polenta or with crusty bread.'},
-
-  {id:'s12',name:'White Bean & Tuscan Kale Soup',category:'Dinner',subcategory:'Dutchoven',cookingTime:'45 min',servings:'5',
-   recipe:'Sauté onion, carrot and celery until soft. Add garlic and tomato paste, cook 1 min. Pour in stock, add beans and parmesan rind. Simmer 20 min. Add kale and cook 10 min more. Season, drizzle with extra virgin olive oil.',
-   ingredients:['2 × 400 g cans cannellini beans, rinsed','1 large onion, diced','2 carrots, diced','2 celery stalks, diced','4 garlic cloves, minced','1 tbsp tomato paste','1.5 L chicken or vegetable stock','1 bunch Tuscan kale stems removed and chopped','1 parmesan rind optional','2 tbsp olive oil','Salt pepper and extra olive oil to finish'],
-   notes:'The parmesan rind adds incredible depth. Freeze leftovers for up to 3 months.'},
-
-  {id:'n1',name:'Beef Short Rib Ragu',category:'Dinner',subcategory:'Dutchoven',cookingTime:'3.5 hrs',servings:'5',
-   recipe:'Season short ribs well. Brown deeply in oil in batches, remove. Sauté onion, carrot and celery until soft. Add garlic and tomato paste, cook 2 min. Deglaze with red wine. Add crushed tomatoes, stock and herbs. Return ribs, cover and braise at 160°C for 3 hrs until meat falls off the bone. Shred beef into the sauce. Serve over pappardelle.',
-   ingredients:['1.5 kg bone-in beef short ribs','2 tbsp olive oil','1 large onion, finely diced','2 carrots, finely diced','2 celery stalks, finely diced','5 garlic cloves, minced','2 tbsp tomato paste','250 ml red wine','400 g can crushed tomatoes','400 ml beef stock','2 sprigs rosemary','2 bay leaves','400 g pappardelle to serve','Parmesan to serve'],
-   notes:'The deeper the browning, the richer the ragu. Freeze without the pasta. Fantastic on crusty bread the next day.'},
-
-  {id:'n2',name:'Chicken & Chickpea Moroccan Pot',category:'Dinner',subcategory:'Dutchoven',cookingTime:'1 hr',servings:'5',
-   recipe:'Brown chicken breasts in oil, remove. Sauté onion until soft. Add garlic and spices, cook 1 min. Add crushed tomatoes, stock and chickpeas. Return chicken. Cover and simmer 35 min. Stir in honey and preserved lemon rind. Garnish with fresh coriander and serve over couscous.',
-   ingredients:['4 large chicken breasts','2 × 400 g cans chickpeas, rinsed','1 large onion, diced','4 garlic cloves, minced','2 tsp ground cumin','1 tsp ground coriander','1/2 tsp cinnamon','1 tsp smoked paprika','1/2 tsp turmeric','400 g can crushed tomatoes','300 ml chicken stock','1 tbsp honey','1 preserved lemon rind finely sliced','Fresh coriander','Couscous to serve'],
-   notes:'Preserved lemon is the hero. Find it at delis or Middle Eastern grocers. Sub with extra lemon zest in a pinch.'},
-
-  {id:'d1',name:'Boeuf Bourguignon',category:'Dinner',subcategory:'Dutchoven',cookingTime:'3.5 hrs',servings:'6',
-   recipe:'Marinate beef overnight in red wine with onion, carrot and herbs. Drain, pat beef dry. Brown beef deeply in batches, remove. Cook lardons until crispy. Saute drained veg until soft. Add tomato paste. Reduce wine marinade by half. Return beef, add stock, herbs. Cover and braise at 160C for 2 hrs. Saute mushrooms and pearl onions separately, add for final 30 min.',
-   ingredients:['1.5 kg beef chuck, cubed','750 ml Burgundy or Pinot Noir','200 g bacon lardons','250 g small mushrooms','200 g pearl onions','2 onions, diced','3 carrots, sliced','4 garlic cloves, minced','2 tbsp tomato paste','400 ml beef stock','Bouquet garni: thyme, bay, parsley','2 tbsp butter','2 tbsp olive oil','Salt and pepper'],
-   notes:'Overnight marinating is worth it for depth. Serve over creamy mash. Even better the next day when flavours deepen.'},
-
-  {id:'d2',name:'Beef & Guinness Stew',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2.5 hrs',servings:'6',
-   recipe:'Brown beef chunks in batches, remove. Cook bacon lardons until crispy. Saute onion, celery and carrot until soft. Add garlic and tomato paste, cook 1 min. Pour in Guinness and scrape pan. Return beef, add stock, Worcestershire and thyme. Cover and braise at 160C for 2 hrs until tender. Thicken with a little flour mixed with water if needed.',
-   ingredients:['1.5 kg beef chuck, cubed','150 g bacon lardons','440 ml Guinness','400 ml beef stock','2 large onions, diced','3 carrots, chunked','2 celery stalks, sliced','4 garlic cloves, minced','2 tbsp tomato paste','2 tbsp Worcestershire sauce','2 sprigs thyme','2 tbsp olive oil','Salt and pepper'],
-   notes:'The Guinness adds incredible depth without tasting bitter. Serve with crusty soda bread or mash.'},
-
-  {id:'d3',name:'Mexican Beef Chili',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2 hrs',servings:'6',
-   recipe:'Brown beef mince in batches, remove. Saute onion and capsicum until soft. Add garlic, chipotle, cumin, chilli powder and coriander, cook 1 min. Return beef. Add crushed tomatoes, stock and kidney beans. Simmer uncovered 1.5 hrs until thick and rich. Stir in a square of dark chocolate to finish. Adjust seasoning.',
-   ingredients:['800 g beef mince','2 x 400 g cans kidney beans, rinsed','2 x 400 g cans crushed tomatoes','2 large onions, diced','1 red capsicum, diced','5 garlic cloves, minced','2 chipotle chillies in adobo, minced','2 tbsp ground cumin','1 tsp chilli powder','1 tsp ground coriander','300 ml beef stock','20 g dark chocolate','2 tbsp olive oil'],
-   notes:'Dark chocolate is the secret weapon. Serve with sour cream, cheddar, jalapeños and coriander on top.'},
-
-  {id:'d4',name:'Beef Massaman Curry',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2.5 hrs',servings:'5',
-   recipe:'Brown beef chunks in oil, remove. Fry massaman paste 2 min until fragrant and oil splits. Add coconut milk and bring to simmer. Return beef. Add potato, onion, fish sauce, palm sugar and tamarind. Cover and braise at 160C for 2 hrs until very tender. Adjust sweet, sour and salt balance. Finish with peanuts and lime.',
-   ingredients:['1.2 kg beef chuck, cubed','2 x 400 ml cans coconut milk','4 tbsp massaman curry paste','3 potatoes, peeled and quartered','2 onions, quartered','3 tbsp fish sauce','2 tbsp palm sugar','2 tbsp tamarind paste','100 g roasted peanuts','Juice of 1 lime','2 tbsp vegetable oil','Jasmine rice to serve'],
-   notes:'Use good-quality paste. The three-way balance of fish sauce (salty), palm sugar (sweet) and tamarind (sour) is the key.'},
-
-  {id:'d5',name:'Osso Buco',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2.5 hrs',servings:'4',
-   recipe:'Season veal shin slices and dredge in flour. Brown deeply in oil and butter both sides, remove. Saute onion, carrot, celery and garlic until soft. Add white wine and reduce by half. Add crushed tomatoes and stock. Nestle veal in, cover and braise at 170C for 2 hrs until meat pulls from bone. Make gremolata: lemon zest, garlic and parsley. Scatter over to serve.',
-   ingredients:['4 veal osso buco slices cross-cut shin','2 tbsp plain flour','1 large onion, diced','2 carrots, diced','2 celery stalks, diced','3 garlic cloves, minced','200 ml white wine','400 g can crushed tomatoes','300 ml chicken stock','2 tbsp butter','2 tbsp olive oil','Salt and pepper','Gremolata: zest of 1 lemon + 2 garlic cloves minced + 1/4 cup parsley'],
-   notes:'The gremolata is non-negotiable. Traditionally served with saffron risotto Milanese.'},
-
-  {id:'d6',name:'Oxtail Stew',category:'Dinner',subcategory:'Dutchoven',cookingTime:'4 hrs',servings:'5',
-   recipe:'Season oxtail and brown deeply in batches, remove. Saute onion, carrot, celery and garlic until soft. Add tomato paste, cook 2 min. Deglaze with red wine. Return oxtail, add crushed tomatoes, stock and herbs. Cover and braise at 150C for 3.5 hrs until meat falls from the bone. Skim surface fat. Serve over creamy polenta or mash.',
-   ingredients:['1.5 kg oxtail pieces','2 onions, diced','3 carrots, diced','2 celery stalks, diced','4 garlic cloves, minced','2 tbsp tomato paste','300 ml red wine','500 ml beef stock','400 g can crushed tomatoes','2 bay leaves','3 sprigs thyme','2 tbsp olive oil','Salt and pepper'],
-   notes:'Make the day before and skim solidified fat cold. Oxtail is cheap, gelatinous and extraordinary after long slow braising.'},
-
-  {id:'d7',name:'Beef Goulash',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2 hrs',servings:'5',
-   recipe:'Brown beef cubes in batches, remove. Saute onion and capsicum until very soft and golden. Add garlic and a generous amount of sweet Hungarian paprika, cook 1 min. Return beef. Add crushed tomatoes, stock, caraway seeds and bay leaves. Cover and braise at 160C for 1.5 hrs until thick and beef is tender. Serve over egg noodles with sour cream.',
-   ingredients:['1.2 kg beef chuck, cubed','3 tbsp sweet Hungarian paprika','2 large onions, diced','1 red capsicum, diced','4 garlic cloves, minced','400 g can crushed tomatoes','400 ml beef stock','1 tsp caraway seeds','2 bay leaves','2 tbsp olive oil','Sour cream and egg noodles to serve','Salt and pepper'],
-   notes:'Hungarian paprika is everything here. Use a good quality sweet paprika and do not skimp on it.'},
-
-  {id:'d8',name:'Tuscan Beef Stew with Olives & Rosemary',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2.5 hrs',servings:'5',
-   recipe:'Brown beef chunks in oil, remove. Saute onion, celery and carrot until soft. Add garlic, rosemary and tomato paste, cook 1 min. Deglaze with red wine. Return beef, add crushed tomatoes and stock. Cover and braise at 160C for 2 hrs. Stir in Kalamata olives for the last 20 min. Serve with soft polenta or crusty bread.',
-   ingredients:['1.2 kg beef chuck, cubed','100 g Kalamata olives, pitted','400 g can crushed tomatoes','2 onions, diced','2 celery stalks, diced','2 carrots, diced','4 garlic cloves, minced','2 tbsp tomato paste','200 ml red wine','400 ml beef stock','2 sprigs rosemary','2 tbsp olive oil','Salt and pepper'],
-   notes:'Olives added too early turn bitter. The last 20 minutes is just right to warm through and meld flavours.'},
-
-  {id:'d9',name:'Cowboy Beef & Bean Stew',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2 hrs',servings:'6',
-   recipe:'Brown beef chunks, remove. Cook bacon until crispy. Saute onion, capsicum and jalapeno until soft. Add garlic, cumin and smoked paprika. Return beef. Add crushed tomatoes, stock, beans and beer. Simmer covered 1.5 hrs. Stir in corn for last 10 min. Serve with cornbread or rice and all the toppings.',
-   ingredients:['1 kg beef chuck, cubed','150 g bacon, diced','2 x 400 g cans pinto beans, rinsed','400 g can crushed tomatoes','1 cup corn kernels','1 onion, diced','1 capsicum, diced','1 jalapeno, diced','4 garlic cloves','1 tsp cumin','1 tsp smoked paprika','300 ml beer','200 ml beef stock','Sour cream, cheddar and coriander to serve'],
-   notes:'Crowd pleaser. Scale up easily. The beer adds malt sweetness that complements the smoky spices beautifully.'},
-
-  {id:'d10',name:'Korean Braised Beef Short Ribs',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2.5 hrs',servings:'4',
-   recipe:'Soak short ribs in cold water 30 min, drain and pat dry. Brown in oil. Blend soy sauce, Asian pear, garlic, ginger, sesame oil, sugar and mirin for sauce. Pour over ribs with enough water to come halfway up. Cover and braise at 160C for 2 hrs. Add carrot and potato for last 30 min. Garnish with sesame seeds and spring onion.',
-   ingredients:['1.5 kg beef short ribs bone-in','1/4 cup soy sauce','1 Asian pear or apple, grated','6 garlic cloves, minced','1 tbsp fresh ginger, grated','2 tbsp sesame oil','2 tbsp sugar','2 tbsp mirin','3 carrots, chunked','2 potatoes, quartered','2 tbsp vegetable oil','Sesame seeds and spring onion to serve'],
-   notes:'Grating the pear tenderises naturally. A Korean celebratory dish. The sauce is deeply savoury and sweet.'},
-
-  {id:'d11',name:'French Daube Provencale',category:'Dinner',subcategory:'Dutchoven',cookingTime:'3 hrs',servings:'5',
-   recipe:'Marinate beef in red wine with orange zest, thyme, bay and garlic for 2 hrs. Drain and pat dry. Brown beef in oil, remove. Saute onion and carrot. Return beef with marinade, add stock, olives, tomatoes and anchovy paste. Cover and braise at 150C for 2.5 hrs until meltingly tender. Serve over pasta or with crusty bread.',
-   ingredients:['1.5 kg beef chuck, cubed','500 ml red wine','400 g can crushed tomatoes','100 g black olives, pitted','2 onions, diced','3 carrots, sliced','4 garlic cloves, sliced','Zest of 1 orange','1 tsp anchovy paste','300 ml beef stock','2 bay leaves','3 sprigs thyme','2 tbsp olive oil','Salt and pepper'],
-   notes:'The orange zest and olives make this distinctly Provencal. The anchovy paste adds depth without fishiness.'},
-
-  {id:'d12',name:'Beef Goulash Soup',category:'Dinner',subcategory:'Dutchoven',cookingTime:'1.5 hrs',servings:'5',
-   recipe:'Cube beef small. Brown in oil, remove. Saute onion until golden. Add garlic, paprika, caraway and marjoram, cook 1 min. Return beef. Add tomato paste, stock, diced potato and pepper. Simmer covered 1 hr until beef and potato are tender. Add egg noodles for last 10 min. Season and serve with crusty bread and sour cream.',
-   ingredients:['800 g beef chuck, small cubes','2 large onions, diced','3 potatoes, diced small','150 g egg noodles','4 garlic cloves, minced','3 tbsp sweet paprika','1 tsp caraway seeds','1 tsp dried marjoram','2 tbsp tomato paste','1.2 L beef stock','1 red capsicum, diced','2 tbsp oil','Salt and pepper','Sour cream to serve'],
-   notes:'Thinner than goulash stew, richer than soup. A complete meal in one pot. Hungarian soul food.'},
-
   {id:'d13',name:'Lamb Tagine with Apricots & Almonds',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2 hrs',servings:'5',
    recipe:'Brown lamb chunks in oil, remove. Saute onion until golden. Add garlic, ginger, cumin, coriander, cinnamon and turmeric, cook 1 min. Return lamb. Add stock, honey, cinnamon stick and dried apricots. Cover and braise at 160C for 1.5 hrs until very tender. Scatter toasted almonds, coriander and preserved lemon over to serve. Serve with couscous.',
    ingredients:['1.2 kg lamb shoulder, cubed','150 g dried apricots','100 g blanched almonds, toasted','1 large onion, diced','4 garlic cloves, minced','1 tsp fresh ginger grated','1 tsp ground cumin','1 tsp ground coriander','1/2 tsp turmeric','1/2 tsp ground cinnamon','1 cinnamon stick','2 tbsp honey','400 ml chicken stock','Fresh coriander and preserved lemon to serve','Couscous to serve'],
    notes:'Toast the almonds until properly golden. The sweet-savoury balance of apricot and spice is the soul of this dish.'},
 
-  {id:'d14',name:'Irish Lamb Stew',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2 hrs',servings:'5',
-   recipe:'Brown lamb pieces in oil, remove. Saute onion and celery until soft. Return lamb. Pour over stock. Layer potatoes and carrots on top. Season very well with salt, pepper and thyme. Cover and braise at 160C for 1.5 hrs. Stir in frozen peas and fresh parsley for the last 5 min. Serve in deep bowls with soda bread.',
-   ingredients:['1.5 kg lamb neck chops or shoulder pieces','4 medium potatoes, chunked','3 large carrots, chunked','2 onions, diced','2 celery stalks, sliced','4 garlic cloves, minced','600 ml lamb or chicken stock','1 tsp dried thyme','1 cup frozen peas','Bunch flat-leaf parsley, chopped','2 tbsp olive oil','Salt and pepper'],
-   notes:'The oldest comfort stew in the world. Keep it rustic and simple. The lamb does all the talking.'},
-
-  {id:'d15',name:'Lamb & Chickpea Curry',category:'Dinner',subcategory:'Dutchoven',cookingTime:'1.5 hrs',servings:'5',
-   recipe:'Brown lamb chunks, remove. Saute onion until deep golden, 15 min. Add garlic, ginger and spices, cook 2 min. Add tomato paste, cook 1 min. Return lamb. Add crushed tomatoes, stock and chickpeas. Cover and braise at 160C for 1 hr. Stir in baby spinach. Serve with rice or naan.',
-   ingredients:['1 kg lamb shoulder, cubed','2 x 400 g cans chickpeas, rinsed','2 x 400 g cans crushed tomatoes','2 large onions, diced','5 garlic cloves, minced','1 tbsp fresh ginger, grated','2 tbsp garam masala','1 tsp cumin','1 tsp ground coriander','1/2 tsp turmeric','1 tbsp tomato paste','200 ml chicken stock','2 cups baby spinach','2 tbsp oil'],
-   notes:'Properly golden onions are the flavour base. This is the step most people rush and then wonder why the curry is flat.'},
-
-  {id:'d16',name:'Greek Lamb Stifado',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2.5 hrs',servings:'5',
-   recipe:'Brown lamb chunks in oil, remove. Brown whole pearl onions in same pot, remove. Deglaze with red wine. Return lamb and onions. Add crushed tomatoes, cinnamon stick, whole cloves, allspice, bay leaves and a strip of orange peel. Cover and braise at 160C for 2 hrs until very tender. The sauce should be thick and deeply spiced.',
-   ingredients:['1.2 kg lamb shoulder, cubed','500 g pearl onions, peeled','200 ml red wine','400 g can crushed tomatoes','1 cinnamon stick','4 whole cloves','4 allspice berries','2 bay leaves','Strip of orange peel','3 garlic cloves, minced','2 tbsp red wine vinegar','2 tbsp olive oil','Salt and pepper'],
-   notes:'Stifado is defined by the warm whole spices. Do not chop the onions. Serve with thick-cut bread or orzo.'},
-
-  {id:'d17',name:'Slow-Cooked Lamb Ragu',category:'Dinner',subcategory:'Dutchoven',cookingTime:'3 hrs',servings:'6',
-   recipe:'Brown lamb shoulder chunks in batches, remove. Saute onion, carrot and celery. Add garlic and rosemary, cook 1 min. Add tomato paste, cook 1 min. Deglaze with red wine. Return lamb, add crushed tomatoes and stock. Cover and braise at 150C for 2.5 hrs. Shred lamb with two forks into the sauce. Toss with pappardelle and parmesan.',
-   ingredients:['1.5 kg lamb shoulder bone-in or out','400 g pappardelle','2 onions, finely diced','2 carrots, finely diced','2 celery stalks, finely diced','4 garlic cloves, minced','2 sprigs rosemary','2 tbsp tomato paste','200 ml red wine','400 g can crushed tomatoes','300 ml chicken stock','Parmesan to serve','2 tbsp olive oil'],
-   notes:'Shredding rather than slicing is what makes this a ragu. Freeze without the pasta for up to 3 months.'},
-
-  {id:'d18',name:'Persian Lamb Stew (Ghormeh Sabzi)',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2.5 hrs',servings:'5',
-   recipe:'Fry dried herbs (fenugreek, parsley and coriander) in oil until dark and fragrant. Add onion, cook until golden. Add lamb, brown well. Add turmeric and fry 1 min. Add kidney beans, stock, dried limes and saffron. Cover and simmer at 150C for 2 hrs. Season with lemon juice and salt. Serve over white rice with a pat of butter.',
-   ingredients:['1 kg lamb shoulder, cubed','2 x 400 g cans red kidney beans, rinsed','1 large onion, diced','1/2 cup dried fenugreek leaves','1/2 cup dried parsley','1/4 cup dried coriander','4 dried Persian limes (limoo amani), pierced','Good pinch of saffron dissolved in 2 tbsp water','1 tsp turmeric','500 ml lamb or chicken stock','Juice of 1 lemon','2 tbsp oil','Salt and pepper','Rice to serve'],
-   notes:'Dried Persian limes are sold at Middle Eastern grocers. Pierce them before adding. The dark herb fry is what gives this its unique character.'},
-
-  {id:'d19',name:'Pork & Apple Cider Stew',category:'Dinner',subcategory:'Dutchoven',cookingTime:'1.5 hrs',servings:'5',
-   recipe:'Brown pork shoulder chunks, remove. Saute onion and garlic until soft. Add thyme and pour in dry cider, reduce by half. Add stock. Return pork. Cover and braise at 170C for 1 hr. Add apple wedges in last 20 min. Stir in cream and wholegrain mustard. Season and serve over mash.',
-   ingredients:['1.2 kg pork shoulder, cubed','330 ml dry apple cider','300 ml chicken stock','2 onions, diced','4 garlic cloves, minced','2 apples, peeled and cut into wedges','100 ml cream','2 tbsp wholegrain mustard','1 tsp dried thyme','2 tbsp olive oil','Salt and pepper','Mashed potato to serve'],
-   notes:'Use dry cider not sweet. The mustard and cream transform the braising liquid into a luxurious sauce.'},
-
-  {id:'d20',name:'Pork Vindaloo',category:'Dinner',subcategory:'Dutchoven',cookingTime:'1.5 hrs',servings:'5',
-   recipe:'Blend chillies, garlic, ginger, vinegar, cumin, mustard seeds and turmeric into a paste. Coat pork and marinate 2 hrs minimum. Fry onion in oil until deep golden. Add marinated pork and cook until lightly coloured. Add stock and bring to simmer. Cover and braise at 160C for 1 hr until tender. Adjust heat and tang with extra vinegar.',
-   ingredients:['1 kg pork shoulder, cubed','2 large onions, diced','250 ml chicken stock','2 tbsp oil','Rice to serve','Paste: 6 dried red chillies + 6 garlic cloves + 1 tbsp ginger + 3 tbsp red wine vinegar + 1 tsp cumin + 1 tsp mustard seeds + 1/2 tsp turmeric + 1/2 tsp salt'],
+  {id:'d20',name:'Lamb Vindaloo',category:'Dinner',subcategory:'Dutchoven',cookingTime:'1.5 hrs',servings:'5',
+   recipe:'Blend chillies, garlic, ginger, vinegar, cumin, mustard seeds and turmeric into a paste. Coat lamb and marinate 2 hrs minimum. Fry onion in oil until deep golden. Add marinated lamb and cook until lightly coloured. Add stock and bring to simmer. Cover and braise at 160C for 1 hr until tender. Adjust heat and tang with extra vinegar.',
+   ingredients:['1 kg lamb shoulder, cubed','2 large onions, diced','250 ml chicken stock','2 tbsp oil','Rice to serve','Paste: 6 dried red chillies + 6 garlic cloves + 1 tbsp ginger + 3 tbsp red wine vinegar + 1 tsp cumin + 1 tsp mustard seeds + 1/2 tsp turmeric + 1/2 tsp salt'],
    notes:'Vindaloo is Goan with Portuguese roots. The vinegar tang is the point, not just the heat. Adjust chilli to your tolerance.'},
-
-  {id:'d21',name:'Spanish Pork & Chorizo Stew',category:'Dinner',subcategory:'Dutchoven',cookingTime:'1.5 hrs',servings:'5',
-   recipe:'Brown pork chunks, remove. Slice chorizo and fry until oils release. Saute onion and garlic. Add smoked paprika and saffron, cook 1 min. Deglaze with white wine. Return pork. Add crushed tomatoes, stock and roasted capsicum. Cover and braise at 165C for 1 hr. Scatter with parsley and serve with crusty bread.',
-   ingredients:['1 kg pork shoulder, cubed','200 g cooking chorizo, sliced','2 x 400 g cans crushed tomatoes','2 onions, diced','4 garlic cloves, minced','2 roasted red capsicums from a jar, sliced','150 ml white wine','300 ml chicken stock','2 tsp smoked paprika','Pinch of saffron','Flat-leaf parsley','2 tbsp olive oil','Salt and pepper'],
-   notes:'The chorizo seasons the whole stew as it cooks. Use cooking chorizo not cured slicing chorizo for this.'},
-
-  {id:'d22',name:'Italian Pork & White Bean Stew',category:'Dinner',subcategory:'Dutchoven',cookingTime:'1.5 hrs',servings:'5',
-   recipe:'Brown pork shoulder chunks in oil, remove. Cook pancetta until crispy. Saute onion, celery and carrot until soft. Add garlic and sage, cook 1 min. Return pork. Add white wine, stock, crushed tomatoes and cannellini beans. Cover and braise at 165C for 1 hr. Stir in kale for last 10 min. Finish with olive oil and parmesan.',
-   ingredients:['1 kg pork shoulder, cubed','150 g pancetta, diced','2 x 400 g cans cannellini beans, rinsed','400 g can crushed tomatoes','1 onion, diced','2 celery stalks, diced','2 carrots, diced','4 garlic cloves, minced','150 ml white wine','400 ml chicken stock','6 sage leaves','2 cups cavolo nero or kale','Parmesan and olive oil to finish'],
-   notes:'Pancetta and sage are the flavour anchors of this hearty stew. A parmesan rind in the pot makes the broth exceptional.'},
-
-  {id:'d23',name:'Pork Shoulder with Fennel & White Wine',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2.5 hrs',servings:'5',
-   recipe:'Score pork shoulder, season with fennel seeds, salt and pepper. Brown all over in oil. Remove. Saute sliced fennel, onion and garlic until soft. Add white wine and reduce by half. Add stock and crushed tomatoes. Return pork. Cover and braise at 160C for 2 hrs until very tender. Shred into large pieces. Serve with soft polenta and fennel fronds.',
-   ingredients:['1.5 kg boneless pork shoulder','2 fennel bulbs, cored and sliced','1 large onion, sliced','4 garlic cloves, sliced','200 ml white wine','300 ml chicken stock','400 g can crushed tomatoes','1 tbsp fennel seeds, lightly crushed','2 tbsp olive oil','Salt and pepper','Soft polenta and fennel fronds to serve'],
-   notes:'Fennel seeds in the crust and fresh fennel in the braise double down on the anise flavour. Polenta is the ideal base.'},
 
   {id:'d24',name:'Tuscan Chicken Breast',category:'Dinner',subcategory:'Dutchoven',cookingTime:'40 min',servings:'4',
    recipe:'Season chicken breasts and sear in oil until golden both sides, remove. Fry garlic and sundried tomatoes 1 min. Add spinach and wilt. Pour in cream and chicken stock, stir in parmesan. Return chicken. Simmer gently covered 15 min until chicken is cooked through. Serve immediately with pasta or crusty bread.',
    ingredients:['4 large chicken breasts','3 garlic cloves, minced','100 g sundried tomatoes in oil, sliced','3 cups baby spinach','250 ml thickened cream','150 ml chicken stock','60 g parmesan, grated','1 tsp Italian seasoning','2 tbsp olive oil','Salt and pepper'],
    notes:'Do not let the cream boil hard or it will split. A gentle simmer is all it needs. Works beautifully with gnocchi.'},
-
-  {id:'d25',name:'French Onion Chicken',category:'Dinner',subcategory:'Dutchoven',cookingTime:'1 hr',servings:'4',
-   recipe:'Slowly caramelise onions in butter with thyme and a pinch of sugar for 30 min until deep golden. Add garlic and white wine, cook 2 min. Add stock. Season and sear chicken breasts in separate pan then nestle into onion mixture. Cover and braise at 180C for 20 min. Uncover, top with Gruyere and grill until melted and bubbling.',
-   ingredients:['4 large chicken breasts','4 large onions, thinly sliced','30 g butter','4 garlic cloves, minced','150 ml white wine','300 ml chicken stock','1 tsp dried thyme','Pinch of sugar','150 g Gruyere cheese, grated','1 tbsp olive oil','Salt and pepper'],
-   notes:'The onion caramelisation cannot be rushed. 30 minutes of patience delivers extraordinary results. Serve with crusty bread.'},
-
-  {id:'d26',name:'Chicken Paprikash',category:'Dinner',subcategory:'Dutchoven',cookingTime:'50 min',servings:'4',
-   recipe:'Season and sear chicken breasts until golden both sides, remove. Saute onion until golden. Add garlic and a generous quantity of sweet paprika, cook 1 min. Add crushed tomatoes and stock. Return chicken. Cover and braise at 170C for 25 min. Remove chicken and stir sour cream into sauce (do not boil). Slice chicken, return to sauce. Serve over egg noodles.',
-   ingredients:['4 large chicken breasts','3 tbsp sweet Hungarian paprika','2 large onions, diced','4 garlic cloves, minced','400 g can crushed tomatoes','300 ml chicken stock','200 ml sour cream','1 tbsp oil','1 tbsp butter','Salt and pepper','Egg noodles to serve','Fresh parsley to serve'],
-   notes:'Use good quality Hungarian paprika. Stir sour cream in off the heat so it does not curdle. This is Hungarian comfort food at its finest.'},
 
   {id:'d27',name:'Greek Lemon Chicken',category:'Dinner',subcategory:'Dutchoven',cookingTime:'1.5 hrs',servings:'5',
    recipe:'Joint whole chicken into 8 pieces. Brown all over in oil, remove. Saute onion and garlic. Deglaze with white wine. Return chicken, add lemon juice, stock, oregano and a whole head of garlic halved crossways. Cover and braise at 180C for 45 min. Remove lid and roast 20 min more to crisp the skin. Squeeze roasted garlic into the sauce.',
@@ -178,11 +38,6 @@ const SAMPLES = [
    ingredients:['4 chicken breasts, butterflied and pounded thin','300 g mixed mushrooms, sliced','3 garlic cloves, minced','200 ml Marsala wine','200 ml chicken stock','1/4 cup plain flour','30 g butter plus extra knob','2 tbsp olive oil','Flat-leaf parsley','Salt and pepper'],
    notes:'Marsala wine is a Sicilian fortified wine. Dry Marsala is correct here, not sweet. Brown the mushrooms properly in batches.'},
 
-  {id:'d30',name:'Coq au Vin',category:'Dinner',subcategory:'Dutchoven',cookingTime:'2 hrs',servings:'5',
-   recipe:'Joint whole chicken into 8 pieces. Brown deeply in oil with lardons. Remove. Saute onion, carrot and garlic. Add tomato paste. Deglaze with cognac and flambé if you like. Add red wine and stock. Return chicken. Braise at 160C for 1 hr. Saute mushrooms and pearl onions separately, add for final 15 min. Thicken sauce with beurre manie if needed.',
-   ingredients:['1 whole chicken jointed into 8 pieces or 4 bone-in chicken breasts','200 g bacon lardons','250 g small mushrooms','150 g pearl onions','2 onions, diced','2 carrots, diced','4 garlic cloves, minced','1 tbsp tomato paste','50 ml cognac or brandy','500 ml red wine','300 ml chicken stock','Bouquet garni','Beurre manie: 1 tbsp butter + 1 tbsp flour','2 tbsp oil'],
-   notes:'Classic French bistro dish. The cognac flambe is theatrical but the alcohol burns off either way. Better the next day.'},
-
   // ── BRAISE (4) ───────────────────────────────────────────────────
   {id:'s13',name:'Slow-Braised Lamb Shoulder',category:'Dinner',subcategory:'Braise',cookingTime:'3.5 hrs',servings:'6',
    recipe:'Score lamb and rub all over with garlic, rosemary, oil, salt and pepper. Brown in dutch oven. Add onion, stock and lemon. Cover tightly and braise at 160°C for 3 hrs. Rest 15 min, then pull apart with forks. Strain and reduce braising liquid for gravy.',
@@ -194,50 +49,15 @@ const SAMPLES = [
    ingredients:['4 large chicken breasts','3 tbsp honey','3 tbsp soy sauce','3 garlic cloves, minced','1 tsp fresh ginger, grated','1 tbsp rice wine vinegar','1 tsp sesame oil','1 tbsp olive oil','Sesame seeds and spring onion to serve'],
    notes:'Scoring the breast lets the sauce penetrate deeply. Serve over steamed rice with bok choy on the side.'},
 
-  {id:'n3',name:'Beef Cheeks in Red Wine',category:'Dinner',subcategory:'Braise',cookingTime:'4 hrs',servings:'4',
-   recipe:'Pat beef cheeks dry, season and brown deeply all over. Remove. Sauté onion, carrot and celery until soft. Add garlic, tomato paste and thyme, cook 1 min. Deglaze with red wine, simmer 5 min. Add stock. Return cheeks, cover and braise at 150°C for 3.5 hrs until falling apart. Serve over creamy mash with braising jus strained and reduced.',
-   ingredients:['4 beef cheeks about 1.4 kg total','2 tbsp olive oil','1 large onion, diced','2 carrots, diced','2 celery stalks, diced','4 garlic cloves, minced','2 tbsp tomato paste','400 ml red wine','400 ml beef stock','3 sprigs thyme','2 bay leaves','Salt and pepper','Creamy mash to serve'],
-   notes:'Beef cheeks are cheap and absolutely melt after long braising. Ask your butcher. The braising sauce reduces to pure velvet.'},
-
-  {id:'n4',name:'Slow-Braised Pulled Pork',category:'Dinner',subcategory:'Braise',cookingTime:'4 hrs',servings:'8',
-   recipe:'Rub pork all over with garlic, smoked paprika, cumin, brown sugar, salt and pepper. Brown in oil. Add onion, apple cider vinegar, chicken stock and bay leaves. Cover and braise at 150°C for 3.5 hrs until very tender. Pull pork apart with forks in the braising liquid. Serve in soft rolls with slaw.',
-   ingredients:['1.8 kg pork shoulder bone-in','2 tbsp olive oil','1 large onion, sliced','4 garlic cloves, crushed','2 tsp smoked paprika','2 tsp ground cumin','2 tbsp brown sugar','100 ml apple cider vinegar','300 ml chicken stock','2 bay leaves','Salt and pepper','Soft rolls and coleslaw to serve'],
-   notes:'Freezes brilliantly. Portion into bags with some braising liquid. Great for tacos, sandwiches or rice bowls.'},
-
   {id:'b1',name:'Red Wine Braised Beef Brisket',category:'Dinner',subcategory:'Braise',cookingTime:'3.5 hrs',servings:'6',
    recipe:'Score brisket fat cap and season generously. Sear fat-side down in oil until deep golden, then all sides. Remove. Saute onion, carrot and celery until soft. Add garlic and tomato paste, cook 2 min. Add red wine and reduce by half. Return brisket, add stock and thyme. Cover and braise at 150C for 3 hrs until fork-tender. Rest 15 min, slice against the grain.',
    ingredients:['1.8 kg beef brisket, rolled','2 onions, diced','3 carrots, diced','2 celery stalks, diced','5 garlic cloves, minced','2 tbsp tomato paste','400 ml red wine','400 ml beef stock','3 sprigs thyme','2 bay leaves','2 tbsp olive oil','Salt and pepper'],
    notes:'Always slice brisket against the grain or it will be stringy. The fat cap keeps the meat basted throughout the long braise.'},
 
-  {id:'b2',name:'Korean Galbi-jjim (Braised Short Ribs)',category:'Dinner',subcategory:'Braise',cookingTime:'2.5 hrs',servings:'4',
-   recipe:'Soak short ribs in cold water 1 hr, drain and pat dry. Score the meat between bones. Blend soy, grated Asian pear, garlic, ginger, sesame oil, sugar and mirin for sauce. Brown ribs in oil, pour sauce over with enough water to come halfway up. Cover and braise at 160C for 2 hrs. Add carrot and potato for last 30 min. Garnish with sesame seeds and spring onion.',
-   ingredients:['1.5 kg bone-in beef short ribs','3 carrots, chunked','2 medium potatoes, quartered','1/3 cup soy sauce','1 Asian pear or apple, grated','8 garlic cloves, minced','1 tbsp ginger, grated','2 tbsp sesame oil','3 tbsp sugar','3 tbsp mirin','2 tbsp vegetable oil','Sesame seeds and spring onion to garnish'],
-   notes:'Soaking draws out blood for a cleaner braise. The pear naturally tenderises the meat. A beloved Korean celebratory dish.'},
-
   {id:'b3',name:'Mexican Barbacoa Beef',category:'Dinner',subcategory:'Braise',cookingTime:'3.5 hrs',servings:'8',
    recipe:'Blend chipotles in adobo, garlic, cumin, oregano, cloves, lime juice and apple cider vinegar into a paste. Rub all over beef chuck. Brown in oil. Add beef stock. Cover and braise at 150C for 3 hrs until falling apart. Shred beef and mix back through braising liquid. Serve in warm tortillas with all the toppings.',
    ingredients:['1.8 kg beef chuck, cubed','3 chipotle chillies in adobo','6 garlic cloves','2 tsp ground cumin','1 tsp dried oregano','1/4 tsp ground cloves','Juice of 2 limes','3 tbsp apple cider vinegar','400 ml beef stock','2 bay leaves','2 tbsp olive oil','Tortillas, salsa, pickled onion, coriander and lime to serve'],
    notes:'Shred the beef generously through the reduced braising liquid for maximum flavour. Leftovers are even better the next day in tacos or bowls.'},
-
-  {id:'b4',name:'Italian Braised Beef Shin',category:'Dinner',subcategory:'Braise',cookingTime:'3 hrs',servings:'4',
-   recipe:'Season beef shin slices, dust with flour. Brown deeply in oil on both sides. Remove. Saute onion, carrot, celery and garlic. Deglaze with white wine. Add crushed tomatoes and stock. Return beef, add gremolata ingredients tied in string. Cover and braise at 165C for 2.5 hrs until meat is falling from the bone. Serve over mash or polenta with fresh gremolata scattered over.',
-   ingredients:['4 beef shin cross-cut slices (osso buco style)','2 onions, diced','2 carrots, diced','2 celery stalks, diced','4 garlic cloves, minced','200 ml white wine','400 g can crushed tomatoes','300 ml beef stock','2 tbsp flour','2 tbsp olive oil','Salt and pepper','Gremolata: zest 1 lemon + 2 garlic cloves + 1/4 cup parsley'],
-   notes:'Beef shin is cheaper than veal and equally extraordinary after long braising. The gelatine from the bone makes the sauce silky.'},
-
-  {id:'b5',name:'Chinese Red-Braised Beef',category:'Dinner',subcategory:'Braise',cookingTime:'2.5 hrs',servings:'5',
-   recipe:'Blanch beef chunks in boiling water 5 min, drain and rinse. Brown in oil, remove. Fry sliced ginger and spring onion until fragrant. Add soy sauce, Shaoxing wine, dark soy sauce, sugar and star anise. Return beef, add stock to cover halfway. Cover and braise at 150C for 2 hrs. Reduce sauce until thick and glossy. Serve over rice with braising sauce.',
-   ingredients:['1.5 kg beef chuck, cubed large','3 tbsp light soy sauce','2 tbsp dark soy sauce','3 tbsp Shaoxing rice wine','2 tbsp rock sugar or brown sugar','4 star anise','3 cm ginger, sliced','3 spring onions, knotted','500 ml beef stock','2 tbsp vegetable oil','Rice to serve'],
-   notes:'Blanching before browning removes impurities and gives a cleaner braise. Dark soy gives the characteristic red colour.'},
-
-  {id:'b6',name:'Braised Oxtail in Red Wine',category:'Dinner',subcategory:'Braise',cookingTime:'4 hrs',servings:'5',
-   recipe:'Season oxtail and brown deeply all over in batches. Remove. Saute onion, carrot, celery and garlic until soft. Add tomato paste, cook 2 min. Deglaze with red wine and reduce by half. Return oxtail, add stock, crushed tomatoes and herbs. Cover and braise at 150C for 3.5 hrs until meat falls from bone. Skim fat, reduce sauce. Serve over polenta.',
-   ingredients:['1.5 kg oxtail pieces','2 onions, diced','3 carrots, diced','2 celery stalks, diced','4 garlic cloves, minced','2 tbsp tomato paste','350 ml red wine','500 ml beef stock','400 g can crushed tomatoes','2 sprigs rosemary','2 bay leaves','2 tbsp olive oil','Soft polenta to serve'],
-   notes:'Make a day ahead to skim solidified fat easily. Oxtail is pure collagen — the sauce becomes extraordinary.'},
-
-  {id:'b7',name:'Braised Beef Cheeks with Gremolata',category:'Dinner',subcategory:'Braise',cookingTime:'4 hrs',servings:'4',
-   recipe:'Pat beef cheeks dry, season and brown deeply on all sides. Remove. Saute onion, carrot and celery. Add garlic and thyme. Deglaze with red wine, reduce. Add stock. Return cheeks, cover and braise at 150C for 3.5 hrs until collapsing soft. Strain and reduce braising liquid to a glossy sauce. Serve over creamy mash topped with gremolata.',
-   ingredients:['4 beef cheeks about 1.5 kg','2 onions, diced','3 carrots, diced','2 celery stalks, diced','4 garlic cloves, minced','400 ml red wine','400 ml beef stock','3 sprigs thyme','2 bay leaves','2 tbsp olive oil','Creamy mash to serve','Gremolata: zest 2 lemons + 3 garlic cloves + 1/2 cup parsley, all finely chopped'],
-   notes:'Beef cheeks are cheap and underrated. Ask your butcher. The gremolata brightens and lifts the rich braised meat perfectly.'},
 
   {id:'b8',name:'American-Style Braised Beef Short Ribs',category:'Dinner',subcategory:'Braise',cookingTime:'4 hrs',servings:'4',
    recipe:'Season short ribs generously, brown deeply all sides. Remove. Saute onion and garlic. Add tomato paste, cook 2 min. Add red wine, stock, Worcestershire and a touch of brown sugar. Return ribs bone-side up. Cover and braise at 150C for 3.5 hrs until falling off the bone. Remove ribs, reduce sauce to glaze consistency. Serve over creamy mash.',
@@ -253,16 +73,6 @@ const SAMPLES = [
    recipe:'Brown beef chunks in batches, remove. Fry whole spices in oil until popping. Add onion and cook until deep golden, 15 min. Add ginger, garlic and kashmiri chilli powder, cook 2 min. Add yoghurt one spoon at a time, stirring between each addition. Return beef, add stock. Cover and braise at 160C for 1 hr until tender and sauce is thick and red.',
    ingredients:['1.2 kg beef chuck, cubed','2 large onions, finely diced','200 ml natural yoghurt','4 tbsp Kashmiri chilli powder','1 tbsp ginger paste','1 tbsp garlic paste','1 tsp fennel seeds','1 tsp ground coriander','4 cardamom pods','2 cloves','1 cinnamon stick','300 ml beef stock','3 tbsp oil','Fresh coriander and rice to serve'],
    notes:'Kashmiri chilli gives vivid red colour with moderate heat. Add yoghurt slowly or it will split and make the sauce grainy.'},
-
-  {id:'b11',name:'Braised Beef Cheeks in Pedro Ximenez',category:'Dinner',subcategory:'Braise',cookingTime:'4 hrs',servings:'4',
-   recipe:'Trim and brown beef cheeks deeply on all sides. Remove. Saute onion, carrot and celery until soft. Add garlic and thyme. Add Pedro Ximenez sherry and let it sizzle and reduce slightly. Return cheeks, add beef stock. Cover and braise at 150C for 3.5 hrs. Remove cheeks, pass sauce through a sieve and reduce to a glossy, sweet-savoury jus. Serve over celeriac puree.',
-   ingredients:['4 beef cheeks about 1.5 kg','2 onions, diced','2 carrots, diced','2 celery stalks, diced','4 garlic cloves','200 ml Pedro Ximenez sherry','400 ml beef stock','3 sprigs thyme','2 bay leaves','2 tbsp olive oil','Salt and pepper','Celeriac or potato puree to serve'],
-   notes:'Pedro Ximenez is a sweet Andalusian sherry. The flavour it gives the sauce is extraordinary — raisins, figs, chocolate. Worth tracking down.'},
-
-  {id:'b12',name:'Persian Pomegranate Beef Braise',category:'Dinner',subcategory:'Braise',cookingTime:'2 hrs',servings:'5',
-   recipe:'Brown beef chunks in oil, remove. Saute onion until golden. Add garlic, turmeric and cinnamon, cook 1 min. Return beef. Add pomegranate molasses, walnuts, stock and a pinch of saffron. Cover and simmer at 160C for 1.5 hrs until tender. Adjust sweet-sour balance with more molasses or sugar. Scatter pomegranate seeds and serve over rice.',
-   ingredients:['1.2 kg beef chuck, cubed','150 g walnuts, roughly chopped','2 large onions, finely diced','4 garlic cloves, minced','4 tbsp pomegranate molasses','Good pinch of saffron in 2 tbsp hot water','1 tsp turmeric','1/2 tsp cinnamon','400 ml beef stock','1 tsp sugar (to balance)','2 tbsp oil','Pomegranate seeds and rice to serve'],
-   notes:'Pomegranate molasses is available at Middle Eastern grocers. The walnut-pomegranate combination is a Persian classic. Adjust sweet-sour balance to taste.'},
 
   {id:'b13',name:'Braised Lamb Shanks in Red Wine',category:'Dinner',subcategory:'Braise',cookingTime:'3 hrs',servings:'4',
    recipe:'Season lamb shanks and brown deeply all over in oil. Remove. Saute onion, carrot and celery until soft. Add garlic and tomato paste, cook 2 min. Deglaze with red wine. Return shanks, add crushed tomatoes and stock. Cover and braise at 160C for 2.5 hrs until meat is falling off the bone. Rest 10 min. Serve over creamy mash with sauce spooned over.',
@@ -284,31 +94,6 @@ const SAMPLES = [
    ingredients:['4 lamb shanks','2 onions, diced','4 garlic cloves, minced','1 tsp fresh ginger, grated','2 tsp ground cumin','1 tsp ground coriander','1/2 tsp turmeric','1/2 tsp cinnamon','1 tsp smoked paprika','400 g can crushed tomatoes','400 ml chicken stock','1 preserved lemon rind, finely sliced','80 g green olives','Fresh coriander and couscous to serve'],
    notes:'Preserved lemon is the key Moroccan flavour. Make the dish a day ahead for even better results.'},
 
-  {id:'b17',name:'Greek Braised Lamb with Orzo (Giouvetsi)',category:'Dinner',subcategory:'Braise',cookingTime:'2.5 hrs',servings:'5',
-   recipe:'Brown lamb shoulder chunks in oil, remove. Saute onion and garlic. Add cinnamon, allspice and tomato paste. Return lamb, add crushed tomatoes and stock. Braise covered at 160C for 1.5 hrs. Add orzo pasta to the pot, stir, return to oven uncovered for 30 min until pasta is cooked and sauce absorbed. Scatter with feta and serve from the pot.',
-   ingredients:['1.2 kg lamb shoulder, cubed','300 g orzo pasta','2 onions, diced','4 garlic cloves, minced','2 tbsp tomato paste','1 cinnamon stick','4 allspice berries','2 x 400 g cans crushed tomatoes','500 ml chicken stock','2 tbsp olive oil','100 g feta, crumbled','Salt and pepper'],
-   notes:'A one-pot Greek classic. The orzo cooks directly in the sauce and absorbs all the spiced lamb braise. Serve straight from the pot at the table.'},
-
-  {id:'b18',name:'Braised Lamb Neck with Herbs',category:'Dinner',subcategory:'Braise',cookingTime:'3 hrs',servings:'4',
-   recipe:'Season lamb neck pieces and brown deeply in oil. Remove. Saute onion and garlic until soft. Add white wine and reduce. Return lamb, add stock, lemon zest, oregano and a cinnamon stick. Cover and braise at 160C for 2.5 hrs until falling off the bone. Remove lamb, strain and reduce sauce. Serve over creamy polenta with braising jus and fresh herbs.',
-   ingredients:['1.5 kg lamb neck slices','2 onions, diced','4 garlic cloves, minced','200 ml white wine','400 ml chicken stock','Zest of 1 lemon','1 tsp dried oregano','1 cinnamon stick','2 bay leaves','2 tbsp olive oil','Salt and pepper','Soft polenta or mash to serve'],
-   notes:'Lamb neck is cheap, gelatinous and magnificent braised. Ask your butcher to slice it crossways like osso buco.'},
-
-  {id:'b19',name:'Slow-Braised Lamb Ribs',category:'Dinner',subcategory:'Braise',cookingTime:'2.5 hrs',servings:'4',
-   recipe:'Season lamb ribs generously. Brown in batches in oil. Remove. Saute onion and garlic. Add harissa, honey, crushed tomatoes and stock. Return ribs. Cover and braise at 160C for 2 hrs until tender. Uncover and roast at 200C for 20 min to caramelise and crisp the surface. Serve with flatbread and yoghurt.',
-   ingredients:['1.5 kg lamb breast or riblets','2 onions, diced','4 garlic cloves, minced','2 tbsp harissa paste','2 tbsp honey','400 g can crushed tomatoes','300 ml chicken stock','2 tbsp olive oil','Salt and pepper','Flatbread and Greek yoghurt to serve'],
-   notes:'Lamb breast is one of the cheapest cuts and transforms beautifully when braised. The final blast of heat at high temperature caramelises the surface.'},
-
-  {id:'b20',name:'Turkish Slow-Braised Lamb',category:'Dinner',subcategory:'Braise',cookingTime:'4 hrs',servings:'6',
-   recipe:'Marinate lamb shoulder overnight in yoghurt, garlic, cumin, paprika and olive oil. Bring to room temperature. Transfer to pot with onion, stock and tomatoes. Cover tightly with foil then lid. Braise at 140C for 3.5 hrs until completely falling apart. Serve over buttery rice or flatbread with yoghurt, chilli flakes and fresh mint.',
-   ingredients:['1.8 kg bone-in lamb shoulder','2 cups natural yoghurt','6 garlic cloves, minced','2 tsp ground cumin','2 tsp sweet paprika','3 tbsp olive oil','2 onions, roughly chopped','400 ml chicken stock','400 g can crushed tomatoes','Salt and pepper','Rice or flatbread, yoghurt, mint and chilli flakes to serve'],
-   notes:'The yoghurt marinade tenderises and keeps the meat very moist during the long slow cook. Double foil seal is important to trap steam.'},
-
-  {id:'b21',name:'Italian Braised Lamb with Artichokes',category:'Dinner',subcategory:'Braise',cookingTime:'2 hrs',servings:'4',
-   recipe:'Brown lamb shoulder chunks in oil. Remove. Saute onion and garlic. Add white wine and reduce. Return lamb, add stock, crushed tomatoes and lemon zest. Cover and braise at 165C for 1 hr. Add artichoke hearts and olives for final 30 min. Finish with fresh mint and a squeeze of lemon. Serve with crusty bread or over soft polenta.',
-   ingredients:['1 kg lamb shoulder, cubed','2 x 400 g cans artichoke hearts, drained and halved','80 g green olives, pitted','1 large onion, diced','4 garlic cloves, sliced','200 ml white wine','300 ml chicken stock','400 g can crushed tomatoes','Zest and juice of 1 lemon','Fresh mint','2 tbsp olive oil','Salt and pepper'],
-   notes:'Tinned artichoke hearts work perfectly here. Add them late so they stay intact and do not become mushy.'},
-
   {id:'b22',name:'Lamb Shank Massaman Curry',category:'Dinner',subcategory:'Braise',cookingTime:'2.5 hrs',servings:'4',
    recipe:'Brown lamb shanks in oil all over, remove. Fry massaman paste in same pot 2 min. Add coconut milk and bring to simmer. Return shanks. Add potato chunks, fish sauce, palm sugar and tamarind. Cover and braise at 160C for 2 hrs until meat is very tender and falling from the bone. Finish with peanuts, lime and coriander. Serve over jasmine rice.',
    ingredients:['4 lamb shanks','2 x 400 ml cans coconut milk','4 tbsp massaman curry paste','3 potatoes, quartered','2 tbsp fish sauce','2 tbsp palm sugar','1 tbsp tamarind paste','100 g roasted peanuts','Juice of 1 lime','Fresh coriander','2 tbsp vegetable oil','Jasmine rice to serve'],
@@ -318,41 +103,6 @@ const SAMPLES = [
    recipe:'Score and season lamb shoulder. Brown all over in oil. Remove. Saute onion until golden. Add garlic, cumin and cinnamon. Return lamb. Add pomegranate juice, stock, pomegranate molasses and walnuts. Cover and braise at 150C for 2.5 hrs. Pull meat from bone. Reduce sauce until thick. Serve over flatbread or rice with pomegranate seeds.',
    ingredients:['1.8 kg bone-in lamb shoulder','200 ml pomegranate juice','3 tbsp pomegranate molasses','150 g walnuts, roughly chopped','2 large onions, diced','4 garlic cloves, minced','1 tsp ground cumin','1/2 tsp cinnamon','300 ml chicken stock','2 tbsp olive oil','Pomegranate seeds and fresh mint to serve','Flatbread or rice to serve'],
    notes:'Pomegranate molasses from Middle Eastern grocers gives the deep sweet-sour note. Pile the pulled lamb high over flatbread.'},
-
-  {id:'b24',name:'Coq au Vin Blanc',category:'Dinner',subcategory:'Braise',cookingTime:'1.5 hrs',servings:'5',
-   recipe:'Joint whole chicken into 8 pieces or use bone-in breasts. Brown in butter and oil until golden. Remove. Saute shallots and mushrooms until golden. Add garlic. Deglaze with Cognac. Add white wine and stock. Return chicken. Cover and braise at 160C for 1 hr. Remove chicken, reduce sauce. Stir in cream and tarragon. Return chicken to sauce and serve.',
-   ingredients:['1 whole chicken jointed or 4 bone-in chicken breasts','300 g button mushrooms, halved','8 shallots, peeled whole','3 garlic cloves, minced','50 ml Cognac or brandy','300 ml dry white wine','200 ml chicken stock','150 ml cream','2 tbsp fresh tarragon, chopped','2 tbsp butter','1 tbsp olive oil','Salt and pepper'],
-   notes:'The white wine version is more elegant and creamy than the red. Tarragon is essential. Works beautifully with egg noodles or mash.'},
-
-  {id:'b25',name:'Braised Chicken with Tarragon & Cream',category:'Dinner',subcategory:'Braise',cookingTime:'45 min',servings:'4',
-   recipe:'Season chicken breasts and sear in butter until golden on both sides. Remove. Saute shallots until soft. Add garlic. Deglaze with white wine, reduce by half. Add stock and fresh tarragon sprigs. Return chicken. Cover and braise gently 20 min. Remove chicken and tarragon. Stir cream into sauce and reduce until silky. Return chicken. Scatter fresh tarragon to serve.',
-   ingredients:['4 large chicken breasts','4 shallots, finely diced','2 garlic cloves, minced','200 ml dry white wine','200 ml chicken stock','150 ml cream','4 sprigs fresh tarragon plus more to serve','30 g butter','1 tbsp olive oil','Salt and pepper'],
-   notes:'A French bistro classic. The anise flavour of tarragon with cream and chicken is one of the great flavour combinations.'},
-
-  {id:'b26',name:'Japanese Soy-Braised Chicken',category:'Dinner',subcategory:'Braise',cookingTime:'45 min',servings:'4',
-   recipe:'Score chicken breasts and marinate briefly in soy, mirin and sake. Brown skin-side down in oil until golden. Flip. Add the marinade plus stock, sugar and ginger to the pan. Braise covered 20 min. Remove chicken, reduce sauce until thick and glossy. Serve over rice with sauce spooned over. Garnish with spring onion and sesame seeds.',
-   ingredients:['4 large chicken breasts','1/3 cup soy sauce','3 tbsp mirin','2 tbsp sake or dry sherry','1 tbsp sugar','3 cm ginger, thinly sliced','150 ml chicken stock','1 tbsp vegetable oil','Spring onion and sesame seeds to garnish','Steamed rice to serve'],
-   notes:'Scoring allows the sauce to penetrate. The sauce reduces to an intensely savoury glaze. Simple, reliable, addictive weeknight dinner.'},
-
-  {id:'b27',name:'Spanish Braised Chicken with Peppers & Olives',category:'Dinner',subcategory:'Braise',cookingTime:'1 hr',servings:'4',
-   recipe:'Season chicken breasts and brown in oil. Remove. Saute onion, capsicum and garlic until soft. Add smoked paprika and saffron, cook 1 min. Deglaze with sherry or white wine. Add crushed tomatoes and stock. Return chicken. Braise covered at 170C for 25 min. Add olives for last 10 min. Serve with crusty bread.',
-   ingredients:['4 large chicken breasts','2 red capsicums, sliced','2 yellow capsicums, sliced','1 large onion, sliced','4 garlic cloves, minced','2 tsp smoked paprika','Good pinch of saffron','100 ml dry sherry or white wine','400 g can crushed tomatoes','200 ml chicken stock','80 g green olives','2 tbsp olive oil','Salt and pepper'],
-   notes:'Smoked paprika and saffron are the two flavours that define this dish. Use both. Serve with bread to scoop up the vivid sauce.'},
-
-  {id:'b28',name:'Chicken with 40 Cloves of Garlic',category:'Dinner',subcategory:'Braise',cookingTime:'1.5 hrs',servings:'5',
-   recipe:'Season whole chicken inside and out. Brown all over in oil in dutch oven, remove. Add 40 unpeeled garlic cloves to pot. Return chicken on top. Pour over white wine and stock. Add thyme and bay. Cover and braise at 180C for 1 hr. Remove chicken to rest. Squeeze softened garlic from skins into the sauce. Blend sauce until smooth. Serve chicken carved with the garlic sauce.',
-   ingredients:['1 whole chicken 1.6 kg','40 garlic cloves, unpeeled (about 3 heads)','200 ml white wine','200 ml chicken stock','4 sprigs thyme','2 bay leaves','2 tbsp olive oil','Salt and pepper','Crusty bread to serve'],
-   notes:'The garlic becomes sweet and nutty during the braise. Squeezing 40 cloves into the sauce at the end creates something magical. Serve with crusty bread to smear the garlic paste onto.'},
-
-  {id:'b29',name:'Moroccan Braised Chicken',category:'Dinner',subcategory:'Braise',cookingTime:'1.5 hrs',servings:'5',
-   recipe:'Brown chicken breasts in oil, remove. Saute onion until golden. Add garlic, ginger, cumin, coriander, turmeric, cinnamon and paprika, cook 1 min. Return chicken. Add stock, preserved lemon and olives. Cover and braise at 170C for 30 min. Uncover for 10 min to reduce sauce. Scatter with coriander. Serve over couscous with harissa on the side.',
-   ingredients:['4 large chicken breasts','2 large onions, sliced','4 garlic cloves, minced','1 tsp ginger, grated','2 tsp ground cumin','1 tsp ground coriander','1/2 tsp turmeric','1/2 tsp cinnamon','1 tsp smoked paprika','400 ml chicken stock','1 preserved lemon rind, finely sliced','80 g green olives','Fresh coriander','2 tbsp olive oil','Couscous and harissa to serve'],
-   notes:'Preserved lemon and olives are the two Moroccan ingredients that cannot be swapped. Chicken breast works beautifully with this sauce.'},
-
-  {id:'b30',name:'Braised Chicken with Mushrooms & Cream',category:'Dinner',subcategory:'Braise',cookingTime:'50 min',servings:'4',
-   recipe:'Sear chicken breasts in butter until golden both sides, remove. Brown mushrooms in batches until golden. Add shallots and garlic, cook 2 min. Add thyme and white wine, reduce by half. Add stock. Return chicken. Cover and braise 20 min at gentle simmer. Remove chicken, stir cream into sauce and reduce until coating. Return chicken. Serve over mash or pasta.',
-   ingredients:['4 large chicken breasts','400 g mixed mushrooms, roughly torn','4 shallots, finely sliced','3 garlic cloves, minced','150 ml white wine','200 ml chicken stock','200 ml cream','3 sprigs thyme','30 g butter','1 tbsp olive oil','Fresh parsley','Salt and pepper'],
-   notes:'Brown the mushrooms in batches without overcrowding. That deep caramelisation is where all the flavour lives. Do not rush this step.'},
 
   // ── BBQ (4) ──────────────────────────────────────────────────────
   {id:'s15',name:'BBQ Lemon Herb Chicken Breasts',category:'Dinner',subcategory:'BBQ',cookingTime:'30 min',servings:'4',
@@ -364,11 +114,6 @@ const SAMPLES = [
    recipe:'Coat lamb cutlets in harissa paste mixed with olive oil and lemon zest. Marinate 30 min. Grill on high 2–3 min per side for medium-rare. Rest 5 min. Serve with yoghurt, mint and flatbread.',
    ingredients:['12 lamb cutlets','3 tbsp harissa paste','2 tbsp olive oil','Zest of 1 lemon','1/2 cup Greek yoghurt','1/2 cup fresh mint leaves','Salt and pepper','Flatbread to serve'],
    notes:'Harissa heat varies by brand. The yoghurt is non-negotiable.'},
-
-  {id:'n5',name:'Sticky BBQ Pork Ribs',category:'Dinner',subcategory:'BBQ',cookingTime:'3 hrs',servings:'4',
-   recipe:'Rub ribs with spice mix. Wrap in foil and bake at 150°C for 2.5 hrs until very tender. Mix BBQ glaze. Unwrap, brush generously with glaze and finish on the hot grill 10 min, turning and basting frequently, until caramelised and sticky.',
-   ingredients:['1.5 kg pork baby back ribs','1 tsp smoked paprika','1 tsp garlic powder','1 tsp onion powder','1 tbsp brown sugar','1/2 tsp salt','1/2 tsp pepper','BBQ Glaze: 1/2 cup tomato sauce','2 tbsp worcestershire sauce','2 tbsp honey','1 tbsp apple cider vinegar','1 tsp smoked paprika'],
-   notes:'The foil bake is the secret — it steams the ribs tender before the grill caramelises the outside. Fall-off-the-bone guarantee.'},
 
   {id:'n6',name:'Spatchcock BBQ Chicken',category:'Dinner',subcategory:'BBQ',cookingTime:'1 hr',servings:'5',
    recipe:'Remove backbone from whole chicken with kitchen scissors and press flat to spatchcock. Rub all over with olive oil, garlic, smoked paprika, cumin, salt and pepper. Grill on indirect heat with lid down for 40 min. Finish on direct heat 10 min per side until charred and internal temp reaches 75°C. Rest 10 min before carving.',
@@ -397,20 +142,10 @@ const SAMPLES = [
    ingredients:['600 g beef mince','400 g spaghetti','1 onion, finely diced','2 carrots, finely diced','2 celery stalks','4 garlic cloves','2 tbsp tomato paste','200 ml red wine','2 × 400 g cans crushed tomatoes','150 ml beef stock','Parmesan to serve'],
    notes:'Double batch and freeze half. Gets richer as leftovers.'},
 
-  {id:'n9',name:'Creamy Chicken & Mushroom Pasta',category:'Dinner',subcategory:'Pasta',cookingTime:'30 min',servings:'4',
-   recipe:'Cook pasta al dente, reserve 1 cup pasta water. Slice chicken breasts thin, season and sear in butter until golden, remove. Sauté mushrooms until browned. Add garlic, cook 30 sec. Add white wine, reduce by half. Pour in cream and stock, simmer until thickened. Return chicken. Toss with pasta and parmesan. Loosen with pasta water if needed.',
-   ingredients:['350 g fettuccine or pappardelle','2 large chicken breasts, thinly sliced','300 g mushrooms mixed or button sliced','3 garlic cloves, minced','100 ml white wine','250 ml thickened cream','100 ml chicken stock','40 g butter','60 g parmesan, grated','Salt, pepper and fresh parsley'],
-   notes:'Brown the mushrooms properly in a single layer. That caramelisation is where all the flavour lives.'},
-
   {id:'n10',name:'Sausage & Fennel Rigatoni',category:'Dinner',subcategory:'Pasta',cookingTime:'35 min',servings:'4',
    recipe:'Remove sausage meat from casings. Cook in oil, breaking up, until browned. Add onion and fennel, cook until soft. Add garlic and chilli flakes, cook 1 min. Pour in crushed tomatoes and white wine. Simmer 20 min. Toss with al dente pasta. Finish with parmesan and fresh basil.',
    ingredients:['400 g rigatoni','400 g good-quality pork sausages','1 large onion, diced','1/2 fennel bulb, thinly sliced','3 garlic cloves, minced','1/2 tsp chilli flakes','100 ml white wine','400 g can crushed tomatoes','2 tbsp olive oil','Parmesan and fresh basil to serve'],
    notes:'Use the best sausages you can find — the quality drives the whole dish. Fennel fronds make a beautiful garnish.'},
-
-  {id:'n11',name:'Chicken Pesto Pasta',category:'Dinner',subcategory:'Pasta',cookingTime:'25 min',servings:'4',
-   recipe:'Cook pasta, reserve 1 cup pasta water. Season chicken breasts, pan-fry in oil 4 min per side until cooked through. Rest 5 min, slice. Toss hot pasta with pesto and a good splash of pasta water to make a silky sauce. Add chicken, cherry tomatoes and extra parmesan. Toss and serve immediately.',
-   ingredients:['350 g fusilli or penne','2 large chicken breasts','4 tbsp good-quality basil pesto','200 g cherry tomatoes, halved','3 tbsp olive oil','60 g parmesan, finely grated','Salt and cracked black pepper','Fresh basil to serve'],
-   notes:'Pasta water is the key — it emulsifies pesto into a proper sauce instead of a dry coating.'},
 
   // ── STIR-FRY (4) ─────────────────────────────────────────────────
   {id:'s2',name:'Chicken Stir-fry',category:'Dinner',subcategory:'Stir-fry',cookingTime:'20 min',servings:'4',
