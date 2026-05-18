@@ -194,20 +194,6 @@ const SAMPLES = [
   // ════════════════════════════════════════════
 
   // ── MEALS ON THE RUN (3) ─────────────────────────────────────────
-  {id:'s23',name:'Chicken & Avocado Rice Paper Rolls',category:'Lunch',subcategory:'Meals on the run',cookingTime:'20 min',servings:'3',
-   recipe:'Poach chicken breasts in stock until just cooked through, about 15 min. Cool and shred. Soak rice paper sheets one at a time in warm water 15 sec until pliable. Lay flat. Layer vermicelli, chicken, avocado, cucumber, carrot, mint and basil. Roll tightly, folding in sides as you go. Serve with sweet chilli or hoisin dipping sauce.',
-   ingredients:['300 g chicken breast, poached and shredded','12 rice paper sheets','100 g rice vermicelli, soaked and drained','1 avocado, sliced','1 cucumber, julienned','1 large carrot, julienned','1 cup fresh mint leaves','1 cup fresh basil leaves','Sweet chilli sauce to serve'],
-   notes:'Prep all fillings first, then roll to order. Do not stack finished rolls or they will stick together.'},
-
-  {id:'n17',name:'Chicken Caesar Wrap',category:'Lunch',subcategory:'Meals on the run',cookingTime:'15 min',servings:'2',
-   recipe:'Season and grill or pan-fry chicken breasts 4 min per side. Rest 5 min, slice thin. Spread Caesar dressing down the centre of each tortilla. Layer with cos lettuce, chicken, parmesan shavings and croutons. Roll firmly. Cut in half and wrap in baking paper for on the go.',
-   ingredients:['2 large chicken breasts','2 large flour tortillas','2 cos lettuce hearts, leaves separated','3 tbsp Caesar dressing','40 g parmesan, shaved','Handful croutons','Salt and pepper'],
-   notes:'Make your own Caesar with mayo, garlic, lemon juice, parmesan and a touch of worcestershire for the real deal.'},
-
-  {id:'n18',name:'Hummus & Roasted Veg Wrap',category:'Lunch',subcategory:'Meals on the run',cookingTime:'30 min',servings:'2',
-   recipe:'Toss capsicum, zucchini and red onion with olive oil, cumin, salt and pepper. Roast at 200°C for 20 min until tender and charred at edges. Spread hummus generously over flatbread. Layer with rocket, roasted veg, crumbled feta and a drizzle of chilli oil. Roll tightly and wrap in foil.',
-   ingredients:['2 large flatbreads or tortillas','4 tbsp hummus','1 red capsicum, sliced','1 zucchini, sliced','1/2 red onion, sliced','2 tbsp olive oil','1/2 tsp ground cumin','50 g rocket','50 g feta, crumbled','Chilli oil to finish','Salt and pepper'],
-   notes:'Roasted veg keeps well in the fridge for 3 days. Batch roast on the weekend for easy wraps all week.'},
 
   // ── HOME (5) ─────────────────────────────────────────────────────
   {id:'s25',name:'Shakshuka',category:'Lunch',subcategory:'Home',cookingTime:'30 min',servings:'3',
@@ -257,25 +243,6 @@ const SAMPLES = [
    notes:'Puy lentils hold their shape — worth tracking down. Great warm or at room temperature for meal prep.'},
 
   // ── SANDWICH (4) ─────────────────────────────────────────────────
-  {id:'s29',name:'Smashed Chickpea Sandwich',category:'Lunch',subcategory:'Sandwich',cookingTime:'10 min',servings:'2',
-   recipe:'Drain chickpeas. Roughly mash with a fork with lemon juice, tahini, garlic, cumin and olive oil — keep some texture. Season well. Spread thickly on toasted sourdough. Layer with avocado, cucumber, rocket and sundried tomatoes.',
-   ingredients:['400 g can chickpeas, drained and rinsed','Juice of 1 lemon','2 tbsp tahini','1 garlic clove, crushed','1/2 tsp ground cumin','2 tbsp extra-virgin olive oil','4 slices sourdough, toasted','1 avocado, sliced','1/2 cucumber, sliced','Handful rocket','4–5 sundried tomatoes','Salt and pepper'],
-   notes:'Add chilli oil for a kick. Works equally well as a wrap.'},
-
-  {id:'n24',name:'Chicken Souvlaki Wrap',category:'Lunch',subcategory:'Sandwich',cookingTime:'20 min',servings:'3',
-   recipe:'Cube chicken breasts and marinate in lemon juice, garlic, olive oil, oregano, salt and pepper for at least 30 min. Thread onto skewers and grill on high 8–10 min, turning, until cooked through and charred. Warm pita. Spread with tzatziki. Load with chicken, diced tomato, cucumber, red onion and fresh parsley.',
-   ingredients:['3 chicken breasts, cut into chunks','Juice of 1 lemon','3 garlic cloves, crushed','3 tbsp olive oil','1 tsp dried oregano','3 large pita breads','4 tbsp tzatziki','2 tomatoes, diced','1/2 cucumber, diced','1/2 red onion, sliced','Fresh flat-leaf parsley','Salt and pepper'],
-   notes:'Tzatziki: Greek yoghurt + grated cucumber + garlic + dill + lemon. Marinate overnight for the best flavour.'},
-
-  {id:'n25',name:'Steak & Caramelised Onion Roll',category:'Lunch',subcategory:'Sandwich',cookingTime:'30 min',servings:'2',
-   recipe:'Slowly cook onions in butter with a pinch of sugar on low heat for 20 min, stirring occasionally, until deep golden and jammy. Season steak, sear in hot oiled pan 2–3 min per side for medium-rare. Rest 5 min, slice thin. Toast rolls. Layer with caramelised onion, steak, dijon mayo, rocket and parmesan shavings.',
-   ingredients:['2 beef sirloin steaks about 150 g each','2 large onions, thinly sliced','20 g butter','Pinch sugar','2 crusty bread rolls','2 tbsp mayo mixed with 1 tsp dijon','Handful rocket','Parmesan shavings','Salt and pepper'],
-   notes:'The onion caramelisation cannot be rushed. Low heat and patience is the whole key.'},
-
-  {id:'n26',name:'Egg & Avocado Sandwich',category:'Lunch',subcategory:'Sandwich',cookingTime:'10 min',servings:'2',
-   recipe:'Soft boil eggs for 7 min for just-set yolks. Cool, peel and halve. Mash avocado with lemon juice, salt and a pinch of chilli flakes. Toast sourdough. Spread one slice thickly with avocado. Top with halved eggs. Season with salt, cracked pepper and a drizzle of extra virgin olive oil. Add rocket and close.',
-   ingredients:['4 eggs','1 ripe avocado','Juice of 1/2 lemon','Pinch chilli flakes','4 thick slices sourdough','Handful rocket or baby spinach','Extra-virgin olive oil','Salt and cracked black pepper'],
-   notes:'7-minute boil gives perfect jammy yolks. Start eggs in cold water, bring to the boil, then time from there.'},
 
   // ── SOUP (5) ─────────────────────────────────────────────────────
   {id:'s5',name:'Pumpkin Soup',category:'Lunch',subcategory:'Soup',cookingTime:'40 min',servings:'5',
@@ -309,80 +276,10 @@ const SAMPLES = [
    ingredients:['2 large sweet potatoes','400 g can black beans, rinsed and drained','1 tsp ground cumin','1 tsp smoked paprika','1 garlic clove, minced','Juice of 1 lime','1 avocado, sliced','4 tbsp Greek yoghurt','Fresh coriander','Salt and pepper'],
    notes:'Meal prep: bake sweet potatoes ahead. Reheat in microwave and load toppings fresh.'},
 
-  {id:'t1',name:'Avocado & Egg on Toast Fingers',category:'Lunch',subcategory:'Toddler',cookingTime:'10 min',servings:'1',
-   recipe:'Soft boil egg for 8 min, peel and slice. Mash avocado with a squeeze of lemon and tiny pinch of salt. Toast bread until golden. Spread avocado thickly, top with sliced egg. Cut into fingers for easy toddler holding.',
-   ingredients:['1 egg','1/2 ripe avocado','1 slice wholegrain bread','Squeeze of lemon','Tiny pinch of salt'],
-   notes:'NOVA 1-2. Cut into finger-sized strips so toddlers can self-feed easily. Great source of healthy fats and protein.'},
-
-  {id:'t2',name:'Banana Oat Pancakes',category:'Lunch',subcategory:'Toddler',cookingTime:'15 min',servings:'2',
-   recipe:'Mash 1 ripe banana well in a bowl. Add eggs and oats, mix together. Let sit 2 min. Cook small spoonfuls in a non-stick pan with a little butter over medium-low heat, 2 min per side until golden. Serve with sliced banana or a little yoghurt.',
-   ingredients:['1 ripe banana','2 eggs','1/4 cup rolled oats','Small knob of butter for cooking','Greek yoghurt or sliced banana to serve'],
-   notes:'NOVA 1-2. Only 3 ingredients. Naturally sweet from the banana — no added sugar needed. Freeze leftovers for quick weekday lunches.'},
-
-  {id:'t3',name:'Cheese & Veggie Omelette Strips',category:'Lunch',subcategory:'Toddler',cookingTime:'10 min',servings:'1',
-   recipe:'Beat eggs with a splash of milk. Finely dice or grate zucchini and capsicum. Cook vegetables in butter in small non-stick pan 2 min. Pour egg over vegetables. Cook on medium-low until mostly set, scatter cheese over half and fold. Cook 1 more min. Slide onto board and cut into strips.',
-   ingredients:['2 eggs','1 tbsp milk','2 tbsp grated zucchini','2 tbsp finely diced red capsicum','2 tbsp grated cheddar cheese','Small knob of butter','Tiny pinch of salt'],
-   notes:'NOVA 1-3. Strips are easier for toddlers to pick up than wedges. Any soft vegetables work — peas, corn and spinach are great too.'},
-
-  {id:'t4',name:'Homemade Hummus with Veggie Sticks',category:'Lunch',subcategory:'Toddler',cookingTime:'10 min',servings:'4',
-   recipe:'Drain chickpeas and blend with tahini, lemon juice, garlic, olive oil and a splash of water until very smooth. Season with a tiny pinch of salt. Serve in a bowl with steamed carrot sticks, cucumber sticks and strips of soft capsicum for dipping.',
-   ingredients:['400 g can chickpeas, drained','2 tbsp tahini','Juice of 1/2 lemon','1 small garlic clove','2 tbsp extra-virgin olive oil','2-3 tbsp water','Tiny pinch of salt','Carrot sticks, cucumber sticks, soft capsicum strips to serve'],
-   notes:'NOVA 1-3. Blend very smooth for young toddlers. Steaming carrots makes them soft enough for babies just starting finger foods.'},
-
-  {id:'t5',name:'Mini Frittata Muffins',category:'Lunch',subcategory:'Toddler',cookingTime:'25 min',servings:'12 muffins',
-   recipe:'Beat eggs with milk and a pinch of salt. Finely chop spinach, grate zucchini and squeeze out excess water, dice roasted capsicum. Mix vegetables and cheese into egg mixture. Pour into greased mini muffin tin. Bake at 180C for 18-20 min until puffed and set. Cool slightly before serving.',
-   ingredients:['6 eggs','3 tbsp milk','1/2 cup baby spinach, finely chopped','1/2 cup grated zucchini, squeezed dry','1/4 cup roasted capsicum, finely diced','1/2 cup grated cheddar','Tiny pinch of salt','Butter or oil to grease tin'],
-   notes:'NOVA 1-3. Make a batch on Sunday and refrigerate for the week. Freeze well too. Perfect size for little hands.'},
-
-  {id:'t6',name:'Sweet Potato & Lentil Patties',category:'Lunch',subcategory:'Toddler',cookingTime:'35 min',servings:'10 patties',
-   recipe:'Bake or microwave sweet potato until tender, scoop out flesh. Cook red lentils in water until very soft, drain well. Mash sweet potato and lentils together with cumin, garlic powder and a pinch of salt. Add flour to bind. Shape into small flat patties. Pan-fry in olive oil 3 min per side until golden. Cool slightly before serving.',
-   ingredients:['1 medium sweet potato','1/2 cup red lentils, rinsed','1 tsp ground cumin','1/4 tsp garlic powder','3 tbsp plain flour or oat flour','2 tbsp olive oil','Tiny pinch of salt'],
-   notes:'NOVA 1-2. Freeze raw patties between baking paper sheets. Cook straight from frozen. Rich in iron and fibre.'},
-
-  {id:'t7',name:'Ricotta & Veggie Pasta',category:'Lunch',subcategory:'Toddler',cookingTime:'20 min',servings:'2',
-   recipe:'Cook small pasta shapes until very soft. Meanwhile steam peas and finely diced zucchini until tender. Drain pasta, reserve a splash of cooking water. Mix ricotta with a spoonful of pasta water to loosen. Toss pasta and vegetables through ricotta. Add grated parmesan. Serve warm.',
-   ingredients:['1/2 cup small pasta shapes (risoni, ditalini or broken spaghetti)','1/3 cup ricotta cheese','2 tbsp frozen peas','1/4 zucchini, finely diced','2 tbsp grated parmesan','Tiny pinch of salt'],
-   notes:'NOVA 1-3. Cook pasta slightly beyond al dente so it is soft and easy for toddlers to chew. The ricotta makes a naturally creamy sauce with no cream needed.'},
-
-  {id:'t8',name:'Chicken & Vegetable Rice Congee',category:'Lunch',subcategory:'Toddler',cookingTime:'35 min',servings:'3',
-   recipe:'Bring stock to boil. Add rice and stir. Simmer uncovered, stirring occasionally, for 25-30 min until rice breaks down into a thick porridge. Add finely shredded cooked chicken breast, finely diced carrot and frozen peas for last 5 min. Stir to combine. Cool to a safe temperature before serving.',
-   ingredients:['1/3 cup white rice','700 ml low-sodium chicken stock','100 g cooked chicken breast, very finely shredded','1 small carrot, finely diced','1/4 cup frozen peas','1/2 tsp finely grated ginger (optional)'],
-   notes:'NOVA 1-3. Congee is a traditional weaning food across Asia. The silky texture is ideal for young toddlers. Refrigerates well for 3 days.'},
-
-  {id:'t9',name:'Simple Egg Fried Rice',category:'Lunch',subcategory:'Toddler',cookingTime:'15 min',servings:'2',
-   recipe:'Use cold cooked rice. Heat a little sesame oil in a non-stick pan. Add rice and break up clumps. Push to one side, scramble 2 eggs in the gap, then mix through rice. Add frozen peas and corn, stir-fry 2 min. Add a tiny splash of low-sodium soy sauce. Toss and serve.',
-   ingredients:['1 cup cold cooked white rice','2 eggs','1/4 cup frozen peas','1/4 cup frozen corn','1 tsp sesame oil','1 tsp low-sodium soy sauce'],
-   notes:'NOVA 1-3. Cold rice is essential for fried rice — it fries rather than steams. A great way to use leftover rice. No added salt needed if using low-sodium soy.'},
-
-  {id:'t10',name:'Cheesy Broccoli & Potato Bites',category:'Lunch',subcategory:'Toddler',cookingTime:'30 min',servings:'12 bites',
-   recipe:'Steam broccoli until very tender. Boil potato until soft. Mash potato well. Finely chop broccoli and mix through mash with grated cheddar, egg and a pinch of salt. Shape into small flat rounds. Bake on lined tray at 190C for 20 min, flipping halfway, until golden on both sides.',
-   ingredients:['1 medium potato, peeled and boiled','1 cup broccoli florets, steamed','1/2 cup grated cheddar','1 egg','Tiny pinch of salt','Olive oil spray'],
-   notes:'NOVA 1-3. Baking rather than frying makes these lighter and less messy. Freeze after baking and reheat in the oven for 10 min from frozen.'},
-
-  {id:'t11',name:'Pea & Mint Smash on Toast',category:'Lunch',subcategory:'Toddler',cookingTime:'10 min',servings:'1',
-   recipe:'Cook frozen peas in boiling water 2 min. Drain and smash roughly with a fork with a tiny pinch of salt, a squeeze of lemon and a few finely chopped mint leaves. Spread thickly on toasted wholegrain bread. Top with a crumble of soft ricotta or feta.',
-   ingredients:['1/2 cup frozen peas','1 slice wholegrain bread','Squeeze of lemon','2-3 fresh mint leaves, finely chopped','2 tbsp ricotta or soft feta','Tiny pinch of salt'],
-   notes:'NOVA 1-3. Keep the smash chunky for older toddlers or blend smooth for younger ones. Great iron source. Quick and nutritious.'},
-
-  {id:'t12',name:'Soft Chicken & Vegetable Meatballs',category:'Lunch',subcategory:'Toddler',cookingTime:'25 min',servings:'16 meatballs',
-   recipe:'Finely grate zucchini, squeeze moisture out in a clean cloth. Combine chicken mince with grated zucchini, carrot, parmesan, egg, garlic powder and a pinch of salt. Mix well. Roll into small balls. Bake at 190C on a lined tray for 18-20 min until cooked through and lightly golden. Serve with a simple tomato dipping sauce.',
-   ingredients:['300 g chicken mince','1 small zucchini, grated and squeezed','1 small carrot, finely grated','2 tbsp grated parmesan','1 egg','1/4 tsp garlic powder','Tiny pinch of salt','Simple tomato sauce to serve'],
-   notes:'NOVA 1-3. These freeze brilliantly — cook a full batch and freeze in portions. Defrost overnight in the fridge. Great for self-feeding toddlers.'},
-
   {id:'t13',name:'Homemade Baked Beans on Toast',category:'Lunch',subcategory:'Toddler',cookingTime:'20 min',servings:'3',
    recipe:'Saute finely diced onion in olive oil until very soft. Add garlic and cook 1 min. Add crushed tomatoes, cannellini beans, a pinch of cumin and a small drizzle of honey. Simmer 12 min until thick and saucy. Mash a few beans against the side of the pot to thicken further. Serve on toasted wholegrain bread cut into fingers.',
    ingredients:['400 g can cannellini beans, rinsed','400 g can crushed tomatoes','1 small onion, very finely diced','1 garlic clove, minced','1 tsp olive oil','1/4 tsp ground cumin','1 tsp honey','Wholegrain toast to serve'],
    notes:'NOVA 1-3. Far lower in sodium and sugar than commercial baked beans. Freeze in portions. The mashed beans naturally thicken the sauce.'},
-
-  {id:'t14',name:'Spinach & Ricotta Pinwheels',category:'Lunch',subcategory:'Toddler',cookingTime:'25 min',servings:'12 pinwheels',
-   recipe:'Combine ricotta with finely chopped wilted spinach, grated parmesan and a pinch of nutmeg. Spread over a sheet of homemade or store-bought shortcrust pastry. Roll up firmly into a log. Refrigerate 10 min to firm up. Slice into rounds about 2 cm thick. Bake at 190C on a lined tray for 20 min until golden.',
-   ingredients:['200 g ricotta','1 cup baby spinach, wilted and very finely chopped','2 tbsp grated parmesan','Pinch of nutmeg','1 sheet shortcrust or puff pastry (look for brands with minimal ingredients)'],
-   notes:'NOVA 2-3. Check pastry labels and choose one with the shortest, most recognisable ingredient list. Great in lunchboxes at room temperature.'},
-
-  {id:'t15',name:'Tuna & Sweet Corn Patties',category:'Lunch',subcategory:'Toddler',cookingTime:'20 min',servings:'8 patties',
-   recipe:'Drain tuna and corn well. Mix together with mashed potato, egg, grated cheese and a pinch of salt. Shape into small flat patties. Pan-fry in a little olive oil over medium heat 3 min per side until golden and heated through. Cool slightly. Serve with cucumber slices and a little plain yoghurt for dipping.',
-   ingredients:['185 g can tuna in springwater, drained','1/2 cup canned corn kernels, drained','1 cup cold mashed potato','1 egg','1/4 cup grated cheddar','Tiny pinch of salt','1 tbsp olive oil','Cucumber and yoghurt to serve'],
-   notes:'NOVA 1-3. Use tuna in springwater not brine to keep sodium low. These hold together best if made with cold mash. Freeze between sheets of baking paper.'},
 
   {id:'t16',name:'Banana & Blueberry Yoghurt Bowl',category:'Lunch',subcategory:'Toddler',cookingTime:'5 min',servings:'1',
    recipe:'Spoon full-fat Greek yoghurt into a bowl. Slice banana over the top. Add a handful of fresh or frozen (thawed) blueberries. Drizzle with a tiny amount of honey if over 12 months. Sprinkle with a small handful of rolled oats for texture.',
@@ -394,16 +291,6 @@ const SAMPLES = [
    ingredients:['1/2 cup rolled oats','3/4 cup full-fat milk','1/2 apple, grated with skin','1 small carrot, finely grated','2 tbsp full-fat Greek yoghurt','Small drizzle of honey if over 12 months'],
    notes:'NOVA 1-2. Soak overnight to soften oats completely — important for young toddlers. The carrot and apple add natural sweetness. Keeps refrigerated 2 days.'},
 
-  {id:'t18',name:'Soft Beef & Vegetable Stew',category:'Lunch',subcategory:'Toddler',cookingTime:'45 min',servings:'4',
-   recipe:'Finely dice beef into very small pieces. Brown in olive oil. Add finely diced onion, carrot, potato and zucchini. Cover with low-sodium beef stock. Simmer covered 30 min until vegetables are completely soft and beef is very tender. Mash slightly against the side of the pot for younger toddlers. Serve warm.',
-   ingredients:['150 g lean beef mince or very finely diced chuck','1 small carrot, finely diced','1 small potato, finely diced','1/4 zucchini, finely diced','1/4 onion, very finely diced','300 ml low-sodium beef stock','1 tsp olive oil','1/4 tsp dried thyme'],
-   notes:'NOVA 1-2. The smaller the dice, the quicker it cooks and the easier it is for toddlers to eat. Blend partially for very young toddlers.'},
-
-  {id:'t19',name:'Corn & Cheese Fritters',category:'Lunch',subcategory:'Toddler',cookingTime:'20 min',servings:'8 fritters',
-   recipe:'Mix corn kernels, grated zucchini (squeezed dry), grated cheese, egg, flour and a pinch of salt into a thick batter. Heat a little olive oil in a non-stick pan over medium heat. Drop spoonfuls of batter and flatten gently. Cook 3 min per side until golden and cooked through. Cool slightly before serving.',
-   ingredients:['1/2 cup corn kernels fresh or frozen and thawed','1/2 cup grated zucchini, squeezed very dry','1/3 cup grated cheddar','1 egg','3 tbsp plain flour or wholemeal flour','Tiny pinch of salt','1 tbsp olive oil'],
-   notes:'NOVA 1-3. These are a toddler staple. Freezer friendly — freeze in a single layer then bag them. Reheat in the oven or toaster for a quick lunch.'},
-
   {id:'t20',name:'Creamy Pumpkin Pasta',category:'Lunch',subcategory:'Toddler',cookingTime:'30 min',servings:'3',
    recipe:'Peel and cube pumpkin. Roast at 190C with a little olive oil for 20 min until tender. Blend with a splash of milk, garlic powder and a pinch of salt until smooth and creamy. Cook small pasta until very soft. Drain and toss through warm pumpkin sauce. Top with grated parmesan.',
    ingredients:['200 g butternut pumpkin, cubed','1/2 cup full-fat milk','1/4 tsp garlic powder','Tiny pinch of salt','1 tbsp olive oil','1 cup small pasta shapes','Grated parmesan to serve'],
@@ -413,16 +300,6 @@ const SAMPLES = [
    recipe:'Beat egg with milk and a small pinch of cinnamon. Dip both sides of bread into egg mixture, letting it soak in. Cook in a pan with a little butter over medium-low heat for 2-3 min per side until golden. Slice into fingers. Serve with sliced banana or a few fresh berries.',
    ingredients:['1 egg','2 tbsp full-fat milk','1 slice wholegrain bread','Pinch of cinnamon','Small knob of butter','Sliced banana or berries to serve'],
    notes:'NOVA 1-3. No sugar needed — the banana adds all the sweetness. Wholegrain bread adds fibre. A great protein-rich lunch.'},
-
-  {id:'t22',name:'Lentil & Vegetable Soup',category:'Lunch',subcategory:'Toddler',cookingTime:'35 min',servings:'5',
-   recipe:'Saute onion and carrot in olive oil until soft. Add garlic and cumin, cook 1 min. Add red lentils and low-sodium stock. Simmer 20 min until lentils are completely broken down and soup is thick. Add diced zucchini for last 5 min. Blend partially or fully for younger toddlers. Serve warm with soft bread.',
-   ingredients:['1/2 cup red lentils, rinsed','1 small onion, finely diced','1 carrot, finely diced','1/4 zucchini, diced','1 garlic clove, minced','1/4 tsp ground cumin','700 ml low-sodium vegetable or chicken stock','1 tsp olive oil','Soft bread to serve'],
-   notes:'NOVA 1-2. Red lentils dissolve naturally and thicken the soup without any blending needed. Excellent iron source. Freezes perfectly in portions.'},
-
-  {id:'t23',name:'Cottage Cheese & Fruit Bowl',category:'Lunch',subcategory:'Toddler',cookingTime:'5 min',servings:'1',
-   recipe:'Spoon full-fat cottage cheese into a bowl. Top with small pieces of soft ripe fruit — whatever is in season. Sprinkle with a few rolled oats. For older toddlers, add a drizzle of honey. The cottage cheese is naturally creamy and mild in flavour.',
-   ingredients:['1/3 cup full-fat cottage cheese','1/2 cup soft ripe fruit such as mango, peach, strawberry or banana','1 tbsp rolled oats','Drizzle of honey if over 12 months'],
-   notes:'NOVA 1-2. Cut fruit into small pieces appropriate for your toddler. Cottage cheese is high in protein and calcium. No cooking required.'},
 
   {id:'t24',name:'Soft Vegetable Couscous',category:'Lunch',subcategory:'Toddler',cookingTime:'15 min',servings:'2',
    recipe:'Pour boiling low-sodium stock over couscous, cover and leave 5 min. Fluff with fork. Meanwhile steam finely diced carrot, zucchini and peas until very soft. Mix vegetables through couscous with a drizzle of olive oil and a tiny pinch of salt. Serve warm or at room temperature.',
