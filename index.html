@@ -1923,8 +1923,9 @@ const CUISINE_SUBS = ['Italian','Mexican','French','Greek','Asian','Middle Easte
 const CUISINE_CATS = new Set(['Dinner','Lunch']); // categories where subcategory = cuisine
 
 const CATS = {
-  Dinner: CUISINE_SUBS,
+  Breakfast: ['Eggs','Oats','Pancakes','Smoothies','Toast','Yoghurt','Sweet bake','Savoury bake','Other'],
   Lunch: CUISINE_SUBS,
+  Dinner: CUISINE_SUBS,
   Soups: ['Brothy','Creamy','Chunky','Cold','Other'],
   Salad: ['Leafy','Grain','Bean & Pulse','Pasta','Slaw','Roasted','Fruit','Other'],
   Baking: ['Bread','Cakes & Cookies','Pastry','Muffins & Loaves','Savoury Bakes','Other'],
@@ -1949,10 +1950,12 @@ const SUB_COLORS = {
   'Dips & Spreads':'#1A5959','Bars & Balls':'#D9A026','Crackers & Bites':'#C7611F',Sweet:'#7A3F5E',Savoury:'#5A7028',
   Vegetables:'#3D6B4F',Drinks:'#1A5959',Dairy:'#7A6A9A',Condiments:'#8B4513',
   'Spice Mixes':'#C7611F',Pastes:'#B23E5A','Sauces & Butters':'#5A7028',
-  // Soups subcategories
-  Brothy:'#D9A026',Creamy:'#8B6914',Chunky:'#8B4513',Cold:'#2B5F8A',
-  // Salad subcategories
-  Leafy:'#5A7028',Grain:'#C7611F','Bean & Pulse':'#B23E5A',Slaw:'#3D6B4F',Roasted:'#E07038',Fruit:'#C77B96',
+  // Soups — warm amber/rust family, one cool blue for Cold
+  Brothy:'#D9A026',Creamy:'#E0B070',Chunky:'#B85F2A',Cold:'#6B8FB5',
+  // Salad — fresh green family with one berry accent for Fruit
+  Leafy:'#5A7028',Grain:'#8B9028','Bean & Pulse':'#3D6B4F',Slaw:'#6B8E4E',Roasted:'#4D6B2E',Fruit:'#C77B96',
+  // Breakfast — soft warm morning pastels
+  Eggs:'#F5C842',Oats:'#C9A57B',Pancakes:'#D4884E',Smoothies:'#D8809E',Toast:'#A8754E',Yoghurt:'#E8C8A8','Sweet bake':'#E8A0B5','Savoury bake':'#A88B6B',
   Other:'#8A7A6A'
 };
 
