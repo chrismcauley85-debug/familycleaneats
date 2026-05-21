@@ -1868,6 +1868,22 @@ body {
 /* ── Added by ── */
 .rcard-by { font-size: 10px; font-family: var(--mono); color: var(--fg-muted); opacity: .7; margin-top: 3px; }
 
+/* ── Source link ── */
+.rcard-link { display: inline-block; margin-top: 5px; font-size: 11px; font-weight: 600; color: var(--primary); text-decoration: none; }
+.rcard-link:active { opacity: .6; }
+.detail-source {
+  display: block; padding: 12px 14px; border-radius: var(--r);
+  border: 1.5px solid var(--rule); background: var(--card);
+  color: var(--primary); font-weight: 600; font-size: 14px; text-decoration: none;
+}
+.detail-source:active { background: var(--parchment); }
+.imp-note {
+  background: var(--parchment); border: 1.5px solid var(--rule);
+  border-left: 3px solid var(--primary); border-radius: var(--r);
+  padding: 9px 12px; font-size: 12.5px; color: var(--fg);
+  margin-bottom: 14px; line-height: 1.4;
+}
+
 /* ── Category top-level header ── */
 .cat-hd {
   display: flex;
@@ -2051,12 +2067,20 @@ async function loadMeals() {
 async function upsertMeal(m) {
   try {
     let { data, error } = await sb.from('recipes').upsert(m, { onConflict: 'id' }).select();
-    // If the nutritionWheel column doesn't exist yet in Supabase, retry without it (graceful degradation).
-    if (error && /nutritionWheel|nutrition_wheel/i.test(error.message || '') && m.nutritionWheel) {
-      const { nutritionWheel, ...rest } = m;
-      const retry = await sb.from('recipes').upsert(rest, { onConflict: 'id' }).select();
+    // Gracefully drop optional columns (nutritionWheel / sourceUrl) that may not exist
+    // yet in Supabase, then retry — only the column named in the error is removed.
+    let payload = m, guard = 0;
+    while (error && guard++ < 3) {
+      const msg = error.message || '';
+      const next = {...payload};
+      let dropped = false;
+      if (/nutrition/i.test(msg) && 'nutritionWheel' in next) { delete next.nutritionWheel; dropped = true; }
+      if (/source/i.test(msg) && 'sourceUrl' in next) { delete next.sourceUrl; dropped = true; }
+      if (!dropped) break;
+      payload = next;
+      const retry = await sb.from('recipes').upsert(payload, { onConflict: 'id' }).select();
       data = retry.data; error = retry.error;
-      if (!error) console.warn('Saved without nutritionWheel — add the column in Supabase to persist the wheel.');
+      if (!error) console.warn('Saved without an optional column (nutritionWheel/sourceUrl). Add it in Supabase to persist that field.');
     }
     if (error) { console.error('Supabase upsert error:', error.message, error.details, error.hint); return { ok: false, msg: error.message }; }
     if (!data || data.length === 0) { console.error('Supabase upsert: 0 rows written (RLS?)'); return { ok: false, msg: 'Permission denied — check Supabase RLS policies' }; }
@@ -2200,6 +2224,10 @@ function findRecipeJsonLd(html) {
 <script type="text/babel">
 const {useState, useEffect, useRef, useCallback, useMemo} = React;
 
+function isSafeUrl(u) {
+  return !!u && typeof u === 'string' && /^https?:\/\//i.test(u.trim());
+}
+
 const FCC_DAY_NUM = (()=>{
   const d = new Date();
   const monday = new Date(d);
@@ -2310,6 +2338,9 @@ function RCard({meal, idx, sel, fav, onChk, onFav, onOpen}) {
           {meal.nutritionWheel && meal.nutritionWheel.length > 0 && <><span className="dot"/><WheelDots wheel={meal.nutritionWheel} size={7}/></>}
         </div>
         {meal.added_by && <div className="rcard-by">by {meal.added_by}</div>}
+        {isSafeUrl(meal.sourceUrl) && (
+          <a className="rcard-link" href={meal.sourceUrl} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()}>View on website ↗</a>
+        )}
       </div>
       <div className="rcard-r" onClick={e=>e.stopPropagation()}>
         <button className={`star${fav?' on':''}`} onClick={()=>onFav(meal.id)} aria-label="Favourite">
@@ -2630,6 +2661,13 @@ function Detail({meal, fav, sel, onClose, onFav, onSel, onEdit, onDel, onCopyIng
               </div>
             </>
           )}
+
+          {isSafeUrl(meal.sourceUrl) && (
+            <>
+              <div className="sheet-sec">Source</div>
+              <a className="detail-source" href={meal.sourceUrl} target="_blank" rel="noopener noreferrer">View this recipe on the website ↗</a>
+            </>
+          )}
         </div>
 
         <div className="sheet-foot">
@@ -2745,12 +2783,46 @@ function CookMode({meal, onClose}) {
 /* ── Add / Edit form ── */
 function AddEdit({init, onSave, onCancel}) {
   const WHO_KEY = 'fce-who';
-  const blank = {name:'',category:'Dinner',subcategory:'Italian',cookingTime:'',servings:'',recipe:'',ingredients:'',notes:'',cuisine:'',meatType:'',added_by:'',nutritionWheel:[]};
+  const blank = {name:'',category:'Dinner',subcategory:'Italian',cookingTime:'',servings:'',recipe:'',ingredients:'',notes:'',cuisine:'',meatType:'',added_by:'',nutritionWheel:[],sourceUrl:''};
   const [f, setF] = useState(() => {
     const who = localStorage.getItem('fce-who') || '';
-    if (init) return {...init, ingredients: init.ingredients.join('\n'), added_by: init.added_by || who, nutritionWheel: init.nutritionWheel || []};
+    if (init) return {...init, ingredients: init.ingredients.join('\n'), added_by: init.added_by || who, nutritionWheel: init.nutritionWheel || [], sourceUrl: init.sourceUrl || ''};
     return {...blank, added_by: who};
   });
+  const [mode, setMode] = useState('manual');     // 'manual' | 'url'
+  const [impUrl, setImpUrl] = useState('');
+  const [impStatus, setImpStatus] = useState('idle'); // idle | loading | err | ok
+  const [impErr, setImpErr] = useState('');
+  const [imported, setImported] = useState(false);
+
+  const fetchFromUrl = async () => {
+    const u = impUrl.trim();
+    if (!u) return;
+    setImpStatus('loading'); setImpErr('');
+    try {
+      const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(u));
+      if (!res.ok) throw new Error('Network error');
+      const json = await res.json();
+      const meal = findRecipeJsonLd(json.contents || '');
+      if (!meal || !meal.name || !meal.ingredients.length) {
+        setImpErr("Couldn't find a recipe on that page. Try entering it manually."); setImpStatus('err'); return;
+      }
+      setF(x => ({
+        ...x,
+        name: meal.name || x.name,
+        cookingTime: meal.cookingTime || x.cookingTime,
+        servings: meal.servings || x.servings,
+        recipe: meal.recipe || x.recipe,
+        ingredients: (meal.ingredients || []).join('\n') || x.ingredients,
+        notes: meal.notes || x.notes,
+        sourceUrl: u,
+      }));
+      setImpStatus('ok'); setImported(true); setMode('manual');
+    } catch(e) {
+      setImpErr(e.message === 'Failed to fetch' ? 'Could not reach that site. Try entering it manually.' : (e.message || 'Something went wrong.'));
+      setImpStatus('err');
+    }
+  };
   const subs = CATS[f.category] || [];
   useEffect(()=>{
     const s = CATS[f.category] || [];
@@ -2776,6 +2848,7 @@ function AddEdit({init, onSave, onCancel}) {
       meatType: f.meatType || '',
       added_by: f.added_by ? f.added_by.trim() : '',
       nutritionWheel: f.nutritionWheel || [],
+      sourceUrl: f.sourceUrl ? f.sourceUrl.trim() : '',
     });
     if (f.added_by && f.added_by.trim()) { try { localStorage.setItem('fce-who', f.added_by.trim()); } catch(e) {} }
   };
@@ -2787,6 +2860,31 @@ function AddEdit({init, onSave, onCancel}) {
         <div className="form-title">{f.name || (init ? 'Edit recipe' : 'Add a recipe')}</div>
       </div>
       <div className="form-body">
+        {!init && (
+          <div className="imp-tabs">
+            <button type="button" className={`imp-tab${mode==='manual'?' on':''}`} onClick={()=>setMode('manual')}>Manual</button>
+            <button type="button" className={`imp-tab${mode==='url'?' on':''}`} onClick={()=>setMode('url')}>From URL</button>
+          </div>
+        )}
+        {mode === 'url' && (
+          <>
+            <div className="url-sites">Paste a recipe link — works with Taste.com.au, AllRecipes, BBC Good Food, RecipeTin Eats and most recipe sites. We'll fill in the form so you can tweak before saving.</div>
+            <div className="url-row">
+              <input className="url-input" type="url" placeholder="https://www.taste.com.au/recipes/..." value={impUrl}
+                onChange={e=>{ setImpUrl(e.target.value); setImpStatus('idle'); setImpErr(''); }}
+                onKeyDown={e=>{ if(e.key==='Enter') fetchFromUrl(); }}
+                autoCapitalize="none" autoCorrect="off" spellCheck={false}/>
+              <button type="button" className="url-fetch-btn" onClick={fetchFromUrl} disabled={!impUrl.trim() || impStatus==='loading'}>
+                {impStatus==='loading' ? '…' : 'Fetch'}
+              </button>
+            </div>
+            {impStatus === 'idle' && <div className="url-status">Paste a link above and tap Fetch.</div>}
+            {impStatus === 'loading' && <div className="url-status">Fetching recipe…</div>}
+            {impStatus === 'err' && <div className="url-status err">{impErr}</div>}
+          </>
+        )}
+        {mode === 'manual' && (<>
+        {imported && <div className="imp-note">✓ Imported — review the details below, then tap Add recipe.</div>}
         <div className="fld">
           <label>Recipe name</label>
           <input type="text" value={f.name} onChange={e=>set('name', e.target.value)} placeholder="e.g. Dutch Oven Pot Roast"/>
@@ -2862,12 +2960,19 @@ function AddEdit({init, onSave, onCancel}) {
             </select>
           </div>
         </div>
+        <div className="fld">
+          <label>Source link (optional)</label>
+          <input type="url" value={f.sourceUrl||''} onChange={e=>set('sourceUrl', e.target.value)} placeholder="https://… (shown as a tappable link)" autoCapitalize="none" autoCorrect="off" spellCheck={false}/>
+        </div>
+        </>)}
       </div>
       <div className="form-acts">
         <button className="btn" onClick={onCancel} style={{flex:1}}>Cancel</button>
-        <button className="btn pr" onClick={save} style={{flex:2}}>
-          {init ? 'Save changes' : 'Add recipe'}
-        </button>
+        {mode === 'manual' && (
+          <button className="btn pr" onClick={save} style={{flex:2}}>
+            {init ? 'Save changes' : 'Add recipe'}
+          </button>
+        )}
       </div>
     </div>
   );
