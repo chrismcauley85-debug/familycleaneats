@@ -2379,7 +2379,7 @@ function TonightCard({meal, dayName, onOpen}) {
 }
 
 /* ── Library ── */
-function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport, onClearSel, searchRef, onShowImp}) {
+function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onClearSel, searchRef}) {
   const [q, setQ] = useState('');
   const [cat, setCat] = useState('All');
   const [favOnly, setFavOnly] = useState(false);
@@ -2395,7 +2395,7 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
   const toggleCat = cat => setCollapsedCats(s => { const n = new Set(s); n.has(cat) ? n.delete(cat) : n.add(cat); return n; });
 
   const filtered = useMemo(() => meals.filter(m => {
-    if (cat !== 'All' && m.category !== cat) return false;
+    if (cat !== 'All' && cat !== 'Recently added' && m.category !== cat) return false;
     if (favOnly && !favs.has(m.id)) return false;
     if (cuisine && guessCuisine(m) !== cuisine) return false;
     if (meat && guessMeat(m) !== meat) return false;
@@ -2433,6 +2433,13 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
     return out;
   }, [filtered]);
 
+  // Recently added — newest first, across all categories (recency from the id's Date.now() prefix)
+  const recencyOf = m => parseInt(String(m.id || '').split('-')[0]) || 0;
+  const recentList = useMemo(
+    () => [...filtered].sort((a, b) => recencyOf(b) - recencyOf(a)).slice(0, 40),
+    [filtered]
+  );
+
   // Tonight = today's planned meal
   const todayIdx = (new Date().getDay()+6)%7;
   const today = DAYS[todayIdx];
@@ -2469,7 +2476,7 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
       </div>
 
       <div className="chip-row">
-        {['All','Dinner','Lunch','Baking','Snacks','Fermentation','Pastes & Spices'].map(f=>(
+        {['All','Breakfast','Recently added','Dinner','Lunch','Baking','Snacks','Fermentation','Pastes & Spices'].map(f=>(
           <button key={f} className={`chip${cat===f?' on':''}`} onClick={()=>{setCat(f);setCuisine('');setMeat('');}}>{f}</button>
         ))}
         <button className={`chip fav${favOnly?' on':''}`} onClick={()=>setFavOnly(v=>!v)}>★ Favourites</button>
@@ -2498,6 +2505,27 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
         </div>
       )}
 
+      {cat === 'Recently added' ? (
+        recentList.length === 0 ? (
+          <div className="empty">
+            <h3>Nothing here yet.</h3>
+            <p>Recipes you add will appear here, newest first.</p>
+          </div>
+        ) : (
+          <React.Fragment>
+            <div className="cat-hd" style={{borderTop:`3px solid ${CAT_COLORS.Dinner||'var(--primary)'}`, cursor:'default'}}>
+              <span className="cat-hd-label" style={{color:'var(--primary)'}}>Recently added</span>
+              <span className="cat-hd-ct">{recentList.length} {recentList.length===1?'recipe':'recipes'}</span>
+            </div>
+            <div className="recipes">
+              {recentList.map(m => (
+                <RCard key={m.id} meal={m} idx={idx++} sel={sel.has(m.id)} fav={favs.has(m.id)} onChk={onChk} onFav={onFav} onOpen={onOpen}/>
+              ))}
+            </div>
+          </React.Fragment>
+        )
+      ) : (
+      <React.Fragment>
       {Object.keys(grouped).length === 0 && (
         <div className="empty">
           <h3>Nothing matches.</h3>
@@ -2551,12 +2579,8 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onImport,
           </React.Fragment>
         );
       })}
-
-      <div style={{padding:'24px 16px 8px',display:'flex',gap:8}}>
-        <button className="btn fw" onClick={onShowImp}>
-          <ICON.Up/> Import recipes
-        </button>
-      </div>
+      </React.Fragment>
+      )}
     </div>
   );
 }
@@ -2781,7 +2805,7 @@ function CookMode({meal, onClose}) {
 }
 
 /* ── Add / Edit form ── */
-function AddEdit({init, onSave, onCancel}) {
+function AddEdit({init, onSave, onCancel, onImport}) {
   const WHO_KEY = 'fce-who';
   const blank = {name:'',category:'Dinner',subcategory:'Italian',cookingTime:'',servings:'',recipe:'',ingredients:'',notes:'',cuisine:'',meatType:'',added_by:'',nutritionWheel:[],sourceUrl:''};
   const [f, setF] = useState(() => {
@@ -2789,8 +2813,9 @@ function AddEdit({init, onSave, onCancel}) {
     if (init) return {...init, ingredients: init.ingredients.join('\n'), added_by: init.added_by || who, nutritionWheel: init.nutritionWheel || [], sourceUrl: init.sourceUrl || ''};
     return {...blank, added_by: who};
   });
-  const [mode, setMode] = useState('manual');     // 'manual' | 'url'
+  const [mode, setMode] = useState('manual');     // 'manual' | 'url' | 'paste'
   const [impUrl, setImpUrl] = useState('');
+  const [pasteTxt, setPasteTxt] = useState('');
   const [impStatus, setImpStatus] = useState('idle'); // idle | loading | err | ok
   const [impErr, setImpErr] = useState('');
   const [imported, setImported] = useState(false);
@@ -2864,6 +2889,7 @@ function AddEdit({init, onSave, onCancel}) {
           <div className="imp-tabs">
             <button type="button" className={`imp-tab${mode==='manual'?' on':''}`} onClick={()=>setMode('manual')}>Manual</button>
             <button type="button" className={`imp-tab${mode==='url'?' on':''}`} onClick={()=>setMode('url')}>From URL</button>
+            <button type="button" className={`imp-tab${mode==='paste'?' on':''}`} onClick={()=>setMode('paste')}>Paste text</button>
           </div>
         )}
         {mode === 'url' && (
@@ -2881,6 +2907,15 @@ function AddEdit({init, onSave, onCancel}) {
             {impStatus === 'idle' && <div className="url-status">Paste a link above and tap Fetch.</div>}
             {impStatus === 'loading' && <div className="url-status">Fetching recipe…</div>}
             {impStatus === 'err' && <div className="url-status err">{impErr}</div>}
+          </>
+        )}
+        {mode === 'paste' && (
+          <>
+            <div className="url-sites">Paste recipe text — structured or free-form. Separate multiple recipes with <code style={{fontFamily:'var(--mono)',fontSize:11,background:'var(--parchment)',padding:'1px 5px',borderRadius:3}}>===</code>. We'll parse them and add straight to your library.</div>
+            <textarea className="imp-textarea"
+              placeholder={"Name: Beef Stew\nIngredients:\n1 kg beef\nRecipe:\nBrown beef, simmer 2 hrs."}
+              value={pasteTxt} onChange={e=>setPasteTxt(e.target.value)}
+            />
           </>
         )}
         {mode === 'manual' && (<>
@@ -2971,6 +3006,11 @@ function AddEdit({init, onSave, onCancel}) {
         {mode === 'manual' && (
           <button className="btn pr" onClick={save} style={{flex:2}}>
             {init ? 'Save changes' : 'Add recipe'}
+          </button>
+        )}
+        {mode === 'paste' && (
+          <button className="btn pr" onClick={()=>onImport(pasteTxt, onCancel)} style={{flex:2}} disabled={!pasteTxt.trim()}>
+            <ICON.Up/> Import
           </button>
         )}
       </div>
@@ -3293,7 +3333,7 @@ function Share({count, onExport, onImport, onShareWeek, hasPlan}) {
 }
 
 /* ── Header menu sheet ── */
-function HeaderMenu({onClose, onAdd, onImport, onExport, onSharePlan, hasPlan}) {
+function HeaderMenu({onClose, onAdd, onExport, onSharePlan, hasPlan}) {
   return (
     <div className="overlay" onClick={onClose}>
       <div className="sheet" onClick={e=>e.stopPropagation()}>
@@ -3309,129 +3349,12 @@ function HeaderMenu({onClose, onAdd, onImport, onExport, onSharePlan, hasPlan}) 
           <button className="menu-item" onClick={()=>{onAdd(); onClose();}}>
             <ICON.Plus/> Add a recipe
           </button>
-          <button className="menu-item" onClick={()=>{onImport(); onClose();}}>
-            <ICON.Up/> Import recipes
-          </button>
           <button className="menu-item" onClick={()=>{onExport(); onClose();}}>
             <ICON.Down/> Export library
           </button>
           <button className="menu-item" onClick={()=>{onSharePlan(); onClose();}} disabled={!hasPlan} style={!hasPlan?{opacity:.4}:{}}>
             <ICON.Share/> Share this week's plan
           </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Import sheet ── */
-function ImportSheet({onClose, onImport, toast}) {
-  const [tab, setTab] = useState('url');
-  const [txt, setTxt] = useState('');
-  const [url, setUrl] = useState('');
-  const [status, setStatus] = useState('idle');
-  const [errMsg, setErrMsg] = useState('');
-  const [preview, setPreview] = useState(null);
-
-  const fetchUrl = async () => {
-    const u = url.trim();
-    if (!u) return;
-    setStatus('loading'); setPreview(null); setErrMsg('');
-    try {
-      const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(u));
-      if (!res.ok) throw new Error('Network error');
-      const json = await res.json();
-      const meal = findRecipeJsonLd(json.contents || '');
-      if (!meal || !meal.name || !meal.ingredients.length) {
-        setErrMsg("Couldn't find a recipe on that page. Try the Paste tab instead.");
-        setStatus('err'); return;
-      }
-      setPreview(meal); setStatus('ok');
-    } catch(e) {
-      setErrMsg(e.message === 'Failed to fetch' ? 'Could not reach that site. Try the Paste tab.' : (e.message || 'Something went wrong.'));
-      setStatus('err');
-    }
-  };
-
-  const savePreview = () => {
-    if (!preview) return;
-    const lines = ['Name: ' + preview.name, 'Category: Dinner', 'Time: ' + (preview.cookingTime||''), 'Servings: ' + (preview.servings||''), 'Notes: ' + (preview.notes||''), 'Ingredients:'].concat(preview.ingredients).concat(['Recipe:', preview.recipe||'']);
-    onImport(lines.join('\n'), () => { setUrl(''); setPreview(null); setStatus('idle'); onClose(); });
-  };
-
-  const submitPaste = () => {
-    if (!txt.trim()) { alert('Please paste some recipe text.'); return; }
-    onImport(txt, () => { setTxt(''); onClose(); });
-  };
-
-  return (
-    <div className="overlay" onClick={onClose}>
-      <div className="sheet" onClick={e=>e.stopPropagation()}>
-        <div className="sheet-grab"/>
-        <button className="sheet-back" onClick={onClose}><ICON.Back/> Cancel</button>
-        <div className="sheet-hd">
-          <div className="sheet-eye"><span className="dot" style={{background:'var(--accent)'}}/> Import</div>
-          <div className="sheet-title">Add a recipe</div>
-        </div>
-        <div className="sheet-body">
-          <div className="imp-tabs">
-            <button className={`imp-tab${tab==='url'?' on':''}`} onClick={()=>setTab('url')}>From URL</button>
-            <button className={`imp-tab${tab==='paste'?' on':''}`} onClick={()=>setTab('paste')}>Paste text</button>
-          </div>
-          {tab === 'url' && (
-            <>
-              <div className="url-sites">Works with Taste.com.au, AllRecipes, BBC Good Food, RecipeTin Eats and most recipe sites.</div>
-              <div className="url-row">
-                <input className="url-input" type="url" placeholder="https://www.taste.com.au/recipes/..." value={url}
-                  onChange={e=>{ setUrl(e.target.value); setStatus('idle'); setPreview(null); }}
-                  onKeyDown={e=>{ if(e.key==='Enter') fetchUrl(); }}
-                  autoCapitalize="none" autoCorrect="off" spellCheck={false}
-                />
-                <button className="url-fetch-btn" onClick={fetchUrl} disabled={!url.trim() || status==='loading'}>
-                  {status==='loading' ? '...' : 'Fetch'}
-                </button>
-              </div>
-              {status === 'idle' && !preview && <div className="url-status">Paste a URL above and tap Fetch.</div>}
-              {status === 'loading' && <div className="url-status">Fetching recipe...</div>}
-              {status === 'err' && <div className="url-status err">{errMsg}</div>}
-              {status === 'ok' && preview && (
-                <div className="url-preview">
-                  <div className="url-preview-name">{preview.name}</div>
-                  <div className="url-preview-meta">
-                    {preview.cookingTime && <span className="url-preview-pill">{preview.cookingTime}</span>}
-                    {preview.servings && <span className="url-preview-pill">Serves {preview.servings}</span>}
-                    {preview.ingredients.length > 0 && <span className="url-preview-pill">{preview.ingredients.length} ingredients</span>}
-                  </div>
-                  {preview.notes && <div className="url-preview-desc">{preview.notes}</div>}
-                </div>
-              )}
-            </>
-          )}
-          {tab === 'paste' && (
-            <>
-              <div style={{fontSize:13,color:'var(--fg-muted)',lineHeight:1.55,marginBottom:12}}>
-                Paste recipe text below — structured or free-form. Separate multiple recipes with <code style={{fontFamily:'var(--mono)',fontSize:11,background:'var(--parchment)',padding:'1px 5px',borderRadius:3}}>===</code>.
-              </div>
-              <textarea className="imp-textarea"
-                placeholder={"Name: Beef Stew\nIngredients:\n1 kg beef\nRecipe:\nBrown beef, simmer 2 hrs."}
-                value={txt} onChange={e=>setTxt(e.target.value)}
-              />
-            </>
-          )}
-        </div>
-        <div className="sheet-foot">
-          <div className="row">
-            <button className="btn" onClick={onClose} style={{flex:1}}>Cancel</button>
-            {tab === 'url' ? (
-              <button className="btn pr" onClick={savePreview} style={{flex:2}} disabled={status !== 'ok' || !preview}>
-                <ICON.Up/> Save recipe
-              </button>
-            ) : (
-              <button className="btn pr" onClick={submitPaste} style={{flex:2}}>
-                <ICON.Up/> Import
-              </button>
-            )}
-          </div>
         </div>
       </div>
     </div>
@@ -3598,7 +3521,6 @@ function App() {
   const [cookMode, setCookMode] = useState(null);
   const [editM, setEditM]   = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [importOpen, setImportOpen] = useState(false);
   const {msg, vis, toast} = useToast();
   const searchRef = useRef(null);
 
@@ -3926,10 +3848,8 @@ function App() {
           meals={meals} favs={favs} sel={sel} plan={plan}
           onChk={togSel} onFav={togFav} onOpen={m => setDetail(m)}
           onAdd={()=>authGuard(()=>{setEditM(null); setView('add');})}
-          onImport={importNotes}
           onClearSel={()=>setSel(new Set())}
           searchRef={searchRef}
-          onShowImp={()=>setImportOpen(true)}
         />
       )}
       {view === 'plan' && (
@@ -3951,7 +3871,7 @@ function App() {
         <Share count={meals.length} onExport={exportLib} onImport={importLib} onShareWeek={shareWeek} hasPlan={DAYS.some(d => plan[d]?.lunch || plan[d]?.dinner)}/>
       )}
       {isForm && (
-        <AddEdit init={editM} onSave={saveR} onCancel={()=>{setEditM(null); setView('library');}}/>
+        <AddEdit init={editM} onSave={saveR} onImport={importNotes} onCancel={()=>{setEditM(null); setView('library');}}/>
       )}
 
       {detail && (
@@ -3983,16 +3903,12 @@ function App() {
         <HeaderMenu
           onClose={()=>setMenuOpen(false)}
           onAdd={()=>authGuard(()=>{setEditM(null); setView('add');})}
-          onImport={()=>setImportOpen(true)}
           onExport={exportLib}
           onSharePlan={shareWeek}
           hasPlan={DAYS.some(d => plan[d])}
         />
       )}
 
-      {importOpen && (
-        <ImportSheet onClose={()=>setImportOpen(false)} onImport={importNotes} toast={toast}/>
-      )}
       {pwPrompt && (
         <PasswordModal
           onAuth={()=>{ setAuthed(true); sessionStorage.setItem('fce-authed','1'); const cb=pwPrompt; setPwPrompt(null); cb(); }}
