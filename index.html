@@ -1946,6 +1946,7 @@ const CATS = {
   Salad: ['Leafy','Grain','Bean & Pulse','Pasta','Slaw','Roasted','Fruit','Other'],
   Baking: ['Bread','Cakes & Cookies','Pastry','Muffins & Loaves','Savoury Bakes','Other'],
   Snacks: ['Dips & Spreads','Bars & Balls','Crackers & Bites','Sweet','Savoury','Other'],
+  Desserts: ['Fruit','Frozen','Puddings & Custards','Chocolate','Baked','No-bake','Other'],
   Fermentation: ['Vegetables','Drinks','Dairy','Condiments','Bread','Other'],
   'Pastes & Spices': ['Spice Mixes','Pastes','Sauces & Butters','Other'],
 };
@@ -1972,6 +1973,8 @@ const SUB_COLORS = {
   Leafy:'#5A7028',Grain:'#8B9028','Bean & Pulse':'#3D6B4F',Slaw:'#6B8E4E',Roasted:'#4D6B2E',Fruit:'#C77B96',
   // Breakfast — soft warm morning pastels
   Eggs:'#F5C842',Oats:'#C9A57B',Pancakes:'#D4884E',Smoothies:'#D8809E',Toast:'#A8754E',Yoghurt:'#E8C8A8','Sweet bake':'#E8A0B5','Savoury bake':'#A88B6B',
+  // Desserts — sweet rose & cocoa family (Fruit reuses berry-pink above)
+  Frozen:'#6B9FC4','Puddings & Custards':'#E0B86A',Chocolate:'#6E4630',Baked:'#C77B3A','No-bake':'#6B8E4E',
   Other:'#8A7A6A'
 };
 
@@ -2022,7 +2025,7 @@ function guessMeat(m) {
   return 'Vegetarian';
 }
 
-const CAT_COLORS = { Breakfast:'#E89B4F', Lunch:'#1A6B8A', Dinner:'#C7611F', Soups:'#7A4E2A', Salad:'#8FA63E', Baking:'#C4A010', Snacks:'#B23E5A', Fermentation:'#3D6B4F', 'Pastes & Spices':'#7A3F5E' };
+const CAT_COLORS = { Breakfast:'#E89B4F', Lunch:'#1A6B8A', Dinner:'#C7611F', Soups:'#7A4E2A', Salad:'#8FA63E', Baking:'#C4A010', Snacks:'#B23E5A', Desserts:'#C76B8E', Fermentation:'#3D6B4F', 'Pastes & Spices':'#7A3F5E' };
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DAY_FULL = {Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
 
@@ -2476,10 +2479,12 @@ function Library({meals, favs, sel, plan, onChk, onFav, onOpen, onAdd, onClearSe
       </div>
 
       <div className="chip-row">
-        {['All','Breakfast','Recently added','Dinner','Lunch','Baking','Snacks','Fermentation','Pastes & Spices'].map(f=>(
+        <button className={`chip${cat==='All'?' on':''}`} onClick={()=>{setCat('All');setCuisine('');setMeat('');}}>All</button>
+        <button className={`chip${cat==='Recently added'?' on':''}`} onClick={()=>{setCat('Recently added');setCuisine('');setMeat('');}}>Recently added</button>
+        <button className={`chip fav${favOnly?' on':''}`} onClick={()=>setFavOnly(v=>!v)}>★ Favourites</button>
+        {['Breakfast','Dinner','Lunch','Baking','Snacks','Desserts','Fermentation','Pastes & Spices'].map(f=>(
           <button key={f} className={`chip${cat===f?' on':''}`} onClick={()=>{setCat(f);setCuisine('');setMeat('');}}>{f}</button>
         ))}
-        <button className={`chip fav${favOnly?' on':''}`} onClick={()=>setFavOnly(v=>!v)}>★ Favourites</button>
       </div>
 
       <div className="chip-row">
